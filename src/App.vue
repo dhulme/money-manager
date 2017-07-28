@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <div class="container">
-      {{data}}
       <router-view></router-view>
     </div>
   </div>
@@ -10,11 +9,13 @@
 <script>
   import data from '@/data';
 
+ 
+
   export default {
-    name: 'app',
+    
     computed: {
-      async data() {
-        return data.load();
+      data() {
+        return data.getData();
       }
     }
   };

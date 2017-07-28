@@ -11,6 +11,7 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "accounting": "^0.4.1",
     "bootstrap": "^3.3.7",
     "fs-extra": "^4.0.0",
     "vue": "^2.3.3",

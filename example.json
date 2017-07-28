@@ -1,0 +1,29 @@
+{
+  "summary": {
+    "balance": 0
+  },
+  "accounts": [
+    {
+      "name": "Bank of Dave",
+      "balance": 100,
+      "transactions": [
+        {
+          "date": 1501271131179,
+          "value": 100,
+          "description": "Pocket money"
+        }
+      ]
+    },
+    {
+      "name": "Money box",
+      "balance": 0
+    }
+  ],
+  "budgets": [
+    {
+      "name": "Food",
+      "balance": 500,
+      "transactions": []
+    }
+  ]
+}
