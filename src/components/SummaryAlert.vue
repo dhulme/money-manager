@@ -14,7 +14,7 @@
   export default {
     computed: {
       balance() {
-        return this.$project.summary.balance;
+        return this.$project.data.summary.balance;
       }
     }
   }

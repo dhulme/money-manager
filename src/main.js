@@ -4,16 +4,24 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import accounting from 'accounting';
+import moment from 'moment';
 
-import data from '@/data';
+import project from '@/project';
 
 require('../node_modules/bootstrap/dist/css/bootstrap.min.css');
 
 Vue.config.productionTip = false;
 
-data.load().then((project) => {
+project.load().then(() => {
   Vue.filter('currency', (value) => {
+    if (value === undefined) {
+      return '';
+    }
     return '£' + (value / 100).toFixed(2);
+  });
+
+  Vue.filter('date', (value) => {
+    return moment(value).format('DD/MM/YYYY');
   });
 
   Vue.prototype.$project = project;
@@ -24,11 +32,6 @@ data.load().then((project) => {
     template: '<App/>',
     components: {
       App,
-    },
-    filters: {
-      currency(value) {
-        return accounting.formatMoney(value / 100, '£', 2, ',', '.');
-      }
     }
   });
 });

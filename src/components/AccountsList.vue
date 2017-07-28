@@ -21,7 +21,7 @@
   export default {
     computed: {
       accounts() {
-        return this.$project.accounts;
+        return this.$project.accounts();
       },
     }
   }

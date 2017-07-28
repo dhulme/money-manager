@@ -14,6 +14,7 @@
     "accounting": "^0.4.1",
     "bootstrap": "^3.3.7",
     "fs-extra": "^4.0.0",
+    "moment": "^2.18.1",
     "vue": "^2.3.3",
     "vue-router": "^2.6.0"
   },

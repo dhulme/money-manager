@@ -4,6 +4,7 @@
   },
   "accounts": [
     {
+      "id": "bank-of-dave",
       "name": "Bank of Dave",
       "balance": 100,
       "transactions": [
@@ -15,15 +16,23 @@
       ]
     },
     {
+      "id": "money-box",
       "name": "Money box",
       "balance": 0
     }
   ],
   "budgets": [
     {
+      "id": "food",
       "name": "Food",
       "balance": 500,
-      "transactions": []
+      "transactions": [
+        {
+          "date": 1501271131179,
+          "value": 100,
+          "description": "Pocket money"
+        }
+      ]
     }
   ]
 }

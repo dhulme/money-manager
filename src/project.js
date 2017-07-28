@@ -1,11 +1,11 @@
 import example from '../example.json';
 
-class Data {
+class Project {
   constructor() {
     this.data = {};
     
     if (window.require) {
-      this.remote = require('electron').remote.require('./data');
+      this.remote = require('electron').remote.require('./project');
     } else {
       this.remote = {
         load(done) {
@@ -18,10 +18,23 @@ class Data {
   load() {
     return new Promise((resolve) => {
       this.remote.load((err, data) => {
+        this.data = data;
         resolve(data);
       });
     });
   }
+
+  budgets() {
+    return this.data.budgets;
+  }
+
+  accounts() {
+    return this.data.accounts;
+  }
+
+  budget(id) {
+    return this.data.budgets.find(budget => budget.id === id);
+  }
 }
 
-export default new Data();
+export default new Project();
