@@ -16,6 +16,8 @@ class Project {
         },
       };
     }
+
+    window.project = this;
   }
 
   load() {
@@ -28,15 +30,23 @@ class Project {
   }
 
   budgets() {
-    return this.data.accounts.budgets;
+    return this.accountsByType('budget');
   }
 
   accounts() {
     return this.data.accounts;
   }
 
+  accountsByType(type) {
+    return this.accounts().filter(account => account.type === type);
+  }
+
+  account(id) {
+    return this.accounts().find(account => account.id === id);
+  }
+
   assets() {
-    return this.data.accounts.assets;
+    return this.accountsByType('asset');
   }
 
   budget(id) {
@@ -57,18 +67,11 @@ class Project {
     return transactionIds.slice(start).map(id => this.data.transactions[id]);
   }
 
-  addTransaction({
-    account,
-    transactionDate,
-    transactionDescription,
-    transactionIn,
-    transactionOut,
-  }) {
-    const transaction = {
-      date: moment(transactionDate),
-      description: transactionDescription
-    }
-    this.data.transactions[cryptoRandomString(10)] = transaction;
+  addTransaction(transaction) {
+    const transactionId = cryptoRandomString(10);
+    this.data.transactions[transactionId] = transaction;
+    this.account(transaction.to).transactionIds.push(transactionId);
+    this.account(transaction.from).transactionIds.push(transactionId);
   }
 }
 

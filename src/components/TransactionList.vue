@@ -23,13 +23,11 @@
         <td><input type="text" v-model="transaction.valueIn" placeholder="In"></td>
         <td><input type="text" v-model="transaction.valueOut" placeholder="Out"></td>
         <td>
-          <select v-model="transaction.account">
+          <select v-model="transaction.accountId">
             <option disabled value="">Account</option>
-            <template v-if="accountType === 'asset'">
-              <option v-for="account in budgets" :key="account.id">
-                {{ account.name }}
-              </option>
-            </template>
+            <option v-for="account in accounts" :key="account.id" :value="account.id">
+              {{ account.name }}
+            </option>
           </select>
         </td>
       </tr>
@@ -48,7 +46,7 @@
           description: null,
           valueIn: null,
           valueOut: null,
-          account: null,
+          accountId: null,
         },
       };
     },
@@ -56,11 +54,10 @@
       transactions: Array,
       editable: Boolean,
       account: Object,
-      accountType: String,
     },
     computed: {
-      budgets() {
-        return this.$project.budgets();
+      accounts() {
+        return this.$project.accounts();
       },
     },
     methods: {
@@ -75,9 +72,17 @@
         }
       },
       addTransaction() {
-        // this.$project.
-      }
-    }
-  }
+        if (this.transaction.valueIn) {
+          this.$project.addTransaction({
+            to: this.account.id,
+            from: this.transaction.accountId,
+            value: parseFloat(this.transaction.valueIn) * 100,
+            description: this.transaction.description,
+            date: moment(this.transaction.date),
+          });
+        }
+      },
+    },
+  };
 </script>
 

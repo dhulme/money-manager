@@ -2,30 +2,29 @@
   "summary": {
     "balance": 0
   },
-  "accounts": {
-    "assets": [
-      {
-        "id": "bank-of-dave",
-        "name": "Bank of Dave",
-        "balance": 100,
-        "transactionIds": ["2cf05d94de"]
-      },
-      {
-        "id": "money-box",
-        "name": "Money box",
-        "balance": 0,
-        "transactionIds": ["2cf05d94db"]
-      }
-    ],
-    "budgets": [
-      {
-        "id": "food",
-        "name": "Food",
-        "balance": 500,
-        "transactionIds": ["2cf05d94de"]
-      }
-    ]
-  },
+  "accounts": [
+    {
+      "id": "bank-of-dave",
+      "type": "asset",
+      "name": "Bank of Dave",
+      "balance": 100,
+      "transactionIds": ["2cf05d94de"]
+    },
+    {
+      "id": "money-box",
+      "type": "asset",
+      "name": "Money box",
+      "balance": 0,
+      "transactionIds": ["2cf05d94db"]
+    },
+    {
+      "id": "food",
+      "type": "budget",
+      "name": "Food",
+      "balance": 500,
+      "transactionIds": ["2cf05d94de"]
+    }
+  ],
   "transactions": {
     "2cf05d94db": {
       "date": 1501271131179,
