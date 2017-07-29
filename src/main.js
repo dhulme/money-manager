@@ -19,7 +19,7 @@ Vue.use(VueI18n);
 
 project.load().then(() => {
   Vue.filter('currency', (value) => {
-    if (value === undefined) {
+    if (value === undefined || value === null) {
       return '';
     }
     return accounting.formatMoney(value / 100, '£', 2, ',', '.');
