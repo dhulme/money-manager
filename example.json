@@ -2,37 +2,43 @@
   "summary": {
     "balance": 0
   },
-  "accounts": [
-    {
-      "id": "bank-of-dave",
-      "name": "Bank of Dave",
-      "balance": 100,
-      "transactions": [
-        {
-          "date": 1501271131179,
-          "value": 100,
-          "description": "Pocket money"
-        }
-      ]
+  "accounts": {
+    "assets": [
+      {
+        "id": "bank-of-dave",
+        "name": "Bank of Dave",
+        "balance": 100,
+        "transactionIds": ["2cf05d94de"]
+      },
+      {
+        "id": "money-box",
+        "name": "Money box",
+        "balance": 0,
+        "transactionIds": ["2cf05d94db"]
+      }
+    ],
+    "budgets": [
+      {
+        "id": "food",
+        "name": "Food",
+        "balance": 500,
+        "transactionIds": ["2cf05d94de"]
+      }
+    ]
+  },
+  "transactions": {
+    "2cf05d94db": {
+      "date": 1501271131179,
+      "value": 100,
+      "description": "Pocket money",
+      "to": "money-box"
     },
-    {
-      "id": "money-box",
-      "name": "Money box",
-      "balance": 0
+    "2cf05d94de": {
+      "date": 1501271131179,
+      "value": 200,
+      "description": "Monthly budget",
+      "from": "bank-of-dave",
+      "to": "food"
     }
-  ],
-  "budgets": [
-    {
-      "id": "food",
-      "name": "Food",
-      "balance": 500,
-      "transactions": [
-        {
-          "date": 1501271131179,
-          "value": 100,
-          "description": "Pocket money"
-        }
-      ]
-    }
-  ]
+  }
 }

@@ -3,7 +3,7 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Budget</th>
+          <th>Account</th>
           <th>Balance</th>
         </tr>
       </thead>
@@ -29,10 +29,10 @@
         this.$router.push({
           name: 'budget',
           params: {
-            budgetId
-          }
-        })
-      }
-    }
-  }
+            budgetId,
+          },
+        });
+      },
+    },
+  };
 </script>

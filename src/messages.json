@@ -1,0 +1,21 @@
+{
+  "en": {
+    "headings": {
+      "overview": "Overview",
+      "assets": "Assets",
+      "budgets": "Budgets"
+    },
+    "transactions": {
+      "date": "Date",
+      "description": "Description",
+      "in": "In",
+      "out": "Out"
+    },
+    "backButton": {
+      "backTo": "Back to",
+      "pages": {
+        "dashboard": "Dashboard"
+      }
+    }
+  }
+}

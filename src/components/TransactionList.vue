@@ -2,10 +2,10 @@
   <table class="table">
     <thead>
       <tr>
-        <th>Date</th>
-        <th>Description</th>
-        <th>In</th>
-        <th>Out</th>
+        <th>{{ $t('transactions.date') }}</th>
+        <th>{{ $t('transactions.description') }}</th>
+        <th>{{ $t('transactions.in') }}</th>
+        <th>{{ $t('transactions.out') }}</th>
       </tr>
     </thead>
     <tbody>

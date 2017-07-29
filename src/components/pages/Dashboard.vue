@@ -1,26 +1,26 @@
 <template>
   <div>
-    <h1>Overview</h1>
+    <h1>{{ $t('headings.overview') }}</h1>
     <summary-alert></summary-alert>
 
-    <h2>Accounts</h2>
-    <accounts-list></accounts-list>
+    <h2>{{ $t('headings.assets') }}</h2>
+    <asset-list></asset-list>
 
-    <h2>Budgets</h2>
-    <budgets-list></budgets-list>
+    <h2>{{ $t('headings.budgets') }}</h2>
+    <budget-list></budget-list>
   </div>
 </template>
 
 <script>
-  import AccountsList from '@/components/AccountsList';
-  import BudgetsList from '@/components/BudgetsList';
+  import AssetList from '@/components/AssetList';
+  import BudgetList from '@/components/BudgetList';
   import SummaryAlert from '@/components/SummaryAlert';
 
   export default {
     components: {
-      AccountsList,
+      AssetList,
       SummaryAlert,
-      BudgetsList
+      BudgetList,
     },
   };
 </script>

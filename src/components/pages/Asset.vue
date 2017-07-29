@@ -1,7 +1,7 @@
 <template>
   <div>
     <back-button name="dashboard"></back-button>
-    <h1>{{ budget.name }} Budget</h1>
+    <h1>{{ asset.name }}</h1>
     <transaction-list :transactions="transactions"></transaction-list>
   </div>
 </template>
@@ -16,12 +16,12 @@
       BackButton,
     },
     computed: {
-      budget() {
-        return this.$project.budget(this.$route.params.budgetId);
+      asset() {
+        return this.$project.asset(this.$route.params.assetId);
       },
       transactions() {
         return this.$project.transactions({
-          account: this.budget,
+          account: this.asset,
         });
       },
     },
