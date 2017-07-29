@@ -1,3 +1,5 @@
+import cryptoRandomString from 'crypto-random-string';
+
 import example from '../example.json';
 
 class Project {
@@ -53,6 +55,20 @@ class Project {
     const transactionIds = account.transactionIds;
     const start = Math.min(transactionIds.length - (pageLength * pageNumber), 0);
     return transactionIds.slice(start).map(id => this.data.transactions[id]);
+  }
+
+  addTransaction({
+    account,
+    transactionDate,
+    transactionDescription,
+    transactionIn,
+    transactionOut,
+  }) {
+    const transaction = {
+      date: moment(transactionDate),
+      description: transactionDescription
+    }
+    this.data.transactions[cryptoRandomString(10)] = transaction;
   }
 }
 

@@ -2,7 +2,7 @@
   <div>
     <back-button name="dashboard"></back-button>
     <h1>{{ asset.name }}</h1>
-    <transaction-list :transactions="transactions"></transaction-list>
+    <transaction-list :transactions="transactions" editable :account="asset" account-type="asset"></transaction-list>
   </div>
 </template>
 
