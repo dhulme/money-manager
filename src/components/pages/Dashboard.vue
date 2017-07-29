@@ -4,23 +4,21 @@
     <summary-alert></summary-alert>
 
     <h2>{{ $t('headings.assets') }}</h2>
-    <asset-list></asset-list>
+    <account-list type="asset"></account-list>
 
     <h2>{{ $t('headings.budgets') }}</h2>
-    <budget-list></budget-list>
+    <account-list type="budget"></account-list>
   </div>
 </template>
 
 <script>
-  import AssetList from '@/components/AssetList';
-  import BudgetList from '@/components/BudgetList';
+  import AccountList from '@/components/AccountList';
   import SummaryAlert from '@/components/SummaryAlert';
 
   export default {
     components: {
-      AssetList,
       SummaryAlert,
-      BudgetList,
+      AccountList,
     },
   };
 </script>

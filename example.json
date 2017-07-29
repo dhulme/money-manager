@@ -34,7 +34,7 @@
     },
     "2cf05d94de": {
       "date": 1501271131179,
-      "value": 200,
+      "value": -200,
       "description": "Monthly budget",
       "from": "bank-of-dave",
       "to": "food"

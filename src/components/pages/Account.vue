@@ -1,8 +1,8 @@
 <template>
   <div>
     <back-button name="dashboard"></back-button>
-    <h1>{{ asset.name }}</h1>
-    <transaction-list :transactions="transactions" editable :account="asset" account-type="asset"></transaction-list>
+    <h1>{{ account.name }}</h1>
+    <transaction-list editable :account="account" ></transaction-list>
   </div>
 </template>
 
@@ -16,13 +16,8 @@
       BackButton,
     },
     computed: {
-      asset() {
-        return this.$project.asset(this.$route.params.assetId);
-      },
-      transactions() {
-        return this.$project.transactions({
-          account: this.asset,
-        });
+      account() {
+        return this.$project.account(this.$route.params.accountId);
       },
     },
   };

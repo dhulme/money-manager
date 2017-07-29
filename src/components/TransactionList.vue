@@ -19,9 +19,9 @@
       </tr>
       <tr v-if="editable">
         <td><input type="text" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction"></td>
-        <td><input type="text" v-model="transaction.description" placeholder="Description"></td>
-        <td><input type="text" v-model="transaction.valueIn" placeholder="In"></td>
-        <td><input type="text" v-model="transaction.valueOut" placeholder="Out"></td>
+        <td><input type="text" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction"></td>
+        <td><input type="text" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction"></td>
+        <td><input type="text" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction"></td>
         <td>
           <select v-model="transaction.accountId">
             <option disabled value="">Account</option>
@@ -38,20 +38,24 @@
 <script>
   import moment from 'moment';
 
+  const dateFormat = 'DD/MM/YYYY';
+
   export default {
     data() {
       return {
         transaction: {
-          date: moment().format('DD/MM/YYYY'),
+          date: moment().format(dateFormat),
           description: null,
           valueIn: null,
           valueOut: null,
           accountId: null,
         },
+        transactions: this.$project.transactions({
+          account: this.account,
+        }),
       };
     },
     props: {
-      transactions: Array,
       editable: Boolean,
       account: Object,
     },
@@ -72,15 +76,18 @@
         }
       },
       addTransaction() {
+        let transaction;
         if (this.transaction.valueIn) {
-          this.$project.addTransaction({
+          transaction = {
             to: this.account.id,
             from: this.transaction.accountId,
             value: parseFloat(this.transaction.valueIn) * 100,
             description: this.transaction.description,
-            date: moment(this.transaction.date),
-          });
+            date: moment(this.transaction.date, dateFormat),
+          };
+          this.$project.addTransaction(transaction);
         }
+        this.transactions.push(transaction);
       },
     },
   };

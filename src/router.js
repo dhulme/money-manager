@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Dashboard from '@/components/pages/Dashboard';
-import Budget from '@/components/pages/Budget';
-import Asset from '@/components/pages/Asset';
+import Account from '@/components/pages/Account';
 
 Vue.use(Router);
 
@@ -13,13 +12,13 @@ export default new Router({
       name: 'dashboard',
       component: Dashboard,
     }, {
-      path: '/budget/:budgetId',
+      path: '/budget/:accountId',
       name: 'budget',
-      component: Budget,
+      component: Account,
     }, {
-      path: '/asset/:assetId',
+      path: '/asset/:accountId',
       name: 'asset',
-      component: Asset,
+      component: Account,
     },
   ],
 });
