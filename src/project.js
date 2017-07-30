@@ -8,11 +8,14 @@ class Project {
     this.transactionPageLength = 20;
     
     if (window.require) {
-      this.remote = require('electron').remote.require('./project');
+      this.remote = window.require('electron').remote.require('./project');
     } else {
       this.remote = {
         load(done) {
           done(null, example);
+        },
+        save(projectString, done) {
+          done(null);
         },
       };
     }
@@ -25,6 +28,18 @@ class Project {
       this.remote.load((err, data) => {
         this.data = data;
         resolve(data);
+      });
+    });
+  }
+
+  save() {
+    return new Promise((resolve, reject) => {
+      this.remote.save(JSON.stringify(this.data), (err) => {
+        if (!err) {
+          resolve();
+        } else {
+          reject(err);
+        }
       });
     });
   }
