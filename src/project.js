@@ -84,9 +84,25 @@ class Project {
 
   addTransaction(transaction) {
     const transactionId = cryptoRandomString(10);
+    const accountTo = this.account(transaction.to);
+    const accountFrom = this.account(transaction.from);
     this.data.transactions[transactionId] = transaction;
-    this.account(transaction.to).transactionIds.push(transactionId);
-    this.account(transaction.from).transactionIds.push(transactionId);
+    if (accountTo) {
+      accountTo.transactionIds.push(transactionId);
+      accountTo.balance += transaction.value;
+    }
+    if (accountFrom) {
+      accountFrom.transactionIds.push(transactionId);
+      accountFrom.balance -= transaction.value;
+    }
+
+    this.updateSummaryBalance();
+  }
+
+  updateSummaryBalance() {
+    this.data.summary.balance = this.data.accounts.reduce((total, account) => {
+      return total + account.balance;
+    }, 0);
   }
 }
 

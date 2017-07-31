@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="transaction in transactions">
+      <tr v-for="(transaction, index) in transactions" :key="index">
         <td>{{ transaction.date | date }}</td>
         <td>{{ transaction.description }}</td>
         <td>{{ transactionIn(transaction) | currency }}</td>
@@ -24,12 +24,18 @@
         <td><input type="text" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction"></td>
         <td>
           <select v-model="transaction.accountId">
-            <option value="none">None</option>
             <option v-for="account in accounts" :key="account.id" :value="account.id">
               {{ account.name }}
             </option>
           </select>
         </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Balance</td>
+        <td>{{ account.balance | currency }}</td>
       </tr>
     </tbody>
   </table>
@@ -82,17 +88,22 @@
         return this.$project.account(accountId).name;
       },
       addTransaction() {
-        let transaction;
+        const transaction = {
+          description: this.transaction.description,
+          date: moment(this.transaction.date, dateFormat),
+        };
+
         if (this.transaction.valueIn) {
-          transaction = {
-            to: this.account.id,
-            from: this.transaction.accountId,
-            value: parseFloat(this.transaction.valueIn) * 100,
-            description: this.transaction.description,
-            date: moment(this.transaction.date, dateFormat),
-          };
-          this.$project.addTransaction(transaction);
+          transaction.value = parseFloat(this.transaction.valueIn) * 100;
+          transaction.to = this.account.id;
+          transaction.from = this.transaction.accountId;
+        } else if (this.transaction.valueOut) {
+          transaction.value = parseFloat(this.transaction.valueOut) * 100;
+          transaction.to = this.transaction.accountId;
+          transaction.from = this.account.id;
         }
+
+        this.$project.addTransaction(transaction);
         this.transactions.push(transaction);
       },
     },

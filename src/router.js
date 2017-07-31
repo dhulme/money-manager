@@ -19,6 +19,10 @@ export default new Router({
       path: '/asset/:accountId',
       name: 'asset',
       component: Account,
+    }, {
+      path: '/liability/:accountId',
+      name: 'liability',
+      component: Account,
     },
   ],
 });

@@ -4,6 +4,13 @@
   },
   "accounts": [
     {
+      "id": "none",
+      "type": "none",
+      "name": "None",
+      "balance": 0,
+      "transactionIds": []
+    },
+    {
       "id": "bank-of-dave",
       "type": "asset",
       "name": "Bank of Dave",
@@ -23,6 +30,13 @@
       "name": "Food",
       "balance": 500,
       "transactionIds": ["2cf05d94de"]
+    },
+    {
+      "id": "credit-card",
+      "type": "liability",
+      "name": "Credit Card",
+      "balance": -100,
+      "transactionIds": []
     }
   ],
   "transactions": {
