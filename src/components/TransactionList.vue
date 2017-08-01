@@ -23,9 +23,12 @@
         <td><input type="text" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction"></td>
         <td><input type="text" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction"></td>
         <td>
-          <select v-model="transaction.accountId">
-            <option v-for="account in accounts" :key="account.id" :value="account.id">
-              {{ account.name }}
+          <select v-model="transaction.typeAndAccount">
+            <option v-for="account in $project.budgets()" :key="account.id" :value="`expense:${account.id}`">
+              Expense: {{ account.name }}
+            </option>
+            <option v-for="account in $project.accounts()" :key="account.id" :value="`transfer:${account.id}`">
+              Transfer: {{ account.name }}
             </option>
           </select>
         </td>
@@ -54,7 +57,7 @@
           description: null,
           valueIn: null,
           valueOut: null,
-          accountId: 'none',
+          typeAndAccount: null,
         },
         transactions: this.$project.transactions({
           account: this.account,
@@ -66,9 +69,6 @@
       account: Object,
     },
     computed: {
-      accounts() {
-        return this.$project.accounts();
-      },
     },
     methods: {
       transactionIn(transaction) {
@@ -93,18 +93,32 @@
           date: moment(this.transaction.date, dateFormat),
         };
 
+        const expense = this.transaction.typeAndAccount.includes('expense:');
+        const accountId = this.transaction.typeAndAccount.split(':')[1];
+
         if (this.transaction.valueIn) {
           transaction.value = parseFloat(this.transaction.valueIn) * 100;
           transaction.to = this.account.id;
           transaction.from = this.transaction.accountId;
         } else if (this.transaction.valueOut) {
           transaction.value = parseFloat(this.transaction.valueOut) * 100;
-          transaction.to = this.transaction.accountId;
+          transaction.to = expense ? 'expense' : accountId;
           transaction.from = this.account.id;
+
+          this.$project.addTransaction(transaction);
+          this.transactions.push(transaction);
         }
 
-        this.$project.addTransaction(transaction);
-        this.transactions.push(transaction);
+        if (expense) {
+          const transaction2 = {
+            description: transaction.description,
+            date: transaction.date,
+            value: transaction.value,
+            from: accountId,
+            to: 'expense',
+          };
+          this.$project.addTransaction(transaction2);
+        }
       },
     },
   };
