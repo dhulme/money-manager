@@ -1,8 +1,5 @@
 <template>
-  <div v-if="balance === 0" class="alert alert-success">
-    Your budget and accounts match :)
-  </div>
-  <div v-else class="alert alert-danger">
+  <div v-if="balance !== 0" class="alert alert-danger">
     Your budget and accounts don't match! {{ balance | currency }}
   </div>
 </template>

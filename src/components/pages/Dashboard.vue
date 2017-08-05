@@ -1,5 +1,6 @@
 <template>
   <div>
+    <summary-alert></summary-alert>
     <h1>Accounts</h1>
     <account-type-list account-type="asset"></account-type-list>
     <account-type-list account-type="liability"></account-type-list>

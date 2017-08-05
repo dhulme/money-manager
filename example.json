@@ -21,7 +21,7 @@
       "id": "bank-of-dave",
       "type": "asset",
       "name": "Bank of Dave",
-      "balance": 100,
+      "balance": 200,
       "transactionIds": ["2cf05d94de"]
     },
     {
@@ -35,14 +35,14 @@
       "id": "food",
       "type": "budget",
       "name": "Food",
-      "balance": 500,
+      "balance": 200,
       "transactionIds": ["2cf05d94de"]
     },
     {
       "id": "credit-card",
       "type": "liability",
       "name": "Credit Card",
-      "balance": -100,
+      "balance": 0,
       "transactionIds": []
     }
   ],
@@ -51,7 +51,8 @@
       "date": 1501271131179,
       "value": 100,
       "description": "Pocket money",
-      "to": "money-box"
+      "to": "money-box",
+      "from": "none"
     },
     "2cf05d94de": {
       "date": 1501271131179,

@@ -48,7 +48,12 @@
           type: this.$route.params.accountType,
         });
 
-        this.goToAccount(account);
+        this.resetForm();
+        // this.goToAccount(account);
+      },
+      resetForm() {
+        this.name = '';
+        this.openingBalance = '';
       },
       goToAccount(account) {
         this.$router.push({

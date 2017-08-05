@@ -107,7 +107,10 @@ class Project {
 
   updateSummaryBalance() {
     this.data.summary.balance = this.data.accounts.reduce((total, account) => {
-      return total + account.balance;
+      if (account.id !== 'none') {
+        return total + account.balance;
+      }
+      return total;
     }, 0);
   }
 
@@ -126,6 +129,18 @@ class Project {
     this.data.accounts.push(account);
 
     return account;
+  }
+
+  sortAccounts(accounts) {
+    return accounts.sort((a, b) => {
+      if (a.name > b.name) {
+        return 1;
+      }
+      if (a.name < b.name) {
+        return -1;
+      }
+      return 0;
+    });
   }
 }
 

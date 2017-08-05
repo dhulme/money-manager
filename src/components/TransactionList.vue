@@ -4,6 +4,7 @@
       <tr>
         <th>{{ $t('transactions.date') }}</th>
         <th>{{ $t('transactions.description') }}</th>
+        <th>{{ $t('transactions.note') }}</th>
         <th>{{ $t('transactions.in') }}</th>
         <th>{{ $t('transactions.out') }}</th>
         <th>Account</th>
@@ -13,6 +14,7 @@
       <tr v-for="(transaction, index) in transactions" :key="index">
         <td>{{ transaction.date | date }}</td>
         <td>{{ transaction.description }}</td>
+        <td>{{ transaction.note }}</td>
         <td>{{ transactionIn(transaction) | currency }}</td>
         <td>{{ transactionOut(transaction) | currency }}</td>
         <td>{{ transactionAccount(transaction) }}</td>
@@ -20,14 +22,15 @@
       <tr v-if="editable">
         <td><input type="text" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction"></td>
         <td><input type="text" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction"></td>
+        <td><input type="text" v-model="transaction.note" placeholder="Note" @keyup.enter="addTransaction"></td>
         <td><input type="text" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction"></td>
         <td><input type="text" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction"></td>
         <td>
           <select v-model="transaction.typeAndAccount">
-            <option v-for="account in $project.budgets()" :key="account.id" :value="`expense:${account.id}`">
+            <option v-for="account in $project.sortAccounts($project.budgets())" :key="account.id" :value="`expense:${account.id}`">
               Expense: {{ account.name }}
             </option>
-            <option v-for="account in $project.accounts()" :key="account.id" :value="`transfer:${account.id}`">
+            <option v-for="account in $project.sortAccounts($project.accounts())" :key="account.id" :value="`transfer:${account.id}`">
               Transfer: {{ account.name }}
             </option>
           </select>
@@ -37,7 +40,8 @@
         <td></td>
         <td></td>
         <td></td>
-        <td>Balance</td>
+        <td></td>
+        <td class="balance">Balance</td>
         <td>{{ account.balance | currency }}</td>
       </tr>
     </tbody>
@@ -57,7 +61,8 @@
           description: null,
           valueIn: null,
           valueOut: null,
-          typeAndAccount: null,
+          typeAndAccount: 'transfer:none',
+          note: null,
         },
         transactions: this.$project.transactions({
           account: this.account,
@@ -90,6 +95,7 @@
       addTransaction() {
         const transaction = {
           description: this.transaction.description,
+          note: this.transaction.note,
           date: moment(this.transaction.date, dateFormat),
         };
 
@@ -110,13 +116,11 @@
         }
 
         if (expense) {
-          const transaction2 = {
-            description: transaction.description,
-            date: transaction.date,
-            value: transaction.value,
+          const transaction2 = {};
+          Object.assign(transaction2, transaction, {
             from: accountId,
             to: 'expense',
-          };
+          });
           this.$project.addTransaction(transaction2);
         }
       },
@@ -124,3 +128,8 @@
   };
 </script>
 
+<style lang="scss" scoped>
+  .balance {
+    text-align: right;
+  }
+</style>

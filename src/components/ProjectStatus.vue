@@ -22,7 +22,7 @@
       },
     },
     mounted() {
-      setInterval(() => this.saveProject(), 1000 * 60);
+      // setInterval(() => this.saveProject(), 1000 * 60);
     },
   };
 </script>

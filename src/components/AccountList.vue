@@ -12,6 +12,10 @@
           <td class="account-name">{{ account.name }}</td>
           <td class="account-balance">{{ account.balance | currency }}</td>
         </tr>
+        <tr>
+          <td class="total">Total</td>
+          <td>{{ total | currency }}</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -23,6 +27,11 @@
     computed: {
       accounts() {
         return this.$project.accountsByType(this.accountType);
+      },
+      total() {
+        return this.accounts.reduce((total, account) => {
+          return total + account.balance;
+        }, 0);
       },
     },
     methods: {
@@ -47,5 +56,9 @@
   
   .account-balance {
     width: 30%;
+  }
+
+  .total {
+    text-align: right;
   }
 </style>

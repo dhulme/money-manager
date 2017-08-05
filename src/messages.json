@@ -9,6 +9,7 @@
     "transactions": {
       "date": "Date",
       "description": "Description",
+      "note": "Note",
       "in": "In",
       "out": "Out"
     },
