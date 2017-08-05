@@ -107,10 +107,15 @@ class Project {
 
   updateSummaryBalance() {
     this.data.summary.balance = this.data.accounts.reduce((total, account) => {
-      if (account.id !== 'none') {
-        return total + account.balance;
+      if (account.id === 'none') {
+        return total;
       }
-      return total;
+
+      if (account.type === 'budget') {
+        return total - account.balance;
+      }
+
+      return total + account.balance;
     }, 0);
   }
 
