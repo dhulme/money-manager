@@ -10,7 +10,8 @@
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
     "lint": "eslint --ext .js,.vue src",
-    "electron": "node build/build.js && electron ."
+    "build-electron": "node build/build.js && electron .",
+    "electron": "electron ."
   },
   "dependencies": {
     "accounting": "^0.4.1",

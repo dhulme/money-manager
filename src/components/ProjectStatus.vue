@@ -1,8 +1,9 @@
 <template>
   <div>
-    <span v-show="saveState === 'unsaved'" class="label label-default">Unsaved changes</span>
-    <span v-show="saveState === 'saving'" class="label label-primary">Saving</span>
-    <span v-show="saveState === 'saved'" class="label label-success">Saved</span>
+    <button class="btn btn-default btn-sm" @click="saveProject()" :disabled="saveState === 'saving'">
+      <template v-if="saveState === 'saving'">Saving</template>
+      <template v-else>Save</template>
+    </button>
   </div>
 </template>
 
@@ -10,23 +11,25 @@
   export default {
     data() {
       return {
-        saveState: 'unsaved',
+        saveState: 'saved',
       };
     },
     methods: {
-      async saveProject() {
+      saveProject() {
         this.saveState = 'saving';
-        await this.$project.save();
-        this.saveState = 'saved';
-
-        setTimeout(() => {
-          this.saveState = 'unsaved';
-        }, 1000 * 10);
+        this.$project.save();
+        setTimeout(() => this.saveState = 'saved', 500);
       },
     },
     mounted() {
-      this.saveProject();
       setInterval(() => this.saveProject(), 1000 * 60);
     },
   };
 </script>
+
+<style lang="scss" scoped>
+  button {
+    margin-right: 5px;
+  }
+</style>
+

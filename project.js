@@ -2,9 +2,9 @@ const fs = require('fs-extra');
 
 module.exports = {
   load(done) {
-    fs.readJson(`${__dirname}/project.json`, (err, project) => {
+    fs.readFile(`${__dirname}/project.json`, (err, project) => {
       if (err) {
-        fs.readJson(`${__dirname}/project-template.json`, done);
+        fs.readFile(`${__dirname}/project-template.json`, done);
       } else {
         done(null, project);
       }

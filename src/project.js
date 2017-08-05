@@ -14,7 +14,7 @@ class Project {
     } else {
       this.remote = {
         load(done) {
-          done(null, example);
+          done(null, JSON.stringify(example));
         },
         save(projectString, done) {
           done(null);
@@ -26,10 +26,14 @@ class Project {
   }
 
   load() {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.remote.load((err, data) => {
-        this.data = data;
-        resolve(data);
+        if (err) {
+          reject(err);
+        } else {
+          this.data = JSON.parse(data);
+          resolve(data);
+        }
       });
     });
   }

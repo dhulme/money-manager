@@ -44,7 +44,7 @@
         event.preventDefault();
         const account = this.$project.addAccount({
           name: this.name,
-          balance: parseInt(this.openingBalance, 10) * 100,
+          balance: parseFloat(this.openingBalance, 10) * 100,
           type: this.$route.params.accountType,
         });
 
