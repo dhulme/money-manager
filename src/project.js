@@ -1,5 +1,7 @@
 import cryptoRandomString from 'crypto-random-string';
 
+import util from '@/util';
+
 import example from '../example.json';
 
 class Project {
@@ -103,6 +105,23 @@ class Project {
     this.data.summary.balance = this.data.accounts.reduce((total, account) => {
       return total + account.balance;
     }, 0);
+  }
+
+  addAccount({
+    name,
+    balance,
+    type,
+  }) {
+    const account = {
+      transactionIds: [],
+      id: util.getId(name),
+      balance,
+      type,
+      name,
+    };
+    this.data.accounts.push(account);
+
+    return account;
   }
 }
 

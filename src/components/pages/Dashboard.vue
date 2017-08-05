@@ -1,32 +1,22 @@
 <template>
   <div>
-    <h1>{{ $t('headings.overview') }}</h1>
-    <summary-alert></summary-alert>
-
-    <h2>{{ $t('headings.assets') }}</h2>
-    <account-list type="asset"></account-list>
-
-    <h2>Liabilities</h2>
-    <account-list type="liability"></account-list>
-    
-    <h2>{{ $t('headings.budgets') }}</h2>
-    <account-list type="budget"></account-list>
-
+    <h1>Accounts</h1>
+    <account-type-list account-type="asset"></account-type-list>
+    <account-type-list account-type="liability"></account-type-list>
+    <account-type-list account-type="budget"></account-type-list>
   </div>
 </template>
 
 <script>
-  import AccountList from '@/components/AccountList';
+  
   import SummaryAlert from '@/components/SummaryAlert';
+  import AccountTypeList from '@/components/AccountTypeList';
 
   export default {
     components: {
       SummaryAlert,
-      AccountList,
+      AccountTypeList,
     },
   };
 </script>
 
-<style>
-  
-</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="table">
+    <table class="table table-hover">
       <thead>
         <tr>
           <th>Account</th>
@@ -9,8 +9,8 @@
       </thead>
       <tbody>
         <tr v-for="account in accounts" :key="account.name" @click="openAccount(account.id)">
-          <td>{{ account.name }}</td>
-          <td>{{ account.balance | currency }}</td>
+          <td class="account-name">{{ account.name }}</td>
+          <td class="account-balance">{{ account.balance | currency }}</td>
         </tr>
       </tbody>
     </table>
@@ -19,22 +19,33 @@
 
 <script>
   export default {
-    props: ['type'],
+    props: ['accountType'],
     computed: {
       accounts() {
-        return this.$project.accountsByType(this.type);
+        return this.$project.accountsByType(this.accountType);
       },
     },
     methods: {
       openAccount(accountId) {
         const account = this.$project.account(accountId);
         this.$router.push({
-          name: account.type,
+          name: 'account',
           params: {
             accountId,
+            accountType: account.type,
           },
         });
       },
     },
   };
 </script>
+
+<style lang="scss" scoped>
+  .account-name {
+    width: 70%;
+  }
+  
+  .account-balance {
+    width: 30%;
+  }
+</style>

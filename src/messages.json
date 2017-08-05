@@ -2,8 +2,9 @@
   "en": {
     "headings": {
       "overview": "Overview",
-      "assets": "Assets",
-      "budgets": "Budgets"
+      "asset": "Assets",
+      "budget": "Budgets",
+      "liability": "Liabilities"
     },
     "transactions": {
       "date": "Date",

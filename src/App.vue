@@ -1,8 +1,8 @@
 <template>
-  <div id="app">
+  <div class="app">
     <div class="container">
       <project-status></project-status>
-      <router-view></router-view>
+      <router-view class="router-container"></router-view>
     </div>
   </div>
 </template>
@@ -14,11 +14,15 @@
     components: {
       ProjectStatus,
     },
-    computed: {
-    }
   };
 </script>
 
 <style lang="scss">
-  
+  .app {
+    margin: 10px;
+  }
+
+  .router-container {
+    margin-top: 10px;
+  }
 </style>
