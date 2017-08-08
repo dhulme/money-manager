@@ -29,9 +29,7 @@
         return this.$project.accountsByType(this.accountType);
       },
       total() {
-        return this.accounts.reduce((total, account) => {
-          return total + account.balance;
-        }, 0);
+        return this.$project.accountsTotal(this.accounts);
       },
     },
     methods: {

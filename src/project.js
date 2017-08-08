@@ -1,4 +1,5 @@
 import cryptoRandomString from 'crypto-random-string';
+import Big from 'big.js';
 
 import util from '@/util';
 
@@ -95,13 +96,13 @@ class Project {
     this.data.transactions[transactionId] = transaction;
     if (accountTo) {
       accountTo.transactionIds.push(transactionId);
-      accountTo.balance += transaction.value;
+      accountTo.balance = new Big(accountTo.balance).plus(transaction.value);
     }
     if (accountFrom) {
       accountFrom.transactionIds.push(transactionId);
-      accountFrom.balance -= transaction.value;
+      accountFrom.balance = new Big(accountFrom.balance).minus(transaction.value);
     }
-
+    
     this.updateSummaryBalance();
   }
 
@@ -112,11 +113,11 @@ class Project {
       }
 
       if (account.type === 'budget') {
-        return total - account.balance;
+        return total.minus(account.balance);
       }
 
-      return total + account.balance;
-    }, 0);
+      return total.plus(account.balance);
+    }, new Big(0));
   }
 
   addAccount({
@@ -146,6 +147,20 @@ class Project {
       }
       return 0;
     });
+  }
+
+  accountsTotal(accounts) {
+    return accounts.reduce((total, account) => {
+      return total.plus(account.balance);
+    }, new Big(0));
+  }
+
+  summaryBalance() {
+    return this.data.summary.balance;
+  }
+
+  summaryBalanceZero() {
+    return new Big(this.data.summary.balance).eq(0);
   }
 }
 

@@ -1,62 +1,62 @@
 {
   "summary": {
-    "balance": 0
+    "balance": "0"
   },
   "accounts": [
     {
       "id": "none",
       "type": "none",
       "name": "None",
-      "balance": 0,
+      "balance": "0",
       "transactionIds": []
     },
     {
       "id": "expense",
       "type": "none",
       "name": "Expense",
-      "balance": 0,
+      "balance": "0",
       "transactionIds": []
     },
     {
       "id": "bank-of-dave",
       "type": "asset",
       "name": "Bank of Dave",
-      "balance": 200,
+      "balance": "2",
       "transactionIds": ["2cf05d94de"]
     },
     {
       "id": "money-box",
       "type": "asset",
       "name": "Money box",
-      "balance": 0,
+      "balance": "1",
       "transactionIds": ["2cf05d94db"]
     },
     {
       "id": "food",
       "type": "budget",
       "name": "Food",
-      "balance": 200,
+      "balance": "3",
       "transactionIds": ["2cf05d94de"]
     },
     {
       "id": "credit-card",
       "type": "liability",
       "name": "Credit Card",
-      "balance": 0,
+      "balance": "0",
       "transactionIds": []
     }
   ],
   "transactions": {
     "2cf05d94db": {
       "date": 1501271131179,
-      "value": 100,
+      "value": "1",
       "description": "Pocket money",
       "to": "money-box",
       "from": "none"
     },
     "2cf05d94de": {
       "date": 1501271131179,
-      "value": -200,
+      "value": "-2",
       "description": "Monthly budget",
       "from": "bank-of-dave",
       "to": "food"

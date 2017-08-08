@@ -103,11 +103,11 @@
         const accountId = this.transaction.typeAndAccount.split(':')[1];
 
         if (this.transaction.valueIn) {
-          transaction.value = parseFloat(this.transaction.valueIn) * 100;
+          transaction.value = this.transaction.valueIn;
           transaction.to = this.account.id;
           transaction.from = this.transaction.accountId;
         } else if (this.transaction.valueOut) {
-          transaction.value = parseFloat(this.transaction.valueOut) * 100;
+          transaction.value = this.transaction.valueOut;
           transaction.to = expense ? 'expense' : accountId;
           transaction.from = this.account.id;
 

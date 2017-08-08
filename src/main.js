@@ -22,7 +22,7 @@ project.load().then(() => {
     if (value === undefined || value === null) {
       return '';
     }
-    return accounting.formatMoney(value / 100, '£', 2, ',', '.');
+    return accounting.formatMoney(value, '£', 2, ',', '.');
   });
 
   Vue.filter('date', (value) => {
