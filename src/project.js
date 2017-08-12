@@ -100,7 +100,7 @@ const project = {
 
   updateSummaryBalance() {
     data.summary.balance = data.accounts.reduce((total, account) => {
-      if (account.id === 'none') {
+      if (account.type === 'none') {
         return total;
       }
 
@@ -158,5 +158,7 @@ const project = {
     project.updateSummaryBalance();
   },
 };
+
+window.project = project;
 
 export default project;

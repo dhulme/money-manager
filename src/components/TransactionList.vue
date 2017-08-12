@@ -20,11 +20,21 @@
         <td>{{ transactionAccount(transaction) }}</td>
       </tr>
       <tr v-if="editable">
-        <td><input type="text" class="form-control" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction"></td>
-        <td><input type="text" class="form-control" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction"></td>
-        <td><input type="text" class="form-control" v-model="transaction.note" placeholder="Note" @keyup.enter="addTransaction"></td>
-        <td><input type="text" class="form-control" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction"></td>
-        <td><input type="text" class="form-control" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction"></td>
+        <td>
+          <input type="text" class="form-control" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction">
+        </td>
+        <td>
+          <input type="text" class="form-control" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction">
+        </td>
+        <td>
+          <input type="text" class="form-control" v-model="transaction.note" placeholder="Note" @keyup.enter="addTransaction">
+        </td>
+        <td>
+          <input type="text" class="form-control" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction">
+        </td>
+        <td>
+          <input type="text" class="form-control" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction">
+        </td>
         <td>
           <select v-model="transaction.typeAndAccount" class="form-control">
             <option v-for="account in $project.sortAccounts($project.budgets())" :key="account.id" :value="`expense:${account.id}`">
@@ -52,17 +62,20 @@
   import moment from 'moment';
 
   const dateFormat = 'DD/MM/YYYY';
+  const defaultTransaction = {
+    date: moment().format(dateFormat),
+    description: null,
+    valueIn: null,
+    valueOut: null,
+    typeAndAccount: 'transfer:none',
+    note: null,
+  };
 
   export default {
     data() {
       return {
         transaction: {
-          date: moment().format(dateFormat),
-          description: null,
-          valueIn: null,
-          valueOut: null,
-          typeAndAccount: 'transfer:none',
-          note: null,
+          ...defaultTransaction,
         },
         transactions: this.$project.transactions({
           account: this.account,
@@ -76,6 +89,11 @@
     computed: {
     },
     methods: {
+      resetForm() {
+        this.transaction = {
+          ...defaultTransaction,
+        };
+      },
       transactionIn(transaction) {
         if (transaction.to === this.account.id) {
           return Math.abs(transaction.value);
@@ -105,24 +123,33 @@
         if (this.transaction.valueIn) {
           transaction.value = this.transaction.valueIn;
           transaction.to = this.account.id;
-          transaction.from = this.transaction.accountId;
+          transaction.from = expense ? 'expense' : accountId;
         } else if (this.transaction.valueOut) {
           transaction.value = this.transaction.valueOut;
           transaction.to = expense ? 'expense' : accountId;
           transaction.from = this.account.id;
-
-          this.$project.addTransaction(transaction);
-          this.transactions.push(transaction);
         }
+
+        this.$project.addTransaction(transaction);
+        this.transactions.push(transaction);
 
         if (expense) {
-          const transaction2 = {};
-          Object.assign(transaction2, transaction, {
-            from: accountId,
-            to: 'expense',
-          });
-          this.$project.addTransaction(transaction2);
+          if (this.transaction.valueIn) {
+            this.$project.addTransaction({
+              ...transaction,
+              from: 'expense',
+              to: accountId,
+            });
+          } else if (this.transaction.valueOut) {
+            this.$project.addTransaction({
+              ...transaction,
+              from: accountId,
+              to: 'expense',
+            });
+          }
         }
+
+        this.resetForm();
       },
     },
   };
