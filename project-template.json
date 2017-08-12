@@ -1,20 +1,20 @@
 {
   "summary": {
-    "balance": 0
+    "balance": "0"
   },
   "accounts": [
     {
       "id": "none",
       "type": "none",
       "name": "None",
-      "balance": 0,
+      "balance": "0",
       "transactionIds": []
     },
     {
       "id": "expense",
       "type": "none",
       "name": "Expense",
-      "balance": 0,
+      "balance": "0",
       "transactionIds": []
     }
   ],

@@ -6,7 +6,7 @@
     <form @submit="addAccount">
       <div class="form-group">
         <label>Name</label>
-        <input type="text" class="form-control" v-model="name">
+        <input type="text" class="form-control" v-model="name" ref="name">
       </div>
       <div class="form-group">
         <label>Opening balance</label>
@@ -42,18 +42,18 @@
     methods: {
       addAccount(event) {
         event.preventDefault();
-        const account = this.$project.addAccount({
+        this.$project.addAccount({
           name: this.name,
           balance: this.openingBalance,
           type: this.$route.params.accountType,
         });
 
         this.resetForm();
-        // this.goToAccount(account);
       },
       resetForm() {
         this.name = '';
         this.openingBalance = '';
+        this.$refs.name.focus();
       },
       goToAccount(account) {
         this.$router.push({

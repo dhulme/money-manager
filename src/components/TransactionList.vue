@@ -20,13 +20,13 @@
         <td>{{ transactionAccount(transaction) }}</td>
       </tr>
       <tr v-if="editable">
-        <td><input type="text" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction"></td>
-        <td><input type="text" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction"></td>
-        <td><input type="text" v-model="transaction.note" placeholder="Note" @keyup.enter="addTransaction"></td>
-        <td><input type="text" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction"></td>
-        <td><input type="text" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction"></td>
+        <td><input type="text" class="form-control" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction"></td>
+        <td><input type="text" class="form-control" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction"></td>
+        <td><input type="text" class="form-control" v-model="transaction.note" placeholder="Note" @keyup.enter="addTransaction"></td>
+        <td><input type="text" class="form-control" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction"></td>
+        <td><input type="text" class="form-control" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction"></td>
         <td>
-          <select v-model="transaction.typeAndAccount">
+          <select v-model="transaction.typeAndAccount" class="form-control">
             <option v-for="account in $project.sortAccounts($project.budgets())" :key="account.id" :value="`expense:${account.id}`">
               Expense: {{ account.name }}
             </option>
