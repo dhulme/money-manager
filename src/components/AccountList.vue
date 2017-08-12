@@ -10,7 +10,7 @@
       <tbody>
         <tr v-for="account in accounts" :key="account.name" @click="openAccount(account.id)">
           <td class="account-name">{{ account.name }}</td>
-          <td class="account-balance">{{ account.balance | currency }}</td>
+          <td :class="{ 'text-danger': account.balance < 0 }" class="account-balance">{{ account.balance | currency }}</td>
         </tr>
         <tr>
           <td class="total">Total</td>
