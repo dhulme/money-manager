@@ -1,5 +1,15 @@
 <template>
   <div>
+    <form class="form-inline">
+      <div class="row">
+        <div class="col-sm-6">
+          <new-account-button :account-type="accountType" class="new-account"></new-account-button>
+        </div>
+        <div class="col-sm-6 filter">
+          <input type="text" v-model="filter" class="form-control" placeholder="Filter">
+        </div>
+      </div>
+    </form>
     <table class="table table-hover">
       <thead>
         <tr>
@@ -22,11 +32,23 @@
 </template>
 
 <script>
+  import NewAccountButton from '@/components/NewAccountButton';
+
   export default {
+    components: {
+      NewAccountButton,
+    },
+    data() {
+      return {
+        filter: '',
+      };
+    },
     props: ['accountType'],
     computed: {
       accounts() {
-        return this.$project.accountsByType(this.accountType);
+        return this.$project.accountsByType(this.accountType).filter((account) => {
+          return account.name.toLowerCase().includes(this.filter.toLowerCase());
+        });
       },
       total() {
         return this.$project.accountsTotal(this.accounts);
@@ -57,6 +79,10 @@
   }
 
   .total {
+    text-align: right;
+  }
+
+  .filter {
     text-align: right;
   }
 </style>
