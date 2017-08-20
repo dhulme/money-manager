@@ -27,7 +27,7 @@
     data() {
       return {
         name: '',
-        openingBalance: '',
+        openingBalance: '0',
       };
     },
     computed: {
