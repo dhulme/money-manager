@@ -1,61 +1,66 @@
 <template>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>{{ $t('transactions.date') }}</th>
-        <th>{{ $t('transactions.description') }}</th>
-        <th>{{ $t('transactions.note') }}</th>
-        <th>{{ $t('transactions.in') }}</th>
-        <th>{{ $t('transactions.out') }}</th>
-        <th>Account</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(transaction, index) in transactions" :key="index">
-        <td>{{ transaction.date | date }}</td>
-        <td>{{ transaction.description }}</td>
-        <td>{{ transaction.note }}</td>
-        <td>{{ transactionIn(transaction) | currency }}</td>
-        <td>{{ transactionOut(transaction) | currency }}</td>
-        <td>{{ transactionAccount(transaction) }}</td>
-      </tr>
-      <tr v-if="editable">
-        <td>
-          <input type="text" class="form-control" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction">
-        </td>
-        <td>
-          <input type="text" class="form-control" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction">
-        </td>
-        <td>
-          <input type="text" class="form-control" v-model="transaction.note" placeholder="Note" @keyup.enter="addTransaction">
-        </td>
-        <td>
-          <input type="text" class="form-control" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction">
-        </td>
-        <td>
-          <input type="text" class="form-control" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction">
-        </td>
-        <td>
-          <select v-model="transaction.typeAndAccount" class="form-control">
-            <option v-for="account in $project.sortAccounts($project.budgets())" :key="account.id" :value="`expense:${account.id}`">
-              Expense: {{ account.name }}
-            </option>
-            <option v-for="account in $project.sortAccounts($project.accounts())" :key="account.id" :value="`transfer:${account.id}`">
-              Transfer: {{ account.name }}
-            </option>
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="balance">Balance</td>
-        <td>{{ account.balance | currency }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div>
+    <form class="form-inline">
+      <input type="text" v-model="filter" class="form-control" placeholder="Filter">
+    </form>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ $t('transactions.date') }}</th>
+          <th>{{ $t('transactions.description') }}</th>
+          <th>{{ $t('transactions.note') }}</th>
+          <th>{{ $t('transactions.in') }}</th>
+          <th>{{ $t('transactions.out') }}</th>
+          <th>Account</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(transaction, index) in transactions" :key="index">
+          <td>{{ transaction.date | date }}</td>
+          <td>{{ transaction.description }}</td>
+          <td>{{ transaction.note }}</td>
+          <td>{{ transactionIn(transaction) | currency }}</td>
+          <td>{{ transactionOut(transaction) | currency }}</td>
+          <td>{{ transactionAccount(transaction) }}</td>
+        </tr>
+        <tr v-if="editable">
+          <td>
+            <input type="text" class="form-control" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction">
+          </td>
+          <td>
+            <input type="text" class="form-control" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction">
+          </td>
+          <td>
+            <input type="text" class="form-control" v-model="transaction.note" placeholder="Note" @keyup.enter="addTransaction">
+          </td>
+          <td>
+            <input type="text" class="form-control" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction">
+          </td>
+          <td>
+            <input type="text" class="form-control" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction">
+          </td>
+          <td>
+            <select v-model="transaction.typeAndAccount" class="form-control">
+              <option v-for="account in $project.sortAccounts($project.budgets())" :key="account.id" :value="`expense:${account.id}`">
+                Expense: {{ account.name }}
+              </option>
+              <option v-for="account in $project.sortAccounts($project.accounts())" :key="account.id" :value="`transfer:${account.id}`">
+                Transfer: {{ account.name }}
+              </option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="balance">Balance</td>
+          <td>{{ account.balance | currency }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
@@ -77,9 +82,7 @@
         transaction: {
           ...defaultTransaction,
         },
-        transactions: this.$project.transactions({
-          account: this.account,
-        }),
+        filter: '',
       };
     },
     props: {
@@ -87,6 +90,16 @@
       account: Object,
     },
     computed: {
+      transactions() {
+        return this.$project.transactions({
+          account: this.account,
+        }).filter((transaction) => {
+          const filter = this.filter.toLowerCase();
+          const description = transaction.description ? transaction.description.toLowerCase() : '';
+          const note = transaction.note ? transaction.note.toLowerCase() : '';
+          return description.includes(filter) || note.includes(filter);
+        });
+      },
     },
     methods: {
       resetForm() {
