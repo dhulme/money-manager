@@ -70,6 +70,10 @@ const project = {
   asset(id) {
     return project.assets().find(asset => asset.id === id);
   },
+  
+  transactionTypes() {
+    return ['expense', 'transfer'];
+  },
 
   transactions({
     account,
@@ -86,13 +90,15 @@ const project = {
     const accountTo = project.account(transaction.to);
     const accountFrom = project.account(transaction.from);
     data.transactions[transactionId] = transaction;
-    if (accountTo) {
-      accountTo.transactionIds.push(transactionId);
+
+    accountFrom.transactionIds.push(transactionId);
+    accountTo.transactionIds.push(transactionId);
+
+    accountFrom.balance = new Big(accountFrom.balance).minus(transaction.value);
+    if (transaction.type === 'expense') {
+      accountTo.balance = new Big(accountTo.balance).minus(transaction.value);
+    } else {
       accountTo.balance = new Big(accountTo.balance).plus(transaction.value);
-    }
-    if (accountFrom) {
-      accountFrom.transactionIds.push(transactionId);
-      accountFrom.balance = new Big(accountFrom.balance).minus(transaction.value);
     }
     
     project.updateSummaryBalance();
@@ -103,7 +109,7 @@ const project = {
       if (account.type === 'none') {
         return total;
       }
-
+      
       if (account.type === 'budget') {
         return total.minus(account.balance);
       }

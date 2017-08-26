@@ -18,6 +18,10 @@
       "pages": {
         "dashboard": "Dashboard"
       }
+    },
+    "transactionTypes": {
+      "expense": "Expense",
+      "transfer": "Transfer"
     }
   }
 }
