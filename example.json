@@ -61,5 +61,21 @@
       "from": "bank-of-dave",
       "to": "food"
     }
-  }
+  },
+  "bulkTransactions": [
+    {
+      "name": "Monthly Budget",
+      "description": "",
+      "id": "monthly-budget",
+      "transactions": [
+        {
+          "value": "10",
+          "description": "Food budget",
+          "from": "bank-of-dave",
+          "to": "food",
+          "type": "transfer"
+        }
+      ]
+    }
+  ]
 }

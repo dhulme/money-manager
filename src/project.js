@@ -104,6 +104,10 @@ const project = {
     project.updateSummaryBalance();
   },
 
+  addTransactions(transactions) {
+    transactions.forEach(transaction => project.addTransaction(transaction));
+  },
+
   updateSummaryBalance() {
     data.summary.balance = data.accounts.reduce((total, account) => {
       if (account.type === 'none') {
@@ -162,6 +166,10 @@ const project = {
   deleteAccount(accountId) {
     data.accounts = data.accounts.filter(account => account.id !== accountId);
     project.updateSummaryBalance();
+  },
+
+  bulkTransactions() {
+    return data.bulkTransactions;
   },
 };
 
