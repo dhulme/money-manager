@@ -46,20 +46,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-const menuTemplate = [
-  {
-    label: 'File',
-    submenu: [
-      {
-        label: 'Save',
-        click() {
-
-        }
-      }
-    ]
-  }
-];
-
-const menu = Menu.buildFromTemplate(menuTemplate);
-Menu.setApplicationMenu(menu);

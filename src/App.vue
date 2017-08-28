@@ -9,6 +9,8 @@
 </template>
 
 <script>
+  import menu from '@/menu';
+
   import SummaryAlert from '@/components/SummaryAlert';
   import ProjectStatus from '@/components/ProjectStatus';
 
@@ -18,6 +20,11 @@
       SummaryAlert,
     },
     mounted() {
+      menu.init({
+        saveClick: () => {
+          this.$project.save();
+        }
+      });
       document.addEventListener('keyup', (event) => {
         if (event.key === 'Escape') {
           this.$router.push({
