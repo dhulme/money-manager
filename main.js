@@ -3,6 +3,7 @@ const electron = require('electron');
 const app = electron.app;
 
 const BrowserWindow = electron.BrowserWindow;
+const Menu = electron.Menu;
 
 const path = require('path');
 const url = require('url');
@@ -45,3 +46,20 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+const menuTemplate = [
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Save',
+        click() {
+
+        }
+      }
+    ]
+  }
+];
+
+const menu = Menu.buildFromTemplate(menuTemplate);
+Menu.setApplicationMenu(menu);

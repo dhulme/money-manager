@@ -22,7 +22,7 @@
           <td>{{ transaction.note }}</td>
           <td>{{ transactionIn(transaction) | currency }}</td>
           <td>{{ transactionOut(transaction) | currency }}</td>
-          <td>{{ transactionType(transaction) }}
+          <td>{{ $t(`transactionTypes.${transaction.type}`) }}
           <td>{{ transactionAccount(transaction) }}</td>
         </tr>
         <tr v-if="editable">
@@ -51,7 +51,7 @@
           
           <td>
             <select v-model="transaction.account" class="form-control">
-              <option v-for="account in $project.sortAccounts($project.accounts())" :key="account.id" :value="account.id">
+              <option v-for="account in accounts" :key="account.id" :value="account.id">
                 {{ account.name }}
               </option>
             </select>
@@ -64,7 +64,9 @@
           <td></td>
           <td></td>
           <td class="balance">Balance</td>
-          <td>{{ account.balance | currency }}</td>
+          <td :class="{ 'text-danger': parseFloat(account.balance) < 0 }">
+            {{ account.balance | currency }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -109,6 +111,9 @@
           return description.includes(filter) || note.includes(filter);
         });
       },
+      accounts() {
+        return this.$project.sortAccounts(this.$project.accounts().filter(account => account.id !== this.account.id));
+      },
     },
     methods: {
       resetForm() {
@@ -118,25 +123,41 @@
       },
       transactionIn(transaction) {
         if (transaction.to === this.account.id) {
-          return Math.abs(transaction.value);
+          return transaction.value;
         }
         return null;
       },
       transactionOut(transaction) {
         if (transaction.from === this.account.id) {
-          return Math.abs(transaction.value);
+          return transaction.value;
         }
         return null;
       },
       transactionAccount(transaction) {
-        const accountId = transaction.to === this.account.id ? transaction.from : transaction.to;
+        let accountId;
+        if (transaction.type === 'expense') {
+          accountId = transaction.expenseAccount;
+        } else if (transaction.to === this.account.id) {
+          accountId = transaction.from;
+        } else {
+          accountId = transaction.to;
+        }
         return this.$project.account(accountId).name;
       },
       addTransaction() {
         const transaction = {
-          ...this.transaction,
+          description: this.transaction.description,
+          note: this.transaction.note,
+          type: this.transaction.type,
           date: moment(this.transaction.date, dateFormat),
         };
+
+        if (parseFloat(this.transaction.valueIn) < 0 || parseFloat(this.transaction.valueOut) < 0) {
+          throw new Error('You cannot enter negative numbers');
+        }
+        if (this.transaction.valueIn && this.transaction.valueOut) {
+          throw new Error('A transaction cannot be both in and out');
+        }
 
         if (this.transaction.valueIn) {
           transaction.value = this.transaction.valueIn;
@@ -154,13 +175,7 @@
         this.$store.commit('setSummaryBalance', this.$project.summaryBalance());
 
         this.resetForm();
-      },
-      transactionType(transaction) {
-        if (transaction.type) {
-          return this.$t(`transactionTypes.${transaction.type}`);
-        }
-        return '';
-      },
+      }
     },
   };
 </script>

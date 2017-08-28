@@ -11,13 +11,6 @@
       "transactionIds": []
     },
     {
-      "id": "expense",
-      "type": "none",
-      "name": "Expense",
-      "balance": "0",
-      "transactionIds": []
-    },
-    {
       "id": "bank-of-dave",
       "type": "asset",
       "name": "Bank of Dave",
@@ -52,14 +45,16 @@
       "value": "1",
       "description": "Pocket money",
       "to": "money-box",
-      "from": "none"
+      "from": "none",
+      "type": "transfer"
     },
     "2cf05d94de": {
       "date": 1501271131179,
-      "value": "-2",
+      "value": "2",
       "description": "Monthly budget",
       "from": "bank-of-dave",
-      "to": "food"
+      "to": "food",
+      "type": "transfer"
     }
   },
   "bulkTransactions": [

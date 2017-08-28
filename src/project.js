@@ -90,14 +90,26 @@ const project = {
     const accountTo = project.account(transaction.to);
     const accountFrom = project.account(transaction.from);
     data.transactions[transactionId] = transaction;
-
-    accountFrom.transactionIds.push(transactionId);
-    accountTo.transactionIds.push(transactionId);
-
+    
     accountFrom.balance = new Big(accountFrom.balance).minus(transaction.value);
     if (transaction.type === 'expense') {
+      const transaction2 = {
+        ...transaction,
+        from: transaction.to,
+        to: null,
+        expenseAccount: transaction.from,
+      };
+      const transaction2Id = cryptoRandomString(10);
+      data.transactions[transaction2Id] = transaction2;
+      accountTo.transactionIds.push(transaction2Id);
       accountTo.balance = new Big(accountTo.balance).minus(transaction.value);
+
+      transaction.expenseAccount = transaction.to;
+      transaction.to = null;
+      accountFrom.transactionIds.push(transactionId);
     } else {
+      accountFrom.transactionIds.push(transactionId);
+      accountTo.transactionIds.push(transactionId);
       accountTo.balance = new Big(accountTo.balance).plus(transaction.value);
     }
     
