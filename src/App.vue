@@ -1,7 +1,6 @@
 <template>
   <div class="app">
     <div class="container">
-      <project-status></project-status>
       <summary-alert></summary-alert>
       <router-view class="router-container"></router-view>
     </div>
@@ -12,11 +11,9 @@
   import menu from '@/menu';
 
   import SummaryAlert from '@/components/SummaryAlert';
-  import ProjectStatus from '@/components/ProjectStatus';
 
   export default {
     components: {
-      ProjectStatus,
       SummaryAlert,
     },
     mounted() {
