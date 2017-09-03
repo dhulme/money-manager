@@ -1,4 +1,3 @@
-import cryptoRandomString from 'crypto-random-string';
 import Big from 'big.js';
 
 import util from '@/util';
@@ -86,7 +85,7 @@ const project = {
   },
 
   addTransaction(transaction) {
-    const transactionId = cryptoRandomString(10);
+    const transactionId = util.getId();
     const accountTo = project.account(transaction.to);
     const accountFrom = project.account(transaction.from);
     data.transactions[transactionId] = transaction;
@@ -99,7 +98,7 @@ const project = {
         to: null,
         expenseAccount: transaction.from,
       };
-      const transaction2Id = cryptoRandomString(10);
+      const transaction2Id = util.getId();
       data.transactions[transaction2Id] = transaction2;
       accountTo.transactionIds.push(transaction2Id);
       accountTo.balance = new Big(accountTo.balance).minus(transaction.value);
@@ -139,16 +138,17 @@ const project = {
     balance,
     type,
   }) {
-    const account = {
+    const existingIds = data.accounts().map(account => account.id);
+    const newAccount = {
       transactionIds: [],
-      id: util.getId(name),
+      id: util.getFriendlyId(name, existingIds),
       balance,
       type,
       name,
     };
-    data.accounts.push(account);
+    data.accounts.push(newAccount);
 
-    return account;
+    return newAccount;
   },
 
   sortAccounts(accounts) {
@@ -182,6 +182,12 @@ const project = {
 
   bulkTransactions() {
     return data.bulkTransactions;
+  },
+
+  addBulkTransaction(newBulkTransaction) {
+    const existingIds = data.bulkTransactions().map(bulkTransaction => bulkTransaction.id);
+    newBulkTransaction.id = util.getFriendlyId(newBulkTransaction.name, existingIds);
+    data.bulkTransactions.push(bulkTransaction);
   },
 };
 
