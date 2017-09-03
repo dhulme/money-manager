@@ -142,7 +142,7 @@
         } else {
           accountId = transaction.to;
         }
-        return this.$project.account(accountId).name;
+        return accountId ? this.$project.account(accountId).name : null;
       },
       addTransaction() {
         const transaction = {
