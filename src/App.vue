@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <div class="container">
+      <development-nav v-if="development"></development-nav>
       <summary-alert></summary-alert>
       <router-view class="router-container"></router-view>
     </div>
@@ -11,16 +12,23 @@
   import menu from '@/menu';
 
   import SummaryAlert from '@/components/SummaryAlert';
+  import DevelopmentNav from '@/components/DevelopmentNav';
 
   export default {
     components: {
       SummaryAlert,
+      DevelopmentNav,
+    },
+    computed: {
+      development() {
+        return !window.require;
+      },
     },
     mounted() {
       menu.init({
         saveClick: () => {
           this.$project.save();
-        }
+        },
       });
       document.addEventListener('keyup', (event) => {
         if (event.key === 'Escape') {

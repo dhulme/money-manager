@@ -185,9 +185,16 @@ const project = {
   },
 
   addBulkTransaction(newBulkTransaction) {
-    const existingIds = data.bulkTransactions().map(bulkTransaction => bulkTransaction.id);
+    const existingIds = project.bulkTransactions().map(bulkTransaction => bulkTransaction.id);
+    newBulkTransaction.transactions.forEach((transaction) => {
+      transaction.description = newBulkTransaction.description;
+    });
     newBulkTransaction.id = util.getFriendlyId(newBulkTransaction.name, existingIds);
-    data.bulkTransactions.push(bulkTransaction);
+    data.bulkTransactions.push(newBulkTransaction);
+  },
+
+  bulkTransaction(id) {
+    return project.bulkTransactions().find(bulkTransaction => bulkTransaction.id === id);
   },
 };
 

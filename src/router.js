@@ -5,6 +5,7 @@ import Account from '@/components/pages/Account';
 import NewAccount from '@/components/pages/NewAccount';
 import NewBulkTransaction from '@/components/pages/NewBulkTransaction';
 import BulkTransactions from '@/components/pages/BulkTransactions';
+import BulkTransaction from '@/components/pages/BulkTransaction';
 
 Vue.use(Router);
 
@@ -19,6 +20,14 @@ export default new Router({
       name: 'newBulkTransaction',
       component: NewBulkTransaction,
     }, {
+      path: '/bulk-transactions',
+      name: 'bulkTransactions',
+      component: BulkTransactions,
+    }, {
+      path: '/bulk-transactions/:bulkTransactionId',
+      name: 'bulkTransaction',
+      component: BulkTransaction,
+    }, {
       path: '/:accountType/new',
       name: 'newAccount',
       component: NewAccount,
@@ -26,10 +35,6 @@ export default new Router({
       path: '/:accountType/:accountId',
       name: 'account',
       component: Account,
-    }, {
-      path: '/bulk-transactions',
-      name: 'bulkTransactions',
-      component: BulkTransactions,
-    }, 
+    },
   ],
 });

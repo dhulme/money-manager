@@ -65,7 +65,7 @@
       "transactions": [
         {
           "value": "10",
-          "description": "Food budget",
+          "description": "Monthly budget",
           "from": "bank-of-dave",
           "to": "food",
           "type": "transfer"

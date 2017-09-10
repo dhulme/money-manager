@@ -8,10 +8,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="bulkTransaction in $project.bulkTransactions()" :key="bulkTransaction.id">
+        <tr v-for="bulkTransaction in $project.bulkTransactions()" :key="bulkTransaction.id" @click="openBulkTransaction(bulkTransaction.id)">
           <td>{{ bulkTransaction.name }}</td>
           <td>
-            <button class="btn btn-default" @click="process(bulkTransaction)">Run</button>
+            <button class="btn btn-default" @click.stop="process(bulkTransaction)">Run</button>
           </td>
         </tr>
       </tbody>
@@ -24,6 +24,14 @@
     methods: {
       process(bulkTransaction) {
         this.$project.addTransactions(bulkTransaction.transactions);
+      },
+      openBulkTransaction(id) {
+        this.$router.push({
+          name: 'bulkTransaction',
+          params: {
+            bulkTransactionId: id,
+          },
+        });
       },
     },
   };
