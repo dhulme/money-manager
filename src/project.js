@@ -187,7 +187,7 @@ const project = {
   addBulkTransaction(newBulkTransaction) {
     const existingIds = project.bulkTransactions().map(bulkTransaction => bulkTransaction.id);
     newBulkTransaction.transactions.forEach((transaction) => {
-      transaction.description = newBulkTransaction.description;
+      transaction.description = newBulkTransaction.name;
     });
     newBulkTransaction.id = util.getFriendlyId(newBulkTransaction.name, existingIds);
     data.bulkTransactions.push(newBulkTransaction);

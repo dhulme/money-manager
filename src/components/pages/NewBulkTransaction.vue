@@ -32,7 +32,7 @@
             </option>
           </select>
 
-
+          <input type="text" class="form-control" v-model="transaction.note" placeholder="Note">
         </div>
         <button class="btn btn-default" @click.prevent="addTransaction">Add transaction</button>
       </div>

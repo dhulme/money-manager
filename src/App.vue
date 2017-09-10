@@ -26,8 +26,16 @@
     },
     mounted() {
       menu.init({
-        saveClick: () => {
-          this.$project.save();
+        saveClick: () => this.$project.save(),
+        dashboardClick: () => {
+          this.$router.push({
+            name: 'dashboard',
+          });
+        },
+        bulkTransactionsClick: () => {
+          this.$router.push({
+            name: 'bulkTransactions',
+          });
         },
       });
       document.addEventListener('keyup', (event) => {

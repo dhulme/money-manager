@@ -9,15 +9,9 @@
       "name": "None",
       "balance": "0",
       "transactionIds": []
-    },
-    {
-      "id": "expense",
-      "type": "none",
-      "name": "Expense",
-      "balance": "0",
-      "transactionIds": []
     }
   ],
   "transactions": {
-  }
+  },
+  "bulkTransactions": []
 }
