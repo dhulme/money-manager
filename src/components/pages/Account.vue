@@ -1,7 +1,7 @@
 <template>
   <div>
     <back-button name="dashboard"></back-button>
-    <button class="btn btn-danger" @click="deleteAccount">Delete account</button>
+    <v-btn class="btn btn-danger" @click="deleteAccount">Delete account</v-btn>
     <h1>{{ account.name }}</h1>
     <transaction-list editable :account="account" ></transaction-list>
   </div>

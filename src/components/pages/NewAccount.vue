@@ -12,7 +12,7 @@
         <label>Opening balance</label>
         <input type="text" class="form-control" v-model="openingBalance">
       </div>
-      <button type="submit" class="btn btn-default">Submit</button>
+      <v-btn type="submit" class="btn btn-default">Submit</v-btn>
     </form>
   </div>
 </template>

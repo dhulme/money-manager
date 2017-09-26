@@ -2,6 +2,7 @@ import Vue from 'vue';
 import accounting from 'accounting';
 import moment from 'moment';
 import VueI18n from 'vue-i18n';
+import Vuetify from 'vuetify';
 
 import App from './App';
 import router from './router';
@@ -10,11 +11,12 @@ import store from './store';
 
 import project from '@/project';
 
-require('../node_modules/bootstrap/dist/css/bootstrap.min.css');
+import('../node_modules/vuetify/dist/vuetify.min.css');
 
 Vue.config.productionTip = false;
 
 Vue.use(VueI18n);
+Vue.use(Vuetify);
 
 project.load().then(() => {
   Vue.filter('currency', (value) => {

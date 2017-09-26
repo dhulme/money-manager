@@ -5,7 +5,7 @@
     <h1>{{ bulkTransaction.name }}</h1>
     <p>{{ bulkTransaction.description }}</p>
 
-    <button class="btn btn-default" @click="process">Run</button>
+    <v-btn @click="process">Run</v-btn>
 
     <table class="table">
       <thead>

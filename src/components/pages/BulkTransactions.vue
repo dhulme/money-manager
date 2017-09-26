@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Bulk Transactions</h1>
-    <button class="btn btn-default" @click="newBulkTransaction">New</button>
+    <v-btn @click="newBulkTransaction">New</v-btn>
     <bulk-transaction-list></bulk-transaction-list>
   </div>
 </template>

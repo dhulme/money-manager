@@ -10,14 +10,14 @@
         </div>
       </div>
     </form>
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Account</th>
-          <th>Balance</th>
-        </tr>
-      </thead>
-      <tbody>
+    <v-data-table :headers="headers" :items="accounts">
+      <template slot="items" scope="props">
+        <td>{{ props.item.name }}</td>
+        <td>{{ props.item.balance | currency }}</td>
+      </template>
+    </v-data-table>
+  </div>
+      <!-- <tbody>
         <tr v-for="account in accounts" :key="account.name" @click="openAccount(account.id)">
           <td class="account-name">{{ account.name }}</td>
           <td :class="{ 'text-danger': parseFloat(account.balance) < 0 }" class="account-balance">
@@ -30,7 +30,7 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -42,6 +42,13 @@
     },
     data() {
       return {
+        headers: [{
+          text: 'Account',
+          value: 'name',
+        }, {
+          text: 'Balance',
+          value: 'value',
+        }],
         filter: '',
       };
     },
@@ -55,6 +62,9 @@
       total() {
         return this.$project.accountsTotal(this.accounts);
       },
+      items() {
+
+      }
     },
     methods: {
       openAccount(accountId) {

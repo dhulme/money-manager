@@ -1,5 +1,5 @@
 <template>
-  <button class="btn btn-default" role="button" @click="go">New</button>
+  <v-btn role="button" @click="go">New</v-btn>
 </template>
 
 <script>

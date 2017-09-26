@@ -11,7 +11,7 @@
         <tr v-for="bulkTransaction in $project.bulkTransactions()" :key="bulkTransaction.id" @click="openBulkTransaction(bulkTransaction.id)">
           <td>{{ bulkTransaction.name }}</td>
           <td>
-            <button class="btn btn-default" @click.stop="process(bulkTransaction)">Run</button>
+            <v-btn @click.stop="process(bulkTransaction)">Run</v-btn>
           </td>
         </tr>
       </tbody>

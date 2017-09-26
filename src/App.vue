@@ -1,11 +1,13 @@
 <template>
-  <div class="app">
-    <div class="container">
-      <development-nav v-if="development"></development-nav>
-      <summary-alert></summary-alert>
-      <router-view class="router-container"></router-view>
-    </div>
-  </div>
+  <v-app>
+    <main>
+      <v-container>
+        <development-nav v-if="development"></development-nav>
+        <summary-alert></summary-alert>
+        <router-view class="router-container"></router-view>
+      </v-container>
+    </main>
+  </v-app>
 </template>
 
 <script>
