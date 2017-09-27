@@ -52,6 +52,8 @@
 </script>
 
 <style lang="scss">
+  @import './_fonts.scss';
+  
   .app {
     margin: 10px;
   }
