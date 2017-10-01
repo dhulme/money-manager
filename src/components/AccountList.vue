@@ -1,36 +1,24 @@
 <template>
   <div>
-    <form class="form-inline">
-      <div class="row">
-        <div class="col-sm-6">
-          <new-account-button :account-type="accountType" class="new-account"></new-account-button>
-        </div>
-        <div class="col-sm-6 filter">
-          <input type="text" v-model="filter" class="form-control" placeholder="Filter">
-        </div>
-      </div>
-    </form>
-    <v-data-table :headers="headers" :items="accounts">
+    <v-spacer></v-spacer>
+    <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
+    <v-data-table :headers="headers" :items="accounts" :search="search">
       <template slot="items" scope="props">
-        <td>{{ props.item.name }}</td>
-        <td>{{ props.item.balance | currency }}</td>
+        <tr @click="openAccount(props.item.id)">
+          <td>{{ props.item.name }}</td>
+          <td class="text-xs-right account-balance" :class="{ 'red--text': parseFloat(props.item.balance) < 0 }">
+            {{ props.item.balance | currency }}
+          </td>
+        </tr>
+      </template>
+      <template slot="footer">
+        <td></td>
+        <td class="text-xs-right" :class="{ 'red--text': parseFloat(total) < 0 }">
+          {{ total | currency }}
+        </td>
       </template>
     </v-data-table>
   </div>
-      <!-- <tbody>
-        <tr v-for="account in accounts" :key="account.name" @click="openAccount(account.id)">
-          <td class="account-name">{{ account.name }}</td>
-          <td :class="{ 'text-danger': parseFloat(account.balance) < 0 }" class="account-balance">
-            {{ account.balance | currency }}
-          </td>
-        </tr>
-        <tr>
-          <td class="total">Total</td>
-          <td>{{ total | currency }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
 </template>
 
 <script>
@@ -45,26 +33,22 @@
         headers: [{
           text: 'Account',
           value: 'name',
+          align: 'left',
         }, {
           text: 'Balance',
-          value: 'value',
+          value: 'balance',
         }],
-        filter: '',
+        search: '',
       };
     },
     props: ['accountType'],
     computed: {
       accounts() {
-        return this.$project.accountsByType(this.accountType).filter((account) => {
-          return account.name.toLowerCase().includes(this.filter.toLowerCase());
-        });
+        return this.$project.accountsByType(this.accountType);
       },
       total() {
         return this.$project.accountsTotal(this.accounts);
       },
-      items() {
-
-      }
     },
     methods: {
       openAccount(accountId) {
@@ -94,7 +78,7 @@
     text-align: right;
   }
 
-  .filter {
+  .search {
     text-align: right;
   }
 </style>
