@@ -2,7 +2,7 @@
   <div>
     <v-spacer></v-spacer>
     <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
-    <v-data-table :headers="headers" :items="accounts" :search="search">
+    <v-data-table :headers="headers" :items="accounts" :search="search" :pagination.sync="pagination">
       <template slot="items" scope="props">
         <tr @click="openAccount(props.item.id)">
           <td>{{ props.item.name }}</td>
@@ -39,6 +39,9 @@
           value: 'balance',
         }],
         search: '',
+        pagination: {
+          rowsPerPage: -1,
+        },
       };
     },
     props: ['accountType'],

@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
-    <v-data-table :headers="headers" :items="transactions" :search="search">
+    <v-data-table :headers="headers" :items="transactions" :search="search"
+      :rows-per-page-items="rowsPerPageItems">
       <template slot="items" scope="props">
         <tr>
           <td>{{ props.item.date | date }}</td>
@@ -108,9 +109,11 @@
           value: 'account',
           align: 'left',
         }],
-        transactions: this.$project.transactions({
-          account: this.account,
-        }),
+        transactions: this.$project.transactions(this.account),
+        rowsPerPageItems: [50, 100, {
+          text: 'All',
+          value: -1,
+        }],
       };
     },
     props: {

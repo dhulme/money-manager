@@ -74,14 +74,8 @@ const project = {
     return ['expense', 'transfer'];
   },
 
-  transactions({
-    account,
-    pageLength = transactionPageLength,
-    pageNumber = 1,
-  }) {
-    const transactionIds = account.transactionIds;
-    const start = Math.min(transactionIds.length - (pageLength * pageNumber), 0);
-    return transactionIds.slice(start).map(id => data.transactions[id]);
+  transactions(account) {
+    return account.transactionIds.map(id => data.transactions[id]);
   },
 
   addTransaction(transaction) {
