@@ -1,60 +1,45 @@
 <template>
   <div>
-    <form class="form-inline">
-      <input type="text" v-model="filter" class="form-control" placeholder="Filter">
-    </form>
-    <table class="table">
-      <thead>
+    <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
+    <v-data-table :headers="headers" :items="transactions" :search="search">
+      <template slot="items" scope="props">
         <tr>
-          <th>{{ $t('transactions.date') }}</th>
-          <th>{{ $t('transactions.description') }}</th>
-          <th>{{ $t('transactions.note') }}</th>
-          <th>{{ $t('transactions.in') }}</th>
-          <th>{{ $t('transactions.out') }}</th>
-          <th>Type</th>
-          <th>Account</th>
+          <td>{{ props.item.date | date }}</td>
+          <td>{{ props.item.description }}</td>
+          <td>{{ props.item.note }}</td>
+          <td>{{ transactionIn(props.item) | currency }}</td>
+          <td>{{ transactionOut(props.item) | currency }}</td>
+          <td>{{ $t(`transactionTypes.${props.item.type}`) }}
+          <td>{{ transactionAccount(props.item) }}</td>
         </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(transaction, index) in transactions" :key="index">
-          <td>{{ transaction.date | date }}</td>
-          <td>{{ transaction.description }}</td>
-          <td>{{ transaction.note }}</td>
-          <td>{{ transactionIn(transaction) | currency }}</td>
-          <td>{{ transactionOut(transaction) | currency }}</td>
-          <td>{{ $t(`transactionTypes.${transaction.type}`) }}
-          <td>{{ transactionAccount(transaction) }}</td>
-        </tr>
-        <tr v-if="editable">
+      </template>
+      <template slot="footer">
+        <tr v-if="editable" class="new-row">
           <td>
-            <input type="text" class="form-control" v-model="transaction.date" placeholder="Date" @keyup.enter="addTransaction">
+            <v-text-field v-model="transaction.date" label="Date" @keyup.enter="addTransaction"></v-text-field>
           </td>
           <td>
-            <input type="text" class="form-control" v-model="transaction.description" placeholder="Description" @keyup.enter="addTransaction">
+            <v-text-field v-model="transaction.description" label="Description" @keyup.enter="addTransaction"></v-text-field>
           </td>
           <td>
-            <input type="text" class="form-control" v-model="transaction.note" placeholder="Note" @keyup.enter="addTransaction">
+            <v-text-field v-model="transaction.note" label="Note" @keyup.enter="addTransaction"></v-text-field>
           </td>
           <td>
-            <input type="text" class="form-control" v-model="transaction.valueIn" placeholder="In" @keyup.enter="addTransaction">
+            <v-text-field v-model="transaction.valueIn" label="In" @keyup.enter="addTransaction"></v-text-field>
           </td>
           <td>
-            <input type="text" class="form-control" v-model="transaction.valueOut" placeholder="Out" @keyup.enter="addTransaction">
+            <v-text-field v-model="transaction.valueOut" label="Out" @keyup.enter="addTransaction"></v-text-field>
           </td>
           <td>
-            <select v-model="transaction.type" class="form-control">
-              <option v-for="transactionType in $project.transactionTypes()" :key="transactionType" :value="transactionType">
-                {{ $t(`transactionTypes.${transactionType}`) }}
-              </option>
-            </select>
+            <v-select :items="$project.transactionTypes()" v-model="transaction.type" label="Type"
+              item-text="$t(`transactionTypes.${transactionType}`)" item-value="transactionType">
+            </v-select>
           </td>
           
           <td>
-            <select v-model="transaction.account" class="form-control">
-              <option v-for="account in accounts" :key="account.id" :value="account.id">
-                {{ account.name }}
-              </option>
-            </select>
+            <v-select :items="accounts" v-model="transaction.account" label="Account" autocomplete
+              item-text="name" item-value="id">
+            </v-select>
           </td>
         </tr>
         <tr>
@@ -64,12 +49,12 @@
           <td></td>
           <td></td>
           <td class="balance">Balance</td>
-          <td :class="{ 'text-danger': parseFloat(account.balance) < 0 }">
+          <td :class="{ 'red--text': parseFloat(account.balance) < 0 }">
             {{ account.balance | currency }}
           </td>
         </tr>
-      </tbody>
-    </table>
+      </template>
+    </v-data-table>
   </div>
 </template>
 
@@ -82,7 +67,7 @@
     description: '',
     valueIn: '',
     valueOut: '',
-    account: 'none',
+    account: '',
     note: '',
     type: 'transfer',
   };
@@ -93,7 +78,39 @@
         transaction: {
           ...defaultTransaction,
         },
-        filter: '',
+        search: '',
+        headers: [{
+          text: this.$t('transactions.date'),
+          value: 'date',
+          align: 'left',
+        }, {
+          text: this.$t('transactions.description'),
+          value: 'description',
+          align: 'left',
+        }, {
+          text: this.$t('transactions.note'),
+          value: 'note',
+          align: 'left',
+        }, {
+          text: this.$t('transactions.in'),
+          value: 'value',
+          align: 'left',
+        }, {
+          text: this.$t('transactions.out'),
+          value: 'value',
+          align: 'left',
+        }, {
+          text: 'Type',
+          value: 'type',
+          align: 'left',
+        }, {
+          text: 'Account',
+          value: 'account',
+          align: 'left',
+        }],
+        transactions: this.$project.transactions({
+          account: this.account,
+        }),
       };
     },
     props: {
@@ -101,16 +118,6 @@
       account: Object,
     },
     computed: {
-      transactions() {
-        return this.$project.transactions({
-          account: this.account,
-        }).filter((transaction) => {
-          const filter = this.filter.toLowerCase();
-          const description = transaction.description ? transaction.description.toLowerCase() : '';
-          const note = transaction.note ? transaction.note.toLowerCase() : '';
-          return description.includes(filter) || note.includes(filter);
-        });
-      },
       accounts() {
         return this.$project.sortAccounts(this.$project.accounts().filter(account => account.id !== this.account.id));
       },
@@ -158,6 +165,9 @@
         if (this.transaction.valueIn && this.transaction.valueOut) {
           throw new Error('A transaction cannot be both in and out');
         }
+        if (!this.transaction.valueIn && !this.transaction.valueOut) {
+          throw new Error('A transaction must have a value');
+        }
 
         if (this.transaction.valueIn) {
           transaction.value = this.transaction.valueIn;
@@ -175,7 +185,7 @@
         this.$store.commit('setSummaryBalance', this.$project.summaryBalance());
 
         this.resetForm();
-      }
+      },
     },
   };
 </script>
@@ -183,5 +193,9 @@
 <style lang="scss" scoped>
   .balance {
     text-align: right;
+  }
+
+  .new-row /deep/ input {
+    width: 100%;
   }
 </style>
