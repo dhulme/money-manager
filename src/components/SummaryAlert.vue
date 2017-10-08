@@ -1,11 +1,21 @@
 <template>
-  <div v-if="$store.state.summaryBalance !== '0'" class="alert alert-danger">
-    Your budget and accounts don't match! {{ $store.state.summaryBalance | currency }}
+  <div>
+    <v-alert v-if="summaryBalance !== '0'" :color="color" icon="info" value="true">
+      Your budget and accounts don't match! {{ summaryBalance | currency }}
+    </v-alert>
   </div>
 </template>
 
 <script>
   export default {
+    computed: {
+      summaryBalance() {
+        return this.$store.state.summaryBalance;
+      },
+      color() {
+        return this.summaryBalance > 0 ? 'info' : 'error';
+      },
+    },
   };
 </script>
 
