@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Accounts</h2>
+    <h3>Accounts</h3>
     <account-type-list account-type="asset"></account-type-list>
     <account-type-list account-type="liability"></account-type-list>
     <account-type-list account-type="budget"></account-type-list>

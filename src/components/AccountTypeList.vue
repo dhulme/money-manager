@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>{{ $t(`headings.${accountType}`) }}</h3>
+    <h4>{{ $t(`headings.${accountType}`) }}</h4>
     <account-list :account-type="accountType"></account-list>
   </div>
 </template>

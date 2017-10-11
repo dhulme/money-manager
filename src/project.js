@@ -1,11 +1,11 @@
 import Big from 'big.js';
+import moment from 'moment';
 
 import util from '@/util';
 
 import example from '../example.json';
 
 let data = {};
-const transactionPageLength = 20;
 
 const remote = window.require ? window.require('electron').remote.require('./project') : {
   load(done) {
@@ -69,7 +69,7 @@ const project = {
   asset(id) {
     return project.assets().find(asset => asset.id === id);
   },
-  
+
   transactionTypes() {
     return ['expense', 'transfer'];
   },
@@ -83,7 +83,11 @@ const project = {
     const accountTo = project.account(transaction.to);
     const accountFrom = project.account(transaction.from);
     data.transactions[transactionId] = transaction;
-    
+
+    if (!transaction.date) {
+      transaction.date = moment();
+    }
+
     accountFrom.balance = new Big(accountFrom.balance).minus(transaction.value);
     if (transaction.type === 'expense') {
       const transaction2 = {

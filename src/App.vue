@@ -1,11 +1,12 @@
 <template>
   <v-app>
+    <toolbar></toolbar>
     <main>
-      <v-container>
-        <development-nav v-if="development"></development-nav>
-        <summary-alert></summary-alert>
-        <router-view class="router-container"></router-view>
-      </v-container>
+      <v-content>
+        <v-container>
+          <router-view class="router-container"></router-view>
+        </v-container>
+      </v-content>
     </main>
   </v-app>
 </template>
@@ -13,13 +14,11 @@
 <script>
   import menu from '@/menu';
 
-  import SummaryAlert from '@/components/SummaryAlert';
-  import DevelopmentNav from '@/components/DevelopmentNav';
+  import Toolbar from '@/components/Toolbar';
 
   export default {
     components: {
-      SummaryAlert,
-      DevelopmentNav,
+      Toolbar,
     },
     computed: {
       development() {

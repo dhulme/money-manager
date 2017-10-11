@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{ account.name }}</h2>
+    <h3>{{ account.name }}</h3>
     <v-btn class="btn btn-danger" @click="deleteAccount">Delete account</v-btn>
     <transaction-list editable :account="account" ></transaction-list>
   </div>
