@@ -3,7 +3,7 @@
     <v-spacer></v-spacer>
     <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
     <v-data-table :headers="headers" :items="accounts" :search="search" :pagination.sync="pagination">
-      <template slot="items" scope="props">
+      <template slot="items" slot-scope="props">
         <tr @click="openAccount(props.item.id)">
           <td>{{ props.item.name }}</td>
           <td class="text-xs-right account-balance" :class="{ 'red--text': parseFloat(props.item.balance) < 0 }">

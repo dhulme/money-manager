@@ -3,7 +3,7 @@
     <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
     <v-data-table :headers="headers" :items="transactions" :search="search"
       :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination">
-      <template slot="items" scope="props">
+      <template slot="items" slot-scope="props">
         <tr>
           <td>{{ props.item.date | date }}</td>
           <td>{{ props.item.description }}</td>
@@ -32,14 +32,19 @@
             <v-text-field v-model="transaction.valueOut" label="Out" @keyup.enter="addTransaction"></v-text-field>
           </td>
           <td>
-            <v-select :items="$project.transactionTypes()" v-model="transaction.type" label="Type"
-              item-text="$t(`transactionTypes.${transactionType}`)" item-value="transactionType">
+            <v-select :items="transactionTypes" v-model="transaction.type" label="Type"
+              item-text="name" item-value="id">
             </v-select>
           </td>
           
           <td>
-            <v-select :items="accounts" v-model="transaction.account" label="Account" autocomplete
-              item-text="name" item-value="id">
+            <v-select
+              :items="accounts"
+              v-model="transaction.account"
+              label="Account"
+              autocomplete
+              item-text="name"
+              item-value="id">
             </v-select>
           </td>
         </tr>
@@ -61,6 +66,8 @@
 
 <script>
   import moment from 'moment';
+
+  import util from '@/util';
 
   const dateFormat = 'DD/MM/YYYY';
   const defaultTransaction = {
@@ -110,6 +117,10 @@
           align: 'left',
         }],
         transactions: this.$project.transactions(this.account),
+        transactionTypes: this.$project.transactionTypes().map(transactionType => ({
+          name: this.$t(`transactionTypes.${transactionType}`),
+          id: transactionType,
+        })),
         rowsPerPageItems: [50, 100, {
           text: 'All',
           value: -1,
