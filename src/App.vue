@@ -2,10 +2,8 @@
   <v-app>
     <toolbar></toolbar>
     <main>
-      <v-content>
-        <v-container>
-          <router-view class="router-container"></router-view>
-        </v-container>
+      <v-content class="app-content">
+        <router-view class="router-container"></router-view>
       </v-content>
     </main>
   </v-app>
@@ -49,15 +47,18 @@
     },
   };
 </script>
-
-<style lang="scss">
-  @import './_fonts.scss';
   
-  .app {
-    margin: 10px;
+<style lang="scss" scoped>
+  .app-content {
+    margin: 20px auto;
+    max-width: 1400px;
   }
 
   .router-container {
     margin-top: 10px;
   }
+</style>
+
+<style lang="scss">
+  @import './_fonts.scss';
 </style>

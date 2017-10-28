@@ -8,13 +8,14 @@
           <td>{{ props.item.date | date }}</td>
           <td>{{ props.item.description }}</td>
           <td>{{ props.item.note }}</td>
-          <td>{{ transactionIn(props.item) | currency }}</td>
-          <td>{{ transactionOut(props.item) | currency }}</td>
           <td>{{ $t(`transactionTypes.${props.item.type}`) }}
           <td>{{ transactionAccount(props.item) }}</td>
+          <td>{{ transactionIn(props.item) | currency }}</td>
+          <td>{{ transactionOut(props.item) | currency }}</td>
         </tr>
       </template>
       <template slot="footer">
+
         <tr v-if="editable" class="new-row">
           <td>
             <v-text-field v-model="transaction.date" label="Date" @keyup.enter="addTransaction"></v-text-field>
@@ -26,17 +27,10 @@
             <v-text-field v-model="transaction.note" label="Note" @keyup.enter="addTransaction"></v-text-field>
           </td>
           <td>
-            <v-text-field v-model="transaction.valueIn" label="In" @keyup.enter="addTransaction"></v-text-field>
-          </td>
-          <td>
-            <v-text-field v-model="transaction.valueOut" label="Out" @keyup.enter="addTransaction"></v-text-field>
-          </td>
-          <td>
             <v-select :items="transactionTypes" v-model="transaction.type" label="Type"
               item-text="name" item-value="id">
             </v-select>
           </td>
-          
           <td>
             <v-select
               :items="accounts"
@@ -47,7 +41,15 @@
               item-value="id">
             </v-select>
           </td>
+          <td>
+            <v-text-field v-model="transaction.valueIn" label="In" @keyup.enter="addTransaction"></v-text-field>
+          </td>
+          <td>
+            <v-text-field v-model="transaction.valueOut" label="Out" @keyup.enter="addTransaction"></v-text-field>
+          </td>
         </tr>
+
+
         <tr>
           <td></td>
           <td></td>
@@ -100,20 +102,20 @@
           value: 'note',
           align: 'left',
         }, {
-          text: this.$t('transactions.in'),
-          value: 'value',
-          align: 'left',
-        }, {
-          text: this.$t('transactions.out'),
-          value: 'value',
-          align: 'left',
-        }, {
           text: 'Type',
           value: 'type',
           align: 'left',
         }, {
           text: 'Account',
           value: 'account',
+          align: 'left',
+        }, {
+          text: this.$t('transactions.in'),
+          value: 'value',
+          align: 'left',
+        }, {
+          text: this.$t('transactions.out'),
+          value: 'value',
           align: 'left',
         }],
         transactions: this.$project.transactions(this.account),
@@ -179,13 +181,13 @@
         };
 
         if (parseFloat(this.transaction.valueIn) < 0 || parseFloat(this.transaction.valueOut) < 0) {
-          throw new Error('You cannot enter negative numbers');
+          throw new Error(this.$store.commit('setError', 'You cannot enter negative numbers'));
         }
         if (this.transaction.valueIn && this.transaction.valueOut) {
-          throw new Error('A transaction cannot be both in and out');
+          throw new Error(this.$store.commit('setError', 'A transaction cannot be both in and out'));
         }
         if (!this.transaction.valueIn && !this.transaction.valueOut) {
-          throw new Error('A transaction must have a value');
+          throw new Error(this.$store.commit('setError', 'A transaction must have a value'));
         }
 
         if (this.transaction.valueIn) {
