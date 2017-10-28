@@ -1,11 +1,11 @@
 <template>
   <div>
-    <back-button name="dashboard"></back-button>
+    <header>
+      <h3>{{ bulkTransaction.name }}</h3>
+      <v-btn @click="process">Run</v-btn>
+    </header>
 
-    <h1>{{ bulkTransaction.name }}</h1>
     <p>{{ bulkTransaction.description }}</p>
-
-    <v-btn @click="process">Run</v-btn>
 
     <table class="table">
       <thead>
@@ -55,3 +55,10 @@
     },
   };
 </script>
+
+<style lang="scss" scoped>
+  header {
+    display: flex;
+    justify-content: space-between;
+  }
+</style>

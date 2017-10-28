@@ -1,7 +1,6 @@
 <template>
   <div>
-    <v-spacer></v-spacer>
-    <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
+    <v-text-field v-if="enableSearch" append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
     <v-data-table :headers="headers" :items="accounts" :search="search" :pagination.sync="pagination">
       <template slot="items" slot-scope="props">
         <tr @click="openAccount(props.item.id)">
@@ -38,13 +37,19 @@
           text: 'Balance',
           value: 'balance',
         }],
-        search: '',
         pagination: {
           rowsPerPage: -1,
         },
       };
     },
-    props: ['accountType'],
+    props: {
+      accountType: String,
+      enableSearch: Boolean,
+      search: {
+        type: String,
+        default: '',
+      },
+    },
     computed: {
       accounts() {
         return this.$project.accountsByType(this.accountType);

@@ -84,6 +84,8 @@
 
   export default {
     data() {
+      const transactions = this.$project.transactions(this.account);
+      const rowsPerPage = 10;
       return {
         transaction: {
           ...defaultTransaction,
@@ -118,19 +120,19 @@
           value: 'value',
           align: 'left',
         }],
-        transactions: this.$project.transactions(this.account),
+        transactions,
         transactionTypes: this.$project.transactionTypes().map(transactionType => ({
           name: this.$t(`transactionTypes.${transactionType}`),
           id: transactionType,
         })),
-        rowsPerPageItems: [50, 100, {
+        rowsPerPageItems: [rowsPerPage, {
           text: 'All',
           value: -1,
         }],
         pagination: {
           sortBy: 'unsorted',
-          page: 1,
-          rowsPerPage: 50,
+          page: Math.ceil(transactions.length / rowsPerPage),
+          rowsPerPage,
         },
       };
     },

@@ -16,7 +16,7 @@
     "backButton": {
       "backTo": "Back to",
       "pages": {
-        "dashboard": "Dashboard"
+        "accounts": "Accounts"
       }
     },
     "transactionTypes": {

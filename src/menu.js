@@ -3,7 +3,7 @@ const remote = window.require ? window.require('electron').remote : null;
 export default {
   init({
     saveClick,
-    dashboardClick,
+    accountsClick,
     bulkTransactionsClick,
   }) {
     if (!remote) {
@@ -24,8 +24,8 @@ export default {
         label: 'View',
         submenu: [
           {
-            label: 'Dashboard',
-            click: dashboardClick,
+            label: 'Accounts',
+            click: accountsClick,
           },
           {
             label: 'Bulk transactions',

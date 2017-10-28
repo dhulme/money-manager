@@ -1,6 +1,6 @@
 <template>
   <div>
-    <back-button name="dashboard"></back-button>
+    <back-button name="accounts"></back-button>
 
     <h1>New Bulk Transaction</h1>
     <form @submit="addBulkTransaction">

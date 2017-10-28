@@ -1,6 +1,6 @@
 <template>
   <div>
-    <back-button name="dashboard"></back-button>
+    <back-button name="accounts"></back-button>
 
     <h1>New {{ accountTypeName }}</h1>
     <form @submit="addAccount">

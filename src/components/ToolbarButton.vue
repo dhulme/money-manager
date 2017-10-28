@@ -6,10 +6,17 @@
 
 <script>
   export default {
-    props: ['routeName'],
+    props: {
+      routeName: String,
+      childRouteNames: {
+        type: Array,
+        default: () => [],
+      },
+    },
     computed: {
       active() {
-        return this.$route.name === this.routeName;
+        const route = this.$route.name;
+        return route === this.routeName || this.childRouteNames.includes(route);
       },
       color() {
         return this.active ? 'black' : '';

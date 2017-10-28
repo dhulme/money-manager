@@ -26,9 +26,9 @@
     mounted() {
       menu.init({
         saveClick: () => this.$project.save(),
-        dashboardClick: () => {
+        accountsClick: () => {
           this.$router.push({
-            name: 'dashboard',
+            name: 'accounts',
           });
         },
         bulkTransactionsClick: () => {
@@ -40,7 +40,7 @@
       document.addEventListener('keyup', (event) => {
         if (event.key === 'Escape') {
           this.$router.push({
-            name: 'dashboard',
+            name: 'accounts',
           });
         }
       });

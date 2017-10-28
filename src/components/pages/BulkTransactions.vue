@@ -1,7 +1,9 @@
 <template>
   <div>
-    <h1>Bulk Transactions</h1>
-    <v-btn @click="newBulkTransaction">New</v-btn>
+    <header>
+      <h3>Bulk Transactions</h3>
+      <v-btn @click="newBulkTransaction">New</v-btn>
+    </header>
     <bulk-transaction-list></bulk-transaction-list>
   </div>
 </template>
@@ -23,6 +25,9 @@
   };
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
+  header {
+    display: flex;
+    justify-content: space-between;
+  }
 </style>
