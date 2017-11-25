@@ -11,7 +11,7 @@ import store from './store';
 
 import project from '@/project';
 
-import('../node_modules/vuetify/dist/vuetify.min.css');
+import('../../node_modules/vuetify/dist/vuetify.min.css');
 
 Vue.config.productionTip = false;
 
