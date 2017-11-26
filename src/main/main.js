@@ -9,6 +9,7 @@ const path = require('path');
 const url = require('url');
 
 let mainWindow;
+const development = process.env.NODE_ENV !== 'production';
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -17,11 +18,11 @@ function createWindow() {
   });
   mainWindow.maximize();
 
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'dist/index.html'),
-    protocol: 'file:',
-    slashes: true,
-  }));
+  if (development) {
+    mainWindow.loadURL(`http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`);
+  } else {
+    mainWindow.loadURL(`file://${__dirname}/index.html`);
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
