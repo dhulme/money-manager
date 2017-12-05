@@ -5,6 +5,8 @@ It uses [Electron](https://electron.atom.io/) as the application platform and [V
 
 ## Development Setup
 
+Uses [Electron Webpack](https://webpack.electron.build/) package to manage build process.
+
 ``` bash
 # install dependencies
 npm install
@@ -12,14 +14,14 @@ npm install
 # dev server with hot reload at localhost:8080
 npm run dev
 
-# build front-end app
+# compile source to webpack bundle
 npm run build
 
-# build front-end app and run electron
-npm run build-run-electron
+# build packaged distribution with electron builder
+npm run dist
 
-# run electron
-npm run electron
+# build unpackaged distribution with electron builder
+npm run dist:dir
 ```
 
 ## Licence
