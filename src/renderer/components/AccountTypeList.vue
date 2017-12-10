@@ -1,8 +1,12 @@
 <template>
-  <div class="account-type-list">
-    <h4>{{ $t(`headings.${accountType}`) }}</h4>
+  <v-card class="mb-4">
+    <v-card-title>
+      <span class="headline">{{ $t(`headings.${accountType}`) }}</span>
+      <v-spacer />
+      <v-btn flat @click="newAccount">New Account</v-btn>
+    </v-card-title>
     <account-list :account-type="accountType" :search="search"></account-list>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -16,6 +20,17 @@
     components: {
       AccountList,
     },
+    methods: {
+      newAccount() {
+        this.$router.push({
+          name: 'newAccount',
+          params: {
+            accountId: 'new',
+            accountType: this.accountType,
+          },
+        });
+      }
+    }
   };
 </script>
 

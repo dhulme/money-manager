@@ -136,7 +136,7 @@ const project = {
     balance,
     type,
   }) {
-    const existingIds = data.accounts().map(account => account.id);
+    const existingIds = data.accounts.map(account => account.id);
     const newAccount = {
       transactionIds: [],
       id: util.getFriendlyId(name, existingIds),

@@ -1,19 +1,24 @@
 <template>
   <div>
-    <back-button name="accounts"></back-button>
-
-    <h1>New {{ accountTypeName }}</h1>
-    <form @submit="addAccount">
-      <div class="form-group">
-        <label>Name</label>
-        <input type="text" class="form-control" v-model="name" ref="name">
-      </div>
-      <div class="form-group">
-        <label>Opening balance</label>
-        <input type="text" class="form-control" v-model="openingBalance">
-      </div>
-      <v-btn type="submit" class="btn btn-default">Submit</v-btn>
-    </form>
+    <v-card>
+      <v-card-title>
+        <span class="headline">New {{ accountTypeName }}</span>
+      </v-card-title>
+      <v-card-text>
+        <form @submit="addAccount">
+          <v-text-field
+            v-model="name"
+            ref="name"
+            label="Name"
+          />
+          <v-text-field
+            label="Opening Balance"
+            v-model="openingBalance"
+          />
+          <v-btn type="submit" color="primary">Submit</v-btn>
+        </form>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 

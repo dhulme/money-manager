@@ -21,11 +21,9 @@
 </template>
 
 <script>
-  import NewAccountButton from '@/components/NewAccountButton';
 
   export default {
     components: {
-      NewAccountButton,
     },
     data() {
       return {
