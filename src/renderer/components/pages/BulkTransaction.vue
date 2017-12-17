@@ -12,9 +12,9 @@
           v-model="search"
         />
       </v-card-title>
-      <v-card-text>
-        <p>{{ bulkTransaction.description }}</p>
-      </v-card-text>
+      <v-subheader>
+        {{ bulkTransaction.description }}
+      </v-subheader>
       <v-data-table
         :headers="headers"
         :items="bulkTransaction.transactions"
@@ -25,7 +25,22 @@
           <td>{{ accountName(props.item.from) }}</td>
           <td>{{ accountName(props.item.to) }}</td>
           <td>{{ props.item.note }}</td>
-          <td class="text-xs-right">{{ props.item.value | currency }}</td>
+          <td class="text-xs-right">
+            <v-menu
+              :min-width="300"
+              left
+            >
+              <span slot="activator" @click="$refs.itemValue.focus()">{{ props.item.value | currency }}</span>
+              <v-card>
+                <v-card-text>
+                  <v-text-field
+                    v-model="props.item.value"
+                    ref="itemValue"
+                  />
+                </v-card-text>
+              </v-card>
+            </v-menu>
+          </td>
         </template>
       </v-data-table>
       <v-card-actions>
