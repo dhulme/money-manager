@@ -1,7 +1,19 @@
 <template>
   <div>
-    <v-text-field v-if="enableSearch" append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
-    <v-data-table :headers="headers" :items="accounts" :search="search" :pagination.sync="pagination">
+    <v-text-field
+      v-if="enableSearch"
+      append-icon="search"
+      label="Search"
+      single-line
+      hide-details
+      v-model="search" />
+    <v-data-table
+      v-show="visible"
+      :headers="headers"
+      :items="accounts"
+      :search="search"
+      :pagination.sync="pagination"
+    >
       <template slot="items" slot-scope="props">
         <tr @click="openAccount(props.item.id)">
           <td>{{ props.item.name }}</td>
@@ -47,6 +59,10 @@
         type: String,
         default: '',
       },
+      hideOnEmpty: {
+        type: Boolean,
+        default: false,
+      }
     },
     computed: {
       accounts() {
@@ -54,6 +70,14 @@
       },
       total() {
         return this.$project.accountsTotal(this.accounts);
+      },
+      visible() {
+        return this.hideOnEmpty ? this.pagination.totalItems > 0 : true;
+      }
+    },
+    watch: {
+      visible(visible) {
+        this.$emit('visible', visible);
       },
     },
     methods: {

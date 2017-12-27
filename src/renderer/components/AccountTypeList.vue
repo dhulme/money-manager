@@ -1,11 +1,16 @@
 <template>
-  <v-card class="mb-4">
+  <v-card class="mb-4" v-show="visible">
     <v-card-title>
       <span class="headline">{{ $t(`headings.${accountType}`) }}</span>
       <v-spacer />
       <v-btn flat @click="newAccount">New Account</v-btn>
     </v-card-title>
-    <account-list :account-type="accountType" :search="search"></account-list>
+    <account-list
+      :account-type="accountType"
+      :search="search" 
+      :hide-on-empty="hideOnEmpty"
+      @visible="updateVisible"
+    />
   </v-card>
 </template>
 
@@ -16,9 +21,15 @@
     props: {
       accountType: String,
       search: String,
+      hideOnEmpty: Boolean
     },
     components: {
       AccountList,
+    },
+    data() {
+      return {
+        visible: true,
+      };
     },
     methods: {
       newAccount() {
@@ -29,6 +40,9 @@
             accountType: this.accountType,
           },
         });
+      },
+      updateVisible(visible) {
+        this.visible = visible;
       }
     }
   };
