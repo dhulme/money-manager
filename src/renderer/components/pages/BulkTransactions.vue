@@ -1,11 +1,12 @@
 <template>
-  <div>
-    <header>
-      <h3>Bulk Transactions</h3>
-      <v-btn @click="newBulkTransaction">New</v-btn>
-    </header>
-    <bulk-transaction-list></bulk-transaction-list>
-  </div>
+  <v-card>
+    <v-card-title>
+      <span class="title">Bulk Transactions</span>
+      <v-spacer />
+      <v-btn flat primary @click="newBulkTransaction">Add</v-btn>
+    </v-card-title>
+    <bulk-transaction-list />
+  </v-card>
 </template>
 
 <script>

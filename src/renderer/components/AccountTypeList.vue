@@ -3,7 +3,7 @@
     <v-card-title>
       <span class="headline">{{ $t(`headings.${accountType}`) }}</span>
       <v-spacer />
-      <v-btn flat @click="newAccount">New Account</v-btn>
+      <v-btn flat color="primary" @click="newAccount">Add</v-btn>
     </v-card-title>
     <account-list
       :account-type="accountType"

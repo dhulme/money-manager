@@ -1,30 +1,25 @@
 <template>
-  <div>
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="bulkTransaction in $project.bulkTransactions()" :key="bulkTransaction.id" @click="openBulkTransaction(bulkTransaction.id)">
-          <td>{{ bulkTransaction.name }}</td>
-          <td>
-            <v-btn @click.stop="process(bulkTransaction)">Run</v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <v-list two-line>
+    <v-list-tile
+      v-for="bulkTransaction in $project.bulkTransactions()"
+      :key="bulkTransaction.id"
+      @click="openBulkTransaction(bulkTransaction.id)"
+    >
+      <v-list-tile-content>
+        <v-list-tile-title>
+          {{ bulkTransaction.name }}
+        </v-list-tile-title>
+        <v-list-tile-sub-title>
+          {{ bulkTransaction.description }}
+        </v-list-tile-sub-title>
+      </v-list-tile-content>
+    </v-list-tile>
+  </v-list>
 </template>
 
 <script>
   export default {
     methods: {
-      process(bulkTransaction) {
-        this.$project.addTransactions(bulkTransaction.transactions);
-      },
       openBulkTransaction(id) {
         this.$router.push({
           name: 'bulkTransaction',

@@ -1,65 +1,89 @@
 <template>
   <div>
-    <back-button name="accounts"></back-button>
+    <v-card class="mb-4">
+      <v-card-title class="headline">New Bulk Transaction</v-card-title>
+      <v-card-text>
+        <v-text-field
+          label="Name"
+          v-model="name"
+        />
+        <v-text-field
+          label="Description"
+          v-model="description"
+        />
+      </v-card-text>
+    </v-card>
+    <v-card class="mb-4">
+      <v-card-title>Add Transaction</v-card-title>
+      <v-card-text>
+        <v-text-field
+          v-model="newTransaction.value" 
+          label="Amount"
+          prefix="£"
+        />
+        <v-select
+          :items="projectItems"
+          v-model="newTransaction.from"
+          label="From"
+        />
 
-    <h1>New Bulk Transaction</h1>
-    <form @submit="addBulkTransaction">
-      <div class="form-group">
-        <label>Name</label>
-        <input type="text" class="form-control" v-model="name">
-      </div>
-      <div class="form-group">
-        <label>Description</label>
-        <input type="text" class="form-control" v-model="description">
-      </div>
-      <div class="form-group form-inline">
-        <label>Transactions</label><br>
-        <div v-for="(transaction, index) in transactions" :key="index">
-          Transfer
-          <input type="text" class="form-control" v-model="transaction.value">
+        <v-select
+          :items="projectItems"
+          v-model="newTransaction.to"
+          label="To"
+        />
 
-          from
-          <select :v-model="transaction.from" class="form-control" v-model="transaction.from">
-            <option v-for="account in $project.accounts()" :key="account.id" :value="account.id">
-              {{ account.name }}
-            </option>
-          </select>
-
-          to
-          <select :v-model="transaction.to" class="form-control" v-model="transaction.to">
-            <option v-for="account in $project.accounts()" :key="account.id" :value="account.id">
-              {{ account.name }}
-            </option>
-          </select>
-
-          <input type="text" class="form-control" v-model="transaction.note" placeholder="Note">
-        </div>
-        <v-btn @click.prevent="addTransaction">Add transaction</v-btn>
-      </div>
-      <v-btn type="submit" class="btn btn-default">Submit</v-btn>
-    </form>
+        <v-text-field
+          v-model="newTransaction.note"
+          placeholder="Note"
+        />
+        <!-- <v-list>
+          <v-list-tile v-for="(transaction, index) in transactions" :key="index">
+          </v-list-tile>
+          <v-btn @click.prevent="addTransaction">Add transaction</v-btn>
+        </v-list> -->
+      </v-card-text>
+      <v-card-actions>
+        <v-btn flat color="primary" @click="addTransaction">Add</v-btn>
+        <v-btn flat color="secondary" @click="addBulkTransaction">Done</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card>
+      <v-card-title>Transactions</v-card-title>
+      <bulk-transaction-transactions
+        :transactions="transactions"
+      />
+    </v-card>
   </div>
 </template>
 
 <script>
-  import BackButton from '@/components/BackButton';
+  import BulkTransactionTransactions from '../BulkTransactionTransactions';
 
   export default {
     components: {
-      BackButton,
+      BulkTransactionTransactions,
     },
     data() {
       return {
         name: '',
-        transactions: [{}],
         description: '',
+        newTransaction: {},
+        transactions: []
       };
     },
     computed: {
+      projectItems() {
+        return this.$project.accounts().map(account => ({
+          text: account.name,
+          value: account.id
+        }));
+      }
     },
     methods: {
       addTransaction() {
-        this.transactions.push({});
+        this.transactions.push(this.newTransaction);
+        this.newTransaction = {};
       },
       addBulkTransaction() {
         this.$project.addBulkTransaction({
