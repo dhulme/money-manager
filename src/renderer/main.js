@@ -27,7 +27,7 @@ project.load().then(() => {
   });
 
   Vue.filter('date', (value) => {
-    return moment(value).format('DD/MM/YYYY');
+    return value ? moment(value).format('DD/MM/YYYY') : '';
   });
 
   Vue.prototype.$project = project;

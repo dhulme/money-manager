@@ -1,73 +1,53 @@
 <template>
   <div>
-    <v-text-field append-icon="search" label="Search" single-line hide-details v-model="search"></v-text-field>
-    <v-data-table
-      :headers="headers"
-      :items="transactions"
-      :search="search"
-      :rows-per-page-items="rowsPerPageItems"
-      :pagination.sync="pagination"
-    >
-      <template slot="items" slot-scope="props">
-        <tr>
-          <td>{{ props.item.date | date }}</td>
-          <td>{{ props.item.description }}</td>
-          <td>{{ props.item.note }}</td>
-          <td>{{ $t(`transactionTypes.${props.item.type}`) }}
-          <td>{{ transactionAccount(props.item) }}</td>
-          <td>{{ transactionIn(props.item) | currency }}</td>
-          <td>{{ transactionOut(props.item) | currency }}</td>
-        </tr>
-      </template>
-      <template slot="footer">
-
-        <tr v-if="editable" class="new-row">
-          <td>
-            <v-text-field v-model="transaction.date" label="Date" @keyup.enter="addTransaction"></v-text-field>
-          </td>
-          <td>
-            <v-text-field v-model="transaction.description" label="Description" @keyup.enter="addTransaction"></v-text-field>
-          </td>
-          <td>
-            <v-text-field v-model="transaction.note" label="Note" @keyup.enter="addTransaction"></v-text-field>
-          </td>
-          <td>
-            <v-select :items="transactionTypes" v-model="transaction.type" label="Type"
-              item-text="name" item-value="id">
-            </v-select>
-          </td>
-          <td>
-            <v-select
-              :items="accounts"
-              v-model="transaction.account"
-              label="Account"
-              autocomplete
-              item-text="name"
-              item-value="id">
-            </v-select>
-          </td>
-          <td>
-            <v-text-field v-model="transaction.valueIn" label="In" @keyup.enter="addTransaction"></v-text-field>
-          </td>
-          <td>
-            <v-text-field v-model="transaction.valueOut" label="Out" @keyup.enter="addTransaction"></v-text-field>
-          </td>
-        </tr>
-
-
-        <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td class="balance">Balance</td>
-          <td :class="{ 'red--text': parseFloat(account.balance) < 0 }">
-            {{ account.balance | currency }}
-          </td>
-        </tr>
-      </template>
-    </v-data-table>
+    <v-card>
+      <v-card-title>
+        <span class="headline">
+          Transactions
+        </span>
+        <v-btn flat color="primary" @click="$emit('add-transaction')">Add</v-btn>
+        <v-spacer />
+        <v-text-field
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+          v-model="search"
+        />
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="transactions"
+        :search="search"
+        :rows-per-page-items="rowsPerPageItems"
+        :pagination.sync="pagination"
+      >
+        <template slot="items" slot-scope="props">
+          <tr @click="$emit('transaction-click', props.item)">
+            <td>{{ props.item.date | date }}</td>
+            <td>{{ props.item.description }}</td>
+            <td>{{ props.item.note }}</td>
+            <td>{{ $t(`transactionTypes.${props.item.type}`) }}
+            <td>{{ transactionAccount(props.item) }}</td>
+            <td>{{ transactionIn(props.item) | currency }}</td>
+            <td>{{ transactionOut(props.item) | currency }}</td>
+          </tr>
+        </template>
+        <template slot="footer">
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="balance">Balance</td>
+            <td :class="{ 'red--text': parseFloat(account.balance) < 0 }">
+              {{ account.balance | currency }}
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-card>
   </div>
 </template>
 
@@ -135,8 +115,8 @@
           value: -1,
         }],
         pagination: {
-          sortBy: 'unsorted',
-          page: Math.ceil(transactions.length / rowsPerPage),
+          sortBy: 'date',
+          descending: true,
           rowsPerPage,
         },
       };
