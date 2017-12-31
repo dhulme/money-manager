@@ -41,13 +41,6 @@
         label="Note"
       />
       <v-select
-        :items="transactionTypes"
-        v-model="transaction.type"
-        label="Type"
-        item-text="name"
-        item-value="id"
-      />
-      <v-select
         :items="accounts"
         v-model="newTransaction.account"
         label="Account"
@@ -65,30 +58,33 @@
       />
     </v-card-text>
     <v-card-actions>
-      <v-btn color="primary" flat>{{ isNewTransaction ? 'Add' : 'Update' }}</v-btn>
+      <v-btn color="primary" flat @click="addTransaction">{{ isNewTransaction ? 'Add' : 'Update' }}</v-btn>
       <v-btn flat @click="$emit('close')">Cancel</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+  import moment from 'moment';
+
   export default {
     props: {
-      transaction: {
-        type: Object,
-        default: {}
-      },
+      transaction: Object,
       account: Object
     },
     data() {
       return {
         newTransaction: {},
         dateMenu: false,
-        transactionTypes: this.$project.transactionTypes().map(transactionType => ({
-          name: this.$t(`transactionTypes.${transactionType}`),
-          id: transactionType,
-        })),
       };
+    },
+    computed: {
+      isNewTransaction() {
+        return Object.keys(this.transaction).length === 0;
+      },
+      accounts() {
+        return this.$project.sortAccounts(this.$project.accounts().filter(account => account.id !== this.account.id));
+      },
     },
     watch: {
       transaction(transaction) {
@@ -98,13 +94,66 @@
         };
       },
     },
-    computed: {
-      isNewTransaction() {
-        return Object.keys(this.transaction).length === 0;
-      },
-      accounts() {
-        return this.$project.sortAccounts(this.$project.accounts().filter(account => account.id !== this.account.id));
-      },
+    methods: {
+      addTransaction() {
+        const uiTransaction = this.newTransaction;
+        const transactionAccount = this.$project.account(uiTransaction.account);
+        const transaction = {
+          description: uiTransaction.description,
+          note: uiTransaction.note,
+          date: moment(uiTransaction.date),
+        };
+
+        if (parseFloat(uiTransaction.valueIn) < 0 || parseFloat(uiTransaction.valueOut) < 0) {
+          throw new Error(this.$store.commit('setError', 'You cannot enter negative numbers'));
+        }
+        if (uiTransaction.valueIn && uiTransaction.valueOut) {
+          throw new Error(this.$store.commit('setError', 'A transaction cannot be both in and out'));
+        }
+        if (!uiTransaction.valueIn && !uiTransaction.valueOut) {
+          throw new Error(this.$store.commit('setError', 'A transaction must have a value'));
+        }
+
+        if (transactionAccount.type === this.account.type) {
+          if (uiTransaction.valueIn) {
+            transaction.value = uiTransaction.valueIn;
+            transaction.from = uiTransaction.account;
+            transaction.to = this.account.id;
+          } else {
+            transaction.value = uiTransaction.valueOut;
+            transaction.from = this.account.id;
+            transaction.to = uiTransaction.account;
+          }
+          this.$project.addTransaction(transaction);
+        } else {
+          transaction.expenseAccount = uiTransaction.account;
+          if (uiTransaction.valueIn) {
+            transaction.value = uiTransaction.valueIn;
+            transaction.from = 'none';
+            transaction.to = this.account.id;
+            this.$project.addTransaction({
+              ...transaction,
+              from: 'none',
+              to: uiTransaction.account,
+              expenseAccount: this.account.id
+            });
+          } else {
+            transaction.value = uiTransaction.valueOut;
+            transaction.from = this.account.id;
+            transaction.to = 'none';
+            this.$project.addTransaction({
+              ...transaction,
+              to: 'none',
+              from: uiTransaction.account,
+              expenseAccount: this.account.id
+            });
+          }
+          this.$project.addTransaction(transaction);
+        }
+
+
+        this.$store.commit('setSummaryBalance', this.$project.summaryBalance());
+      }
     }
   };
 </script>

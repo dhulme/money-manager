@@ -58,7 +58,9 @@
         this.dialogVisible = true;
       },
       addTransaction() {
-        this.transaction = {};
+        this.transaction = {
+          date: Date.now()
+        };
         this.dialogVisible = true;
       }
     },

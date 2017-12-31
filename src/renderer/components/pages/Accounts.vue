@@ -6,31 +6,35 @@
       label="Search"
       single-line
       hide-details
-      v-model="search" />
+      v-model="search" 
+    />
 
-    <account-type-list
-      account-type="asset"
+    <account-list
+      account-category="Assets"
       :search="search"
-      hide-on-empty />
+      hide-on-empty
+    />
 
-    <account-type-list
-      account-type="liability"
+    <account-list
+      account-category="Liabilities"
       :search="search"
-      hide-on-empty />
+      hide-on-empty 
+    />
       
-    <account-type-list
-      account-type="budget"
+    <account-list
+      account-category="Budgets"
       :search="search"
-      hide-on-empty />
+      hide-on-empty
+    />
   </div>
 </template>
 
 <script>
-  import AccountTypeList from '@/components/AccountTypeList';
+  import AccountList from '@/components/AccountList';
 
   export default {
     components: {
-      AccountTypeList,
+      AccountList,
     },
     data() {
       return {

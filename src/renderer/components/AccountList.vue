@@ -1,12 +1,11 @@
 <template>
-  <div>
-    <v-text-field
-      v-if="enableSearch"
-      append-icon="search"
-      label="Search"
-      single-line
-      hide-details
-      v-model="search" />
+  <v-card class="mb-4" v-show="visible">
+    <v-card-title>
+      <span class="headline">{{ accountCategory }}</span>
+      <v-spacer />
+      <v-btn flat color="primary" @click="newAccount">Add</v-btn>
+    </v-card-title>
+
     <v-data-table
       v-show="visible"
       :headers="headers"
@@ -29,12 +28,17 @@
         </td>
       </template>
     </v-data-table>
-  </div>
+  </v-card>
 </template>
 
 <script>
 
   export default {
+    props: {
+      accountCategory: String,
+      search: String,
+      hideOnEmpty: Boolean
+    },
     components: {
     },
     data() {
@@ -52,21 +56,9 @@
         },
       };
     },
-    props: {
-      accountType: String,
-      enableSearch: Boolean,
-      search: {
-        type: String,
-        default: '',
-      },
-      hideOnEmpty: {
-        type: Boolean,
-        default: false,
-      }
-    },
     computed: {
       accounts() {
-        return this.$project.accountsByType(this.accountType);
+        return this.$project.accountsByCategory(this.accountCategory);
       },
       total() {
         return this.$project.accountsTotal(this.accounts);
@@ -75,12 +67,16 @@
         return this.hideOnEmpty ? this.pagination.totalItems > 0 : true;
       }
     },
-    watch: {
-      visible(visible) {
-        this.$emit('visible', visible);
-      },
-    },
     methods: {
+      newAccount() {
+        this.$router.push({
+          name: 'newAccount',
+          params: {
+            accountId: 'new',
+            accountType: this.accountType,
+          },
+        });
+      },
       openAccount(accountId) {
         const account = this.$project.account(accountId);
         this.$router.push({
@@ -90,12 +86,20 @@
             accountType: account.type,
           },
         });
-      },
-    },
+      }
+    }
   };
 </script>
 
 <style lang="scss" scoped>
+  .new-account {
+    margin: 5px 0;
+  }
+
+  .account-type-list {
+    margin-bottom: 20px;
+  }
+
   .account-name {
     width: 70%;
   }

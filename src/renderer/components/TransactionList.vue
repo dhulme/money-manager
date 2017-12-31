@@ -27,7 +27,6 @@
             <td>{{ props.item.date | date }}</td>
             <td>{{ props.item.description }}</td>
             <td>{{ props.item.note }}</td>
-            <td>{{ $t(`transactionTypes.${props.item.type}`) }}
             <td>{{ transactionAccount(props.item) }}</td>
             <td>{{ transactionIn(props.item) | currency }}</td>
             <td>{{ transactionOut(props.item) | currency }}</td>
@@ -35,7 +34,6 @@
         </template>
         <template slot="footer">
           <tr>
-            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -63,8 +61,7 @@
     valueIn: '',
     valueOut: '',
     account: 'none',
-    note: '',
-    type: 'transfer',
+    note: ''
   };
 
   export default {
@@ -87,10 +84,6 @@
         }, {
           text: this.$t('transactions.note'),
           value: 'note',
-          align: 'left',
-        }, {
-          text: 'Type',
-          value: 'type',
           align: 'left',
         }, {
           text: 'Account',
@@ -141,7 +134,7 @@
       },
       transactionAccount(transaction) {
         let accountId;
-        if (transaction.type === 'expense') {
+        if (transaction.expenseAccount) {
           accountId = transaction.expenseAccount;
         } else if (transaction.to === this.account.id) {
           accountId = transaction.from;
@@ -151,37 +144,16 @@
         return accountId ? this.$project.account(accountId).name : null;
       },
       addTransaction() {
-        const transaction = {
-          description: this.transaction.description,
-          note: this.transaction.note,
-          type: this.transaction.type,
-          date: moment(this.transaction.date, dateFormat),
-        };
+        
 
-        if (parseFloat(this.transaction.valueIn) < 0 || parseFloat(this.transaction.valueOut) < 0) {
-          throw new Error(this.$store.commit('setError', 'You cannot enter negative numbers'));
-        }
-        if (this.transaction.valueIn && this.transaction.valueOut) {
-          throw new Error(this.$store.commit('setError', 'A transaction cannot be both in and out'));
-        }
-        if (!this.transaction.valueIn && !this.transaction.valueOut) {
-          throw new Error(this.$store.commit('setError', 'A transaction must have a value'));
-        }
+        
 
-        if (this.transaction.valueIn) {
-          transaction.value = this.transaction.valueIn;
-          transaction.to = this.account.id;
-          transaction.from = this.transaction.account;
-        } else if (this.transaction.valueOut) {
-          transaction.value = this.transaction.valueOut;
-          transaction.to = this.transaction.account;
-          transaction.from = this.account.id;
-        }
+        
 
-        this.$project.addTransaction(transaction);
+        
         this.transactions.push(transaction);
 
-        this.$store.commit('setSummaryBalance', this.$project.summaryBalance());
+        
 
         this.resetForm();
       },

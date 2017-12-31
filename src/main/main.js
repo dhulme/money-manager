@@ -3,10 +3,6 @@ const electron = require('electron');
 const app = electron.app;
 
 const BrowserWindow = electron.BrowserWindow;
-const Menu = electron.Menu;
-
-const path = require('path');
-const url = require('url');
 
 let mainWindow;
 const development = process.env.NODE_ENV !== 'production';
