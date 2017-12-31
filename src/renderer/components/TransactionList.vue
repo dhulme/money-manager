@@ -38,7 +38,7 @@
             <td></td>
             <td></td>
             <td></td>
-            <td class="balance">Balance</td>
+            <td class="text-xs-right">Balance</td>
             <td :class="{ 'red--text': parseFloat(account.balance) < 0 }">
               {{ account.balance | currency }}
             </td>
@@ -65,8 +65,12 @@
   };
 
   export default {
+    props: {
+      editable: Boolean,
+      account: Object,
+      transactions: Array,
+    },
     data() {
-      const transactions = this.$project.transactions(this.account);
       const rowsPerPage = 10;
       return {
         transaction: {
@@ -98,7 +102,6 @@
           value: 'value',
           align: 'left',
         }],
-        transactions,
         rowsPerPageItems: [rowsPerPage, {
           text: 'All',
           value: -1,
@@ -109,10 +112,6 @@
           rowsPerPage,
         },
       };
-    },
-    props: {
-      editable: Boolean,
-      account: Object,
     },
     methods: {
       resetForm() {
@@ -143,30 +142,6 @@
         }
         return accountId ? this.$project.account(accountId).name : null;
       },
-      addTransaction() {
-        
-
-        
-
-        
-
-        
-        this.transactions.push(transaction);
-
-        
-
-        this.resetForm();
-      },
     },
   };
 </script>
-
-<style lang="scss" scoped>
-  .balance {
-    text-align: right;
-  }
-
-  .new-row /deep/ input {
-    width: 100%;
-  }
-</style>

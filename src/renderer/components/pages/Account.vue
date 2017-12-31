@@ -10,6 +10,7 @@
     <transaction-list
       editable
       :account="account"
+      :transactions="transactions"
       @transaction-click="editTransaction"
       @add-transaction="addTransaction"
     />
@@ -19,6 +20,7 @@
         :transaction="transaction"
         :account="account"
         @close="dialogVisible = false"
+        @added="updateTransactions"
       />
     </v-dialog>
   </div>
@@ -38,13 +40,17 @@
     data() {
       return {
         dialogVisible: false,
-        transaction: {}
+        transaction: {},
+        transactions: []
       }
     },
     computed: {
       account() {
         return this.$project.account(this.$route.params.accountId);
       },
+    },
+    mounted() {
+      this.transactions = this.$project.transactions(this.account);
     },
     methods: {
       deleteAccount() {
@@ -62,14 +68,11 @@
           date: Date.now()
         };
         this.dialogVisible = true;
+      },
+      updateTransactions(transaction) {
+        this.transactions.push(transaction);
+        this.dialogVisible = false;
       }
     },
   };
 </script>
-
-<style lang="scss" scoped>
-  header {
-    display: flex;
-    justify-content: space-between;
-  }
-</style>

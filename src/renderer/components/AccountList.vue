@@ -90,29 +90,3 @@
     }
   };
 </script>
-
-<style lang="scss" scoped>
-  .new-account {
-    margin: 5px 0;
-  }
-
-  .account-type-list {
-    margin-bottom: 20px;
-  }
-
-  .account-name {
-    width: 70%;
-  }
-  
-  .account-balance {
-    width: 30%;
-  }
-
-  .total {
-    text-align: right;
-  }
-
-  .search {
-    text-align: right;
-  }
-</style>

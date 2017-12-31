@@ -17,7 +17,7 @@
       >
         <v-text-field
           slot="activator"
-          label="Picker in menu"
+          label="Date"
           v-model="newTransaction.prettyDate"
           prepend-icon="event"
           readonly
@@ -35,10 +35,12 @@
       <v-text-field
         v-model="newTransaction.description"
         label="Description"
+        prepend-icon="description"
       />
       <v-text-field
         v-model="newTransaction.note"
         label="Note"
+        prepend-icon="note"
       />
       <v-select
         :items="accounts"
@@ -47,14 +49,17 @@
         autocomplete
         item-text="name"
         item-value="id"
+        prepend-icon="account_balance"
       />
       <v-text-field
         v-model="newTransaction.valueIn"
-        label="In" 
+        label="In"
+        prefix="£"
       />
       <v-text-field
         v-model="newTransaction.valueOut"
         label="Out"
+        prefix="£"
       />
     </v-card-text>
     <v-card-actions>
@@ -80,7 +85,7 @@
     },
     computed: {
       isNewTransaction() {
-        return Object.keys(this.transaction).length === 0;
+        return !this.transaction.account;
       },
       accounts() {
         return this.$project.sortAccounts(this.$project.accounts().filter(account => account.id !== this.account.id));
@@ -88,10 +93,18 @@
     },
     watch: {
       transaction(transaction) {
+        console.log(transaction);
         this.newTransaction = {
           ...transaction,
           prettyDate: this.$options.filters.date(transaction.date)
         };
+        if (transaction.from === this.account.id) {
+          this.newTransaction.valueOut = transaction.value;
+          this.newTransaction.account = transaction.to;
+        } else {
+          this.newTransaction.valueIn = transaction.value;
+          this.newTransaction.account = transaction.from;
+        }
       },
     },
     methods: {
@@ -151,8 +164,8 @@
           this.$project.addTransaction(transaction);
         }
 
-
         this.$store.commit('setSummaryBalance', this.$project.summaryBalance());
+        this.$emit('added', transaction);
       }
     }
   };
