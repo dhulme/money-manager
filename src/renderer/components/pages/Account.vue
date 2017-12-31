@@ -17,6 +17,7 @@
     <v-dialog v-model="dialogVisible" max-width="500px">
       <transaction-edit 
         :transaction="transaction"
+        :account="account"
         @close="dialogVisible = false"
       />
     </v-dialog>
@@ -36,7 +37,7 @@
     },
     data() {
       return {
-        dialogVisible: true,
+        dialogVisible: false,
         transaction: {}
       }
     },

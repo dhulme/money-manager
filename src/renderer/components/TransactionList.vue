@@ -106,10 +106,6 @@
           align: 'left',
         }],
         transactions,
-        transactionTypes: this.$project.transactionTypes().map(transactionType => ({
-          name: this.$t(`transactionTypes.${transactionType}`),
-          id: transactionType,
-        })),
         rowsPerPageItems: [rowsPerPage, {
           text: 'All',
           value: -1,
@@ -124,11 +120,6 @@
     props: {
       editable: Boolean,
       account: Object,
-    },
-    computed: {
-      accounts() {
-        return this.$project.sortAccounts(this.$project.accounts().filter(account => account.id !== this.account.id));
-      },
     },
     methods: {
       resetForm() {
