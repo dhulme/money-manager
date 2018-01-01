@@ -63,8 +63,8 @@
       />
     </v-card-text>
     <v-card-actions>
+      <v-btn flat @click="$emit('close') ">Close</v-btn>
       <v-btn color="primary" flat @click="addTransaction">{{ isNewTransaction ? 'Add' : 'Update' }}</v-btn>
-      <v-btn flat @click="$emit('close')">Cancel</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -75,7 +75,7 @@
   export default {
     props: {
       transaction: Object,
-      account: Object
+      account: Object,
     },
     data() {
       return {

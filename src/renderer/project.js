@@ -62,19 +62,26 @@ const project = {
     return account.transactionIds.map(id => data.transactions[id]);
   },
 
-  addTransaction(transaction) {
+  addTransaction({
+    to,
+    from,
+    date = moment(),
+    value
+  }) {
+    const transaction = {
+      to,
+      from,
+      date,
+      value
+    };
     const transactionId = util.getId();
-    const accountTo = project.account(transaction.to);
-    const accountFrom = project.account(transaction.from);
-
-    if (!transaction.date) {
-      transaction.date = moment();
-    }
+    const accountTo = project.account(to);
+    const accountFrom = project.account(from);
 
     data.transactions[transactionId] = transaction;
-    accountFrom.balance = new Big(accountFrom.balance).minus(transaction.value);
+    accountFrom.balance = new Big(accountFrom.balance).minus(value);
     accountFrom.transactionIds.push(transactionId);
-    accountTo.balance = new Big(accountTo.balance).plus(transaction.value);
+    accountTo.balance = new Big(accountTo.balance).plus(value);
     accountTo.transactionIds.push(transactionId);
     
     project.updateSummaryBalance();
@@ -82,6 +89,25 @@ const project = {
 
   addTransactions(transactions) {
     transactions.forEach(transaction => project.addTransaction(transaction));
+  },
+
+  addBulkTransactionTransaction(bulkTransaction, {
+    to,
+    from,
+    value
+  }) {
+    const transaction = {
+      to,
+      from,
+      value
+    };
+    const transactionId = util.getId();
+    data.bulkTransactionTransactions[transactionId] = transaction;
+    bulkTransaction.transactionIds.push(transactionId);
+  },
+
+  addBulkTransactionTransactions(bulkTransaction, transactions) {
+    transactions.forEach(_ => project.addBulkTransactionTransaction(bulkTransaction, _));
   },
 
   updateSummaryBalance() {
@@ -149,13 +175,28 @@ const project = {
     return data.bulkTransactions;
   },
 
-  addBulkTransaction(newBulkTransaction) {
-    const existingIds = project.bulkTransactions().map(bulkTransaction => bulkTransaction.id);
-    newBulkTransaction.transactions.forEach((transaction) => {
-      transaction.description = newBulkTransaction.name;
-    });
-    newBulkTransaction.id = util.getFriendlyId(newBulkTransaction.name, existingIds);
-    data.bulkTransactions.push(newBulkTransaction);
+  bulkTransactionTransactions(bulkTransaction) {
+    return bulkTransaction.transactionIds.map(id => data.bulkTransactionTransactions[id]);
+  },
+
+  addBulkTransaction({
+    description,
+    name
+  }) {
+    const existingIds = project.bulkTransactions().map(_ => _.id);
+    const bulkTransaction = {
+      name,
+      description,
+      id: util.getFriendlyId(name, existingIds),
+      transactionIds: []
+    };
+    data.bulkTransactions.push(bulkTransaction);
+
+    return bulkTransaction;
+  },
+
+  updateBulkTransactionTransaction(bulkTransaction, transaction) {
+    // const bulkTransaction.transactions.find(_ => _.id === transaction.id);
   },
 
   bulkTransaction(id) {

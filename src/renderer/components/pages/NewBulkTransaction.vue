@@ -12,6 +12,9 @@
           v-model="description"
         />
       </v-card-text>
+      <v-card-actions>
+        <v-btn flat color="secondary" @click="addBulkTransaction">Done</v-btn>
+      </v-card-actions>
     </v-card>
     <v-card class="mb-4">
       <v-card-title>Add Transaction</v-card-title>
@@ -37,15 +40,9 @@
           v-model="newTransaction.note"
           placeholder="Note"
         />
-        <!-- <v-list>
-          <v-list-tile v-for="(transaction, index) in transactions" :key="index">
-          </v-list-tile>
-          <v-btn @click.prevent="addTransaction">Add transaction</v-btn>
-        </v-list> -->
       </v-card-text>
       <v-card-actions>
         <v-btn flat color="primary" @click="addTransaction">Add</v-btn>
-        <v-btn flat color="secondary" @click="addBulkTransaction">Done</v-btn>
       </v-card-actions>
     </v-card>
     <v-card>
@@ -86,11 +83,12 @@
         this.newTransaction = {};
       },
       addBulkTransaction() {
-        this.$project.addBulkTransaction({
+        const bulkTransaction = this.$project.addBulkTransaction({
           name: this.name,
-          transactions: this.transactions,
           description: this.description,
         });
+
+        this.$project.addBulkTransactionTransactions(bulkTransaction, this.transactions);
 
         this.$router.push({
           name: 'bulkTransactions',

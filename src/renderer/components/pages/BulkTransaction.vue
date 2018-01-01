@@ -16,37 +16,55 @@
         {{ bulkTransaction.description }}
       </v-subheader>
       <bulk-transaction-transactions
-        :transactions="bulkTransaction.transactions"
+        :transactions="transactions"
         :search="search"
+        @transaction-click="editTransaction"
       />
       <v-card-actions>
         <v-btn @click="process" flat color="primary">Run</v-btn>
       </v-card-actions>
     </v-card>
+
+    <v-dialog v-model="dialogVisible">
+      <bulk-transaction-edit
+        :transaction="transaction"
+      />
+    </v-dialog>
   </div>
 </template>
 
 <script>
   import BulkTransactionTransactions from '../BulkTransactionTransactions';
+  import BulkTransactionEdit from '../BulkTransactionEdit';
 
   export default {
     components: {
-      BulkTransactionTransactions
+      BulkTransactionTransactions,
+      BulkTransactionEdit,
     },
     data() {
       return {
         search: '',
+        dialogVisible: false,
+        transaction: {}
       };
     },
     computed: {
       bulkTransaction() {
         return this.$project.bulkTransaction(this.$route.params.bulkTransactionId);
       },
+      transactions() {
+        return this.$project.bulkTransactionTransactions(this.bulkTransaction);
+      }
     },
     methods: {
       process() {
         this.$project.addTransactions(this.bulkTransaction.transactions);
       },
+      editTransaction(transaction) {
+        this.dialogVisible = true;
+        this.transaction = transaction;
+      }
     },
   };
 </script>

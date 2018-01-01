@@ -3,7 +3,7 @@
     <v-card-title>
       <span class="title">Bulk Transactions</span>
       <v-spacer />
-      <v-btn flat primary @click="newBulkTransaction">Add</v-btn>
+      <v-btn flat color="primary" @click="newBulkTransaction">Add</v-btn>
     </v-card-title>
     <bulk-transaction-list />
   </v-card>

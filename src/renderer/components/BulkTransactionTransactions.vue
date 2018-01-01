@@ -6,25 +6,12 @@
     :rows-per-page-items="rowsPerPageItems"
   >
     <template slot="items" slot-scope="props">
-      <td>{{ accountName(props.item.from) }}</td>
-      <td>{{ accountName(props.item.to) }}</td>
-      <td>{{ props.item.note }}</td>
-      <td class="text-xs-right">
-        <v-menu
-          :min-width="300"
-          left
-        >
-          <span slot="activator" @click="$refs.itemValue.focus()">{{ props.item.value | currency }}</span>
-          <v-card>
-            <v-card-text>
-              <v-text-field
-                v-model="props.item.value"
-                ref="itemValue"
-              />
-            </v-card-text>
-          </v-card>
-        </v-menu>
-      </td>
+      <tr @click="$emit('transaction-click', props.item)">
+        <td>{{ accountName(props.item.from) }}</td>
+        <td>{{ accountName(props.item.to) }}</td>
+        <td>{{ props.item.note }}</td>
+        <td class="text-xs-right">{{ props.item.value | currency }}</td>
+      </tr>
     </template>
   </v-data-table>
 </template>

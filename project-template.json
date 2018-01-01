@@ -13,5 +13,6 @@
   ],
   "transactions": {
   },
-  "bulkTransactions": []
+  "bulkTransactions": [],
+  "bulkTransactionTransactions": {}
 }
