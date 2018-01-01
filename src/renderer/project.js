@@ -66,13 +66,17 @@ const project = {
     to,
     from,
     date = moment(),
-    value
+    value,
+    description,
+    note
   }) {
     const transaction = {
       to,
       from,
       date,
-      value
+      value,
+      description,
+      note
     };
     const transactionId = util.getId();
     const accountTo = project.account(to);
@@ -197,11 +201,24 @@ const project = {
 
   updateBulkTransactionTransaction(bulkTransaction, transaction) {
     // const bulkTransaction.transactions.find(_ => _.id === transaction.id);
+    
   },
 
   bulkTransaction(id) {
     return project.bulkTransactions().find(bulkTransaction => bulkTransaction.id === id);
   },
+
+  runBulkTransactionTransactions(bulkTransaction, transactions) {
+    transactions.forEach(_ => project.runBulkTransactionTransaction(bulkTransaction, _));
+  },
+
+  runBulkTransactionTransaction(bulkTransaction, transaction) {
+    project.addTransaction({
+      ...transaction,
+      description: bulkTransaction.description,
+      note: 'Bulk Transaction'
+    });
+  }
 };
 
 window.project = project;

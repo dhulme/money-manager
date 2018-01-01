@@ -28,12 +28,14 @@
           :items="projectItems"
           v-model="newTransaction.from"
           label="From"
+          autocomplete
         />
 
         <v-select
           :items="projectItems"
           v-model="newTransaction.to"
           label="To"
+          autocomplete
         />
 
         <v-text-field

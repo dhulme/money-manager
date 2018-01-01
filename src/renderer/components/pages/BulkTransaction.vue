@@ -59,7 +59,7 @@
     },
     methods: {
       process() {
-        this.$project.addTransactions(this.bulkTransaction.transactions);
+        this.$project.runBulkTransactionTransactions(this.bulkTransaction, this.transactions);
       },
       editTransaction(transaction) {
         this.dialogVisible = true;
