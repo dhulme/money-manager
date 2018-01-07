@@ -4,63 +4,80 @@
       {{ isNewTransaction ? 'Add' : 'Edit' }} Transaction
     </v-card-title>
     <v-card-text>
-      <v-menu
-        lazy
-        :close-content-on-click="false"
-        v-model="dateMenu"
-        transition="scale-transition"
-        offset-y
-        full-width
-        :nudge-right="40"
-        max-width="290px"
-        min-width="290px"
-      >
+      <v-form v-model="valid" ref="form" lazy-validation>
+        <v-menu
+          lazy
+          :close-content-on-click="false"
+          v-model="dateMenu"
+          transition="scale-transition"
+          offset-y
+          full-width
+          :nudge-right="40"
+          max-width="290px"
+          min-width="290px"
+        >
+          <v-text-field
+            slot="activator"
+            label="Date"
+            v-model="newTransaction.prettyDate"
+            prepend-icon="event"
+            readonly
+            required
+            :rules="dateValidationRules"
+            @blur="date = parseDate(newTransaction.prettyDate)"
+          />
+          <v-date-picker
+            v-model="date"
+            no-title
+            scrollable
+            actions
+            @input="newTransaction.prettyDate = $options.filters.date($event)"
+          >
+            <template slot-scope="{ save, cancel }">
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
+                <v-btn flat color="primary" @click="save">OK</v-btn>
+              </v-card-actions>
+            </template>
+          </v-date-picker>
+        </v-menu>
         <v-text-field
-          slot="activator"
-          label="Date"
-          v-model="newTransaction.prettyDate"
-          prepend-icon="event"
-          readonly
+          v-model="newTransaction.description"
+          label="Description"
+          prepend-icon="description"
+          required
+          :rules="descriptionValidationRules"
         />
-        <v-date-picker v-model="newTransaction.prettyDate" no-title scrollable actions>
-          <template slot-scope="{ save, cancel }">
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-              <v-btn flat color="primary" @click="save">OK</v-btn>
-            </v-card-actions>
-          </template>
-        </v-date-picker>
-      </v-menu>
-      <v-text-field
-        v-model="newTransaction.description"
-        label="Description"
-        prepend-icon="description"
-      />
-      <v-text-field
-        v-model="newTransaction.note"
-        label="Note"
-        prepend-icon="note"
-      />
-      <v-select
-        :items="accounts"
-        v-model="newTransaction.account"
-        label="Account"
-        autocomplete
-        item-text="name"
-        item-value="id"
-        prepend-icon="account_balance"
-      />
-      <v-text-field
-        v-model="newTransaction.valueIn"
-        label="In"
-        prefix="£"
-      />
-      <v-text-field
-        v-model="newTransaction.valueOut"
-        label="Out"
-        prefix="£"
-      />
+        <v-text-field
+          v-model="newTransaction.note"
+          label="Note"
+          prepend-icon="note"
+        />
+        <v-select
+          :items="accounts"
+          v-model="newTransaction.account"
+          label="Account"
+          autocomplete
+          item-text="name"
+          item-value="id"
+          prepend-icon="account_balance"
+          required
+          :rules="accountValidationRules"
+        />
+        <v-text-field
+          v-model="newTransaction.valueIn"
+          label="In"
+          prefix="£"
+          :rules="valueValidationRules"
+        />
+        <v-text-field
+          v-model="newTransaction.valueOut"
+          label="Out"
+          prefix="£"
+          :rules="valueValidationRules"
+        />
+      </v-form>
     </v-card-text>
     <v-card-actions>
       <v-btn flat @click="$emit('close') ">Close</v-btn>
@@ -81,6 +98,25 @@
       return {
         newTransaction: {},
         dateMenu: false,
+        valid: false,
+        valueValidationRules: [
+          () => {
+            if (this.newTransaction.valueOut || this.newTransaction.valueIn) {
+              return true;
+            }
+            return 'A value for in or out is required';
+          },
+        ],
+        dateValidationRules: [
+          value => !!value || 'Transaction date is required',
+        ],
+        descriptionValidationRules: [
+          value => !!value || 'Transaction description is required',
+        ],
+        accountValidationRules: [
+          value => !!value || 'Transaction account is required',
+        ],
+        date: null,
       };
     },
     computed: {
@@ -88,15 +124,16 @@
         return !this.transaction.account;
       },
       accounts() {
-        return this.$project.sortAccounts(this.$project.accounts().filter(account => account.id !== this.account.id));
+        return this.$project.sortAccounts(this.$project.accounts().filter((account) => {
+          return account.id !== this.account.id;
+        }));
       },
     },
     watch: {
       transaction(transaction) {
-        console.log(transaction);
         this.newTransaction = {
           ...transaction,
-          prettyDate: this.$options.filters.date(transaction.date)
+          prettyDate: this.$options.filters.date(transaction.date),
         };
         if (transaction.from === this.account.id) {
           this.newTransaction.valueOut = transaction.value;
@@ -109,6 +146,10 @@
     },
     methods: {
       addTransaction() {
+        if (!this.$refs.form.validate()) {
+          return;
+        }
+        
         const uiTransaction = this.newTransaction;
         const transactionAccount = this.$project.account(uiTransaction.account);
         const transaction = {
@@ -148,7 +189,7 @@
               ...transaction,
               from: 'none',
               to: uiTransaction.account,
-              expenseAccount: this.account.id
+              expenseAccount: this.account.id,
             });
           } else {
             transaction.value = uiTransaction.valueOut;
@@ -158,7 +199,7 @@
               ...transaction,
               to: 'none',
               from: uiTransaction.account,
-              expenseAccount: this.account.id
+              expenseAccount: this.account.id,
             });
           }
           this.$project.addTransaction(transaction);
@@ -166,7 +207,10 @@
 
         this.$store.commit('setSummaryBalance', this.$project.summaryBalance());
         this.$emit('added', transaction);
-      }
-    }
+      },
+      parseDate(date) {
+        return date ? new moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
+      },
+    },
   };
 </script>

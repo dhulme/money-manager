@@ -41,8 +41,8 @@
       return {
         dialogVisible: false,
         transaction: {},
-        transactions: []
-      }
+        transactions: [],
+      };
     },
     computed: {
       account() {
@@ -65,14 +65,14 @@
       },
       addTransaction() {
         this.transaction = {
-          date: Date.now()
+          date: Date.now(),
         };
         this.dialogVisible = true;
       },
       updateTransactions(transaction) {
         this.transactions.push(transaction);
         this.dialogVisible = false;
-      }
+      },
     },
   };
 </script>
