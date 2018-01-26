@@ -49,8 +49,9 @@
         return this.$project.account(this.$route.params.accountId);
       },
     },
-    mounted() {
+    created() {
       this.transactions = this.$project.transactions(this.account);
+      this.$ipc.setTitle(this.account.name);
     },
     methods: {
       deleteAccount() {

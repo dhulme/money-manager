@@ -6,6 +6,7 @@
   "private": true,
   "main": "main.js",
   "scripts": {
+    "start": "npm run dev",
     "dev": "electron-webpack dev",
     "compile": "electron-webpack",
     "dist": "electron-builder",

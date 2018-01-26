@@ -46,8 +46,11 @@
       return {
         search: '',
         dialogVisible: false,
-        transaction: {}
+        transaction: {},
       };
+    },
+    created() {
+      this.$ipc.setTitle(this.bulkTransaction.name);
     },
     computed: {
       bulkTransaction() {

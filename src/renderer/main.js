@@ -9,7 +9,8 @@ import router from './router';
 import messages from './messages.json';
 import store from './store';
 
-import project from '@/project';
+import project from './project';
+import ipc from './ipc';
 
 import('../../node_modules/vuetify/dist/vuetify.min.css');
 
@@ -31,6 +32,7 @@ project.load().then(() => {
   });
 
   Vue.prototype.$project = project;
+  Vue.prototype.$ipc = ipc;
 
   new Vue({
     el: '#app',

@@ -36,6 +36,9 @@
     components: {
       AccountList,
     },
+    created() {
+      this.$ipc.setTitle();
+    },
     data() {
       return {
         search: '',

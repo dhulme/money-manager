@@ -68,16 +68,21 @@
         name: '',
         description: '',
         newTransaction: {},
-        transactions: []
+        transactions: [],
       };
     },
     computed: {
       projectItems() {
         return this.$project.accounts().map(account => ({
           text: account.name,
-          value: account.id
+          value: account.id,
         }));
-      }
+      },
+    },
+    watch: {
+      name(name) {
+        this.$ipc.setTitle(name);
+      },
     },
     methods: {
       addTransaction() {

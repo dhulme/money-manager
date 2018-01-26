@@ -16,6 +16,9 @@
     components: {
       BulkTransactionList,
     },
+    created() {
+      this.$ipc.setTitle();
+    },
     methods: {
       newBulkTransaction() {
         this.$router.push({

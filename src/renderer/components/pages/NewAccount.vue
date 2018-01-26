@@ -35,6 +35,9 @@
         openingBalance: '0',
       };
     },
+    created() {
+      this.$ipc.setTitle();
+    },
     computed: {
       accountTypeName() {
         return {
@@ -42,6 +45,11 @@
           liability: 'Liability',
           budget: 'Budget',
         }[this.$route.params.accountType];
+      },
+    },
+    watch: {
+      name(name) {
+        this.$ipc.setTitle(name);
       },
     },
     methods: {
