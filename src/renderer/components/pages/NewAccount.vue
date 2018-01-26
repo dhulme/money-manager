@@ -2,7 +2,7 @@
   <div>
     <v-card>
       <v-card-title>
-        <span class="headline">New {{ accountTypeName }}</span>
+        <span class="headline">New {{ accountCategory }}</span>
       </v-card-title>
       <v-card-text>
         <form @submit="addAccount">
@@ -39,12 +39,8 @@
       this.$ipc.setTitle();
     },
     computed: {
-      accountTypeName() {
-        return {
-          asset: 'Asset',
-          liability: 'Liability',
-          budget: 'Budget',
-        }[this.$route.params.accountType];
+      accountCategory() {
+        return this.$route.params.accountCategory;
       },
     },
     watch: {
@@ -58,7 +54,7 @@
         this.$project.addAccount({
           name: this.name,
           balance: this.openingBalance,
-          type: this.$route.params.accountType,
+          type: this.$route.params.accountCategory,
         });
 
         this.resetForm();
@@ -73,7 +69,7 @@
           name: 'account',
           params: {
             accountId: account.id,
-            accountType: account.type,
+            accountCategory: account.category,
           },
         });
       },

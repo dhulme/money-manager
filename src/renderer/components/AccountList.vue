@@ -37,7 +37,7 @@
     props: {
       accountCategory: String,
       search: String,
-      hideOnEmpty: Boolean
+      hideOnEmpty: Boolean,
     },
     components: {
     },
@@ -73,7 +73,7 @@
           name: 'newAccount',
           params: {
             accountId: 'new',
-            accountType: this.accountType,
+            accountCategory: this.accountCategory,
           },
         });
       },
@@ -83,10 +83,10 @@
           name: 'account',
           params: {
             accountId,
-            accountType: account.type,
+            accountCategory: account.category,
           },
         });
-      }
-    }
+      },
+    },
   };
 </script>
