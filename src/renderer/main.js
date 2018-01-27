@@ -7,7 +7,7 @@ import Vuetify from 'vuetify';
 import App from './App';
 import router from './router';
 import messages from './messages.json';
-import store from './store';
+import store from './store/index';
 
 import project from './project';
 import ipc from './ipc';
@@ -19,7 +19,7 @@ Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(Vuetify);
 
-project.load().then(() => {
+project.load().then((data) => {
   Vue.filter('currency', (value) => {
     if (value === undefined || value === null) {
       return '';
@@ -30,6 +30,8 @@ project.load().then(() => {
   Vue.filter('date', (value) => {
     return value ? moment(value).format('DD/MM/YYYY') : '';
   });
+
+  store.state.project = data;
 
   Vue.prototype.$project = project;
   Vue.prototype.$ipc = ipc;

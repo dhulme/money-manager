@@ -58,14 +58,14 @@
     },
     computed: {
       accounts() {
-        return this.$project.accountsByCategory(this.accountCategory);
+        return this.$store.getters.accountsByCategory(this.accountCategory);
       },
       total() {
-        return this.$project.accountsTotal(this.accounts);
+        return this.$store.getters.accountsTotal(this.accountCategory);
       },
       visible() {
         return this.hideOnEmpty ? this.pagination.totalItems > 0 : true;
-      }
+      },
     },
     methods: {
       newAccount() {
@@ -78,7 +78,7 @@
         });
       },
       openAccount(accountId) {
-        const account = this.$project.account(accountId);
+        const account = this.$store.getters.account(accountId);
         this.$router.push({
           name: 'account',
           params: {

@@ -1,11 +1,4 @@
-import Big from 'big.js';
-import moment from 'moment';
-
-import util from '@/util';
-
 import example from '../example.json';
-
-let data = {};
 
 const remote = window.require ? window.require('electron').remote.require('./project') : {
   load(done) {
@@ -23,14 +16,14 @@ const project = {
         if (err) {
           reject(err);
         } else {
-          data = JSON.parse(loadedData);
-          resolve(loadedData);
+          const data = JSON.parse(loadedData);
+          resolve(data);
         }
       });
     });
   },
 
-  save() {
+  save(data) {
     return new Promise((resolve, reject) => {
       remote.save(JSON.stringify(data), (err) => {
         if (!err) {
@@ -41,59 +34,10 @@ const project = {
       });
     });
   },
+  
 
-  accounts() {
-    return data.accounts;
-  },
-
-  accountsByType(type) {
-    return project.accounts().filter(account => account.type === type);
-  },
-
-  accountsByCategory(category) {
-    return project.accounts().filter(account => account.category === category);
-  },
-
-  account(id) {
-    return project.accounts().find(account => account.id === id);
-  },
-
-  transactions(account) {
-    return account.transactionIds.map(id => data.transactions[id]);
-  },
-
-  addTransaction({
-    to,
-    from,
-    date = moment(),
-    value,
-    description,
-    note
-  }) {
-    const transaction = {
-      to,
-      from,
-      date,
-      value,
-      description,
-      note
-    };
-    const transactionId = util.getId();
-    const accountTo = project.account(to);
-    const accountFrom = project.account(from);
-
-    data.transactions[transactionId] = transaction;
-    accountFrom.balance = new Big(accountFrom.balance).minus(value);
-    accountFrom.transactionIds.push(transactionId);
-    accountTo.balance = new Big(accountTo.balance).plus(value);
-    accountTo.transactionIds.push(transactionId);
-    
-    project.updateSummaryBalance();
-  },
-
-  addTransactions(transactions) {
-    transactions.forEach(transaction => project.addTransaction(transaction));
-  },
+  
+  
 
   addBulkTransactionTransaction(bulkTransaction, {
     to,
@@ -114,19 +58,7 @@ const project = {
     transactions.forEach(_ => project.addBulkTransactionTransaction(bulkTransaction, _));
   },
 
-  updateSummaryBalance() {
-    data.summary.balance = data.accounts.reduce((total, account) => {
-      if (account.type === 'none') {
-        return total;
-      }
-      
-      if (account.type === 'budget') {
-        return total.minus(account.balance);
-      }
-
-      return total.plus(account.balance);
-    }, new Big(0));
-  },
+  
 
   addAccount({
     name,
@@ -158,18 +90,11 @@ const project = {
     });
   },
 
-  accountsTotal(accounts) {
-    return accounts.reduce((total, account) => total.plus(account.balance), new Big(0));
-  },
+  
 
-  summaryBalance() {
-    return data.summary.balance;
-  },
+  
 
-  summaryBalanceZero() {
-    return new Big(data.summary.balance).eq(0);
-  },
-
+  
   deleteAccount(accountId) {
     data.accounts = data.accounts.filter(account => account.id !== accountId);
     project.updateSummaryBalance();
@@ -216,9 +141,9 @@ const project = {
     project.addTransaction({
       ...transaction,
       description: bulkTransaction.description,
-      note: 'Bulk Transaction'
+      note: 'Bulk Transaction',
     });
-  }
+  },
 };
 
 window.project = project;
