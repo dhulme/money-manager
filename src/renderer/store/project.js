@@ -26,6 +26,7 @@ const project = {
       toAccount.balance = new Big(toAccount.balance).add(value);
       toAccount.transactionIds.push(id);
     },
+
     updateSummaryBalance(state) {
       state.summary.balance = state.accounts.reduce((total, account) => {
         if (account.type === 'none') {
@@ -38,6 +39,10 @@ const project = {
 
         return total.plus(account.balance);
       }, new Big(0));
+    },
+
+    deleteAccount(state, accountId) {
+      state.accounts = state.accounts.filter(account => account.id !== accountId);
     },
   },
   actions: {
@@ -72,12 +77,20 @@ const project = {
       
       commit('updateSummaryBalance');
     },
+
     addTransactions({
       actions,
     }, transactions) {
       transactions.forEach((transaction) => {
         actions.dispatch('addTransaction', transaction);
       });
+    },
+
+    deleteAccount({
+      commit,
+    }, accountId) {
+      commit('deleteAccount', accountId);
+      commit('updateSummaryBalance');
     },
   },
   getters: {

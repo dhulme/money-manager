@@ -43,7 +43,7 @@
     },
     computed: {
       accounts() {
-        return this.$project.accounts().map(account => ({
+        return this.$store.getters.accounts.map(account => ({
           text: account.name,
           id: account.id,
         }));
@@ -52,8 +52,8 @@
     methods: {
       saveTransaction() {
         
-      }
-    }
+      },
+    },
   };
 </script>
 

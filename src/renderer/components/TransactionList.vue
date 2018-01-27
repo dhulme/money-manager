@@ -140,7 +140,7 @@
         } else {
           accountId = transaction.to;
         }
-        return accountId ? this.$project.account(accountId).name : null;
+        return accountId ? this.$store.getters.account(accountId).name : null;
       },
     },
   };

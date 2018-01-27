@@ -27,9 +27,9 @@
 </template>
 
 <script>
-  import TransactionList from '@/components/TransactionList';
-  import BackButton from '@/components/BackButton';
-  import TransactionEdit from '@/components/TransactionEdit';
+  import TransactionList from '../TransactionList';
+  import BackButton from '../BackButton';
+  import TransactionEdit from '../TransactionEdit';
 
   export default {
     components: {
@@ -46,16 +46,19 @@
     },
     computed: {
       account() {
-        return this.$project.account(this.$route.params.accountId);
+        return this.$store.getters.account(this.accountId);
+      },
+      accountId() {
+        return this.$route.params.accountId;
       },
     },
     created() {
-      this.transactions = this.$project.transactions(this.account);
+      this.transactions = this.$store.getters.transactions(this.account);
       this.$ipc.setTitle(this.account.name);
     },
     methods: {
       deleteAccount() {
-        this.$project.deleteAccount(this.$route.params.accountId);
+        this.$store.dispatch('deleteAccount', this.accountId);
         this.$router.push({
           name: 'accounts',
         });

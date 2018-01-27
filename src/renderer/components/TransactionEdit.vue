@@ -124,9 +124,17 @@
         return !this.transaction.account;
       },
       accounts() {
-        return this.$project.sortAccounts(this.$project.accounts().filter((account) => {
+        return this.$store.getters.accounts.sort((a, b) => {
+          if (a.name > b.name) {
+            return 1;
+          }
+          if (a.name < b.name) {
+            return -1;
+          }
+          return 0;
+        }).filter((account) => {
           return account.id !== this.account.id;
-        }));
+        });
       },
     },
     watch: {
@@ -152,7 +160,7 @@
         }
 
         const uiTransaction = this.newTransaction;
-        const transactionAccount = this.$project.account(uiTransaction.account);
+        const transactionAccount = this.$store.getters.account(uiTransaction.account);
         const transaction = {
           description: uiTransaction.description,
           note: uiTransaction.note,
@@ -179,14 +187,14 @@
             transaction.from = this.account.id;
             transaction.to = uiTransaction.account;
           }
-          this.$project.addTransaction(transaction);
+          this.$store.dispatch('addTransaction', transaction);
         } else {
           transaction.expenseAccount = uiTransaction.account;
           if (uiTransaction.valueIn) {
             transaction.value = uiTransaction.valueIn;
             transaction.from = 'none';
             transaction.to = this.account.id;
-            this.$project.addTransaction({
+            this.$store.dispatch('addTransaction', {
               ...transaction,
               from: 'none',
               to: uiTransaction.account,
@@ -196,17 +204,16 @@
             transaction.value = uiTransaction.valueOut;
             transaction.from = this.account.id;
             transaction.to = 'none';
-            this.$project.addTransaction({
+            this.$store.dispatch('addTransaction', {
               ...transaction,
               to: 'none',
               from: uiTransaction.account,
               expenseAccount: this.account.id,
             });
           }
-          this.$project.addTransaction(transaction);
+          this.$store.dispatch('addTransaction', transaction);
         }
 
-        this.$store.commit('setSummaryBalance', this.$project.summaryBalance());
         this.$emit('added', transaction);
       },
       parseDate(date) {

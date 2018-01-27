@@ -78,28 +78,7 @@ const project = {
     return newAccount;
   },
 
-  sortAccounts(accounts) {
-    return accounts.sort((a, b) => {
-      if (a.name > b.name) {
-        return 1;
-      }
-      if (a.name < b.name) {
-        return -1;
-      }
-      return 0;
-    });
-  },
-
   
-
-  
-
-  
-  deleteAccount(accountId) {
-    data.accounts = data.accounts.filter(account => account.id !== accountId);
-    project.updateSummaryBalance();
-  },
-
   bulkTransactions() {
     return data.bulkTransactions;
   },

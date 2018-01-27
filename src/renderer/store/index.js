@@ -6,7 +6,6 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    summaryBalance: '0',
     error: '',
   },
   mutations: {
