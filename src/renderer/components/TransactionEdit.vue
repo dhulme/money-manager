@@ -80,7 +80,7 @@
       </v-form>
     </v-card-text>
     <v-card-actions>
-      <v-btn flat @click="$emit('close') ">Close</v-btn>
+      <v-btn flat @click="$emit('close')">Close</v-btn>
       <v-btn color="primary" flat @click="addTransaction">{{ isNewTransaction ? 'Add' : 'Update' }}</v-btn>
     </v-card-actions>
   </v-card>
@@ -131,6 +131,7 @@
     },
     watch: {
       transaction(transaction) {
+        this.$refs.form.reset();
         this.newTransaction = {
           ...transaction,
           prettyDate: this.$options.filters.date(transaction.date),
@@ -149,7 +150,7 @@
         if (!this.$refs.form.validate()) {
           return;
         }
-        
+
         const uiTransaction = this.newTransaction;
         const transactionAccount = this.$project.account(uiTransaction.account);
         const transaction = {
