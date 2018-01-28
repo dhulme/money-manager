@@ -54,20 +54,23 @@
     },
     computed: {
       bulkTransaction() {
-        return this.$project.bulkTransaction(this.$route.params.bulkTransactionId);
+        return this.$store.getters.bulkTransaction(this.$route.params.bulkTransactionId);
       },
       transactions() {
-        return this.$project.bulkTransactionTransactions(this.bulkTransaction);
-      }
+        return this.$store.getters.bulkTransactionTransactions(this.bulkTransaction);
+      },
     },
     methods: {
       process() {
-        this.$project.runBulkTransactionTransactions(this.bulkTransaction, this.transactions);
+        this.$store.dispatch('runBulkTransactionTransactions', {
+          bulkTransaction: this.bulkTransaction,
+          transactions: this.transactions,
+        });
       },
       editTransaction(transaction) {
         this.dialogVisible = true;
         this.transaction = transaction;
-      }
+      },
     },
   };
 </script>

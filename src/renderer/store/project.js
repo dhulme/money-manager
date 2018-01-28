@@ -8,6 +8,7 @@ const project = {
     accounts: [],
     transactions: {},
     summary: {},
+    bulkTransactions: [],
   },
   mutations: {
     addTransaction(state, {
@@ -43,6 +44,58 @@ const project = {
 
     deleteAccount(state, accountId) {
       state.accounts = state.accounts.filter(account => account.id !== accountId);
+    },
+
+    addAccount(state, {
+      name,
+      balance,
+      type,
+    }) {
+      const existingIds = state.accounts.map(account => account.id);
+      const newAccount = {
+        transactionIds: [],
+        id: util.getFriendlyId(name, existingIds),
+        balance,
+        type,
+        name,
+      };
+      state.accounts.push(newAccount);
+
+      return newAccount;
+    },
+
+    addBulkTransaction(state, {
+      description,
+      name,
+    }) {
+      const existingIds = state.bulkTransactions.map(_ => _.id);
+      const bulkTransaction = {
+        name,
+        description,
+        id: util.getFriendlyId(name, existingIds),
+        transactionIds: [],
+      };
+      state.bulkTransactions.push(bulkTransaction);
+
+      return bulkTransaction;
+    },
+
+    addBulkTransactionTransaction(state, {
+      bulkTransaction,
+      transaction: {
+        to,
+        from,
+        value,
+      },
+    }) {
+      const transaction = {
+        to,
+        from,
+        value,
+      };
+      const transactionId = util.getId();
+      state.bulkTransactionTransactions[transactionId] = transaction;
+      bulkTransaction.transactionIds.push(transactionId);
     },
   },
   actions: {
@@ -92,6 +145,71 @@ const project = {
       commit('deleteAccount', accountId);
       commit('updateSummaryBalance');
     },
+
+    runBulkTransactionTransaction({
+      commit,
+    }, {
+      bulkTransaction,
+      transaction,
+    }) {
+      commit('addBulkTransaction', {
+        ...transaction,
+        description: bulkTransaction.description,
+        note: 'Bulk Transaction',
+      });
+    },
+
+    runBulkTransactionTransactions({
+      actions,
+    }, {
+      bulkTransaction,
+      transactions,
+    }) {
+      transactions.forEach((transaction) => {
+        actions.dispatch('runBulkTransactionTransaction', {
+          bulkTransaction,
+          transaction,
+        });
+      });
+    },
+
+    addBulkTransactionTransactions({
+      commit,
+    }, {
+      bulkTransaction,
+      transactions,
+    }) {
+      transactions.forEach(transaction => commit('addBulkTransactionTransaction', {
+        bulkTransaction,
+        transaction,
+      }));
+    },
+
+    addBulkTransaction({
+      commit,
+    }, {
+      description,
+      name,
+    }) {
+      commit('addBulkTransaction', {
+        description,
+        name,
+      });
+    },
+
+    addAccount({
+      commit,
+    }, {
+      name,
+      balance,
+      type,
+    }) {
+      commit('addAccount', {
+        name,
+        balance,
+        type,
+      });
+    },
   },
   getters: {
     accounts(state) {
@@ -120,6 +238,17 @@ const project = {
         return getters.accountsByCategory(category).reduce((total, account) => {
           return total.plus(account.balance);
         }, new Big(0));
+      };
+    },
+    bulkTransactions(state) {
+      return state.bulkTransactions;
+    },
+    bulkTransaction(state) {
+      return id => state.bulkTransactions.find(_ => _.id === id);
+    },
+    bulkTransactionTransactions(state) {
+      return (bulkTransaction) => {
+        return bulkTransaction.transactionIds.map(id => state.bulkTransactionTransactions[id]);
       };
     },
   },

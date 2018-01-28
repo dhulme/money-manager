@@ -20,34 +20,34 @@
   export default {
     props: {
       transactions: Array,
-      search: String
+      search: String,
     },
     data() {
       return {
         headers: [{
           text: 'From',
           value: 'from',
-          align: 'left'
+          align: 'left',
         }, {
           text: 'To',
           value: 'to',
-          align: 'left'
+          align: 'left',
         }, {
           text: 'Note',
           value: 'note',
-          align: 'left'
+          align: 'left',
         }, {
           text: 'Amount',
           value: 'amount',
         }],
-        rowsPerPageItems: [10, 20, 50]
+        rowsPerPageItems: [10, 20, 50],
       };
     },
     methods: {
       accountName(accountId) {
-        return this.$project.account(accountId).name;
+        return this.$store.getters.account(accountId).name;
       },
-    }
+    },
   };
 </script>
 

@@ -25,7 +25,9 @@
     },
     mounted() {
       menu.init({
-        saveClick: () => this.$project.save(),
+        saveClick: () => {
+          this.$project.save(this.$store.state.project);
+        },
         accountsClick: () => {
           this.$router.push({
             name: 'accounts',
