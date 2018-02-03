@@ -1,22 +1,22 @@
 <template>
   <v-app>
-    <toolbar></toolbar>
+    <the-toolbar />
     <main>
       <v-content class="app-content">
-        <router-view class="router-container"></router-view>
+        <router-view class="router-container" />
       </v-content>
     </main>
   </v-app>
 </template>
 
 <script>
-  import menu from '@/menu';
+  import menu from './menu';
 
-  import Toolbar from '@/components/Toolbar';
+  import TheToolbar from './components/TheToolbar';
 
   export default {
     components: {
-      Toolbar,
+      TheToolbar,
     },
     computed: {
       development() {

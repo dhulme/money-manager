@@ -59,8 +59,6 @@
           v-model="newTransaction.account"
           label="Account"
           autocomplete
-          item-text="name"
-          item-value="id"
           prepend-icon="account_balance"
           required
           :rules="accountValidationRules"
@@ -124,16 +122,8 @@
         return !this.transaction.account;
       },
       accounts() {
-        return this.$store.getters.accounts.sort((a, b) => {
-          if (a.name > b.name) {
-            return 1;
-          }
-          if (a.name < b.name) {
-            return -1;
-          }
-          return 0;
-        }).filter((account) => {
-          return account.id !== this.account.id;
+        return this.$store.getters.accountItems.filter((account) => {
+          return account.value !== this.account.id;
         });
       },
     },
@@ -217,7 +207,7 @@
         this.$emit('added', transaction);
       },
       parseDate(date) {
-        return date ? new moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
+        return date ? moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
       },
     },
   };

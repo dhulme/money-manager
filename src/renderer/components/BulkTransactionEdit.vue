@@ -6,25 +6,25 @@
     <v-card-text>
       <v-select
         :items="accounts"
-        v-model="transaction.from"
+        v-model="newTransaction.from"
         label="From"
         autocomplete
         prepend-icon="account_balance"
       />
       <v-select
         :items="accounts"
-        v-model="transaction.to"
+        v-model="newTransaction.to"
         label="To"
         autocomplete
         prepend-icon="account_balance"
       />
       <v-text-field
-        v-model="transaction.note"
+        v-model="newTransaction.note"
         label="Note"
         prepend-icon="note"
       />
       <v-text-field
-        v-model="transaction.value"
+        v-model="newTransaction.value"
         label="Amount"
         prefix="£"
       />
@@ -41,17 +41,32 @@
     props: {
       transaction: Object,
     },
+    data() {
+      return {
+        newTransaction: {},
+        transactionId: '',
+      };
+    },
     computed: {
       accounts() {
-        return this.$store.getters.accounts.map(account => ({
-          text: account.name,
-          id: account.id,
-        }));
+        return this.$store.getters.accountItems;
+      },
+    },
+    watch: {
+      transaction(transaction) {
+        this.transactionId = this.$store.getters.bulkTransactionTransactionId(transaction);
+        this.newTransaction = {
+          ...transaction,
+        };
       },
     },
     methods: {
       saveTransaction() {
-        
+        this.$store.dispatch('updateBulkTransactionTransaction', {
+          transaction: this.newTransaction,
+          transactionId: this.transactionId,
+        });
+        this.$emit('close');
       },
     },
   };

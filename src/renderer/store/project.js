@@ -7,8 +7,11 @@ const project = {
   state: {
     accounts: [],
     transactions: {},
-    summary: {},
+    summary: {
+      balance: 0,
+    },
     bulkTransactions: [],
+    bulkTransactionTransactions: {},
   },
   mutations: {
     addTransaction(state, {
@@ -80,22 +83,25 @@ const project = {
       return bulkTransaction;
     },
 
-    addBulkTransactionTransaction(state, {
-      bulkTransaction,
+    addUpdateBulkTransactionTransaction(state, {
       transaction: {
         to,
         from,
         value,
+        note,
       },
+      transactionId = util.getId(),
+      bulkTransaction,
     }) {
-      const transaction = {
+      state.bulkTransactionTransactions[transactionId] = {
         to,
         from,
         value,
+        note,
       };
-      const transactionId = util.getId();
-      state.bulkTransactionTransactions[transactionId] = transaction;
-      bulkTransaction.transactionIds.push(transactionId);
+      if (bulkTransaction) {
+        bulkTransaction.transactionIds.push(transactionId);
+      }
     },
   },
   actions: {
@@ -179,10 +185,22 @@ const project = {
       bulkTransaction,
       transactions,
     }) {
-      transactions.forEach(transaction => commit('addBulkTransactionTransaction', {
+      transactions.forEach(transaction => commit('addUpdateBulkTransactionTransaction', {
         bulkTransaction,
         transaction,
       }));
+    },
+
+    updateBulkTransactionTransaction({
+      commit,
+    }, {
+      transaction,
+      transactionId,
+    }) {
+      commit('addUpdateBulkTransactionTransaction', {
+        transaction,
+        transactionId,
+      });
     },
 
     addBulkTransaction({
@@ -215,6 +233,20 @@ const project = {
     accounts(state) {
       return state.accounts;
     },
+    accountItems(state) {
+      return state.accounts.sort((a, b) => {
+        if (a.name > b.name) {
+          return 1;
+        }
+        if (a.name < b.name) {
+          return -1;
+        }
+        return 0;
+      }).map(account => ({
+        text: account.name,
+        value: account.id,
+      }));
+    },
     accountsByType(state) {
       return type => state.accounts.filter(account => account.type === type);
     },
@@ -226,6 +258,11 @@ const project = {
     },
     transactions(state) {
       return account => account.transactionIds.map(id => state.transactions[id]);
+    },
+    transactionId(state) {
+      return transaction => Object.entries(state.transactions).find((entry) => {
+        return entry[1] === transaction;
+      })[0];
     },
     summaryBalance(state) {
       return state.summary.balance;
@@ -250,6 +287,11 @@ const project = {
       return (bulkTransaction) => {
         return bulkTransaction.transactionIds.map(id => state.bulkTransactionTransactions[id]);
       };
+    },
+    bulkTransactionTransactionId(state) {
+      return transaction => Object.entries(state.bulkTransactionTransactions).find((entry) => {
+        return entry[1] === transaction;
+      })[0];
     },
   },
 };

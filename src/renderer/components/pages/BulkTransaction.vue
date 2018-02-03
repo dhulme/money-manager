@@ -28,6 +28,7 @@
     <v-dialog v-model="dialogVisible">
       <bulk-transaction-edit
         :transaction="transaction"
+        @close="dialogVisible = false"
       />
     </v-dialog>
   </div>
