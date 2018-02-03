@@ -132,10 +132,10 @@ const project = {
     },
 
     addTransactions({
-      actions,
+      dispatch,
     }, transactions) {
       transactions.forEach((transaction) => {
-        actions.dispatch('addTransaction', transaction);
+        dispatch('addTransaction', transaction);
       });
     },
 
@@ -147,12 +147,12 @@ const project = {
     },
 
     runBulkTransactionTransaction({
-      commit,
+      dispatch,
     }, {
       bulkTransaction,
       transaction,
     }) {
-      commit('addBulkTransaction', {
+      dispatch('addTransaction', {
         ...transaction,
         description: bulkTransaction.description,
         note: 'Bulk Transaction',
@@ -160,13 +160,13 @@ const project = {
     },
 
     runBulkTransactionTransactions({
-      actions,
+      dispatch,
     }, {
       bulkTransaction,
       transactions,
     }) {
       transactions.forEach((transaction) => {
-        actions.dispatch('runBulkTransactionTransaction', {
+        dispatch('runBulkTransactionTransaction', {
           bulkTransaction,
           transaction,
         });
