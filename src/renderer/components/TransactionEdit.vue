@@ -179,7 +179,7 @@
           }
           this.$store.dispatch('addTransaction', transaction);
         } else {
-          transaction.expenseAccount = uiTransaction.account;
+          transaction.expense = uiTransaction.account;
           if (uiTransaction.valueIn) {
             transaction.value = uiTransaction.valueIn;
             transaction.from = 'none';
@@ -188,7 +188,7 @@
               ...transaction,
               from: 'none',
               to: uiTransaction.account,
-              expenseAccount: this.account.id,
+              expense: this.account.id,
             });
           } else {
             transaction.value = uiTransaction.valueOut;
@@ -198,7 +198,7 @@
               ...transaction,
               to: 'none',
               from: uiTransaction.account,
-              expenseAccount: this.account.id,
+              expense: this.account.id,
             });
           }
           this.$store.dispatch('addTransaction', transaction);

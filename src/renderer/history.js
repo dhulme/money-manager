@@ -5,14 +5,13 @@ const history = {
   install(Vue, store) {
     let done = [];
     let undone = [];
-    let newMutation = true;
+    let newAction = true;
 
-    store.subscribe((mutation) => {
-      if (mutation.type !== 'init' && mutation.type !== 'updateSummaryBalance') {
-        done.push(mutation);
-        ipc.setEdited();
-      }
-      if (newMutation) {
+    store.subscribeAction((action) => {
+      debugger
+      done.push(action);
+      ipc.setEdited();
+      if (newAction) {
         undone = [];
       }
     });
@@ -29,24 +28,24 @@ const history = {
       async undo() {
         undone.push(done.pop());
 
-        newMutation = false;
+        newAction = false;
         await Vue.history.init();
-        done.forEach((mutation) => {
-          store.commit(mutation.type, mutation.payload);
+        done.forEach((action) => {
+          store.dispatch(action.type, action.payload);
           done.pop();
         });
         store.commit('updateSummaryBalance');
-        newMutation = true;
+        newAction = true;
 
         if (done.length === 0) {
           ipc.setSaved();
         }
       },
       redo() {
-        const commit = undone.pop();
-        newMutation = false;
-        store.commit(commit.type, commit.payload);
-        newMutation = true;
+        const action = undone.pop();
+        newAction = false;
+        store.dispatch(action.type, action.payload);
+        newAction = true;
       },
       save() {
         done = [];

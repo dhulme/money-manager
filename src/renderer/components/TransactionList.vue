@@ -133,8 +133,8 @@
       },
       transactionAccount(transaction) {
         let accountId;
-        if (transaction.expenseAccount) {
-          accountId = transaction.expenseAccount;
+        if (transaction.expense) {
+          accountId = transaction.expense;
         } else if (transaction.to === this.account.id) {
           accountId = transaction.from;
         } else {

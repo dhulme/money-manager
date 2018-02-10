@@ -31,10 +31,16 @@ const project = {
     }) {
       state.transactions[id] = transaction;
       const fromAccount = state.accounts.find(_ => _.id === fromAccountId);
+      if (!fromAccount) {
+        debugger
+      }
       fromAccount.balance = new Big(fromAccount.balance).minus(value);
       fromAccount.transactionIds.push(id);
 
       const toAccount = state.accounts.find(_ => _.id === toAccountId);
+      if (!toAccount) {
+        debugger
+      }
       toAccount.balance = new Big(toAccount.balance).add(value);
       toAccount.transactionIds.push(id);
     },
@@ -125,6 +131,7 @@ const project = {
       value,
       description,
       note,
+      expense,
     }) {
       const transaction = {
         to,
@@ -133,6 +140,7 @@ const project = {
         value,
         description,
         note,
+        expense,
       };
       const id = util.getId();
   
