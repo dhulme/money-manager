@@ -35,21 +35,21 @@
         openingBalance: '0',
       };
     },
-    created() {
-      this.$ipc.setTitle();
-    },
     computed: {
       accountCategory() {
         return this.$route.params.accountCategory;
       },
       accountType() {
         return this.$route.params.accountType;
-      }
+      },
     },
     watch: {
       name(name) {
         this.$ipc.setTitle(name);
       },
+    },
+    created() {
+      this.$ipc.setTitle();
     },
     methods: {
       addAccount(event) {

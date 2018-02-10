@@ -19,7 +19,7 @@ module.exports = {
   'settings': {
     'import/resolver': {
       'webpack': {
-        'config': 'build/webpack.base.conf.js'
+        'config': 'vuewebpack.config.js'
       }
     }
   },
@@ -37,6 +37,7 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'linebreak-style': ['error', 'windows'],
+    'indent': 'off',
     'vue/html-indent': ['error', 2],
     'vue/script-indent': ['error', 2, {
         'baseIndent': 1

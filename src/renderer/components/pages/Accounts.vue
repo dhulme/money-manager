@@ -6,7 +6,7 @@
       label="Search"
       single-line
       hide-details
-      v-model="search" 
+      v-model="search"
     />
 
     <account-list
@@ -20,9 +20,9 @@
       account-category="Liabilities"
       account-type="asset"
       :search="search"
-      hide-on-empty 
+      hide-on-empty
     />
-      
+
     <account-list
       account-category="Budgets"
       account-type="budget"
@@ -39,13 +39,13 @@
     components: {
       AccountList,
     },
-    created() {
-      this.$ipc.setTitle();
-    },
     data() {
       return {
         search: '',
       };
+    },
+    created() {
+      this.$ipc.setTitle();
     },
   };
 </script>

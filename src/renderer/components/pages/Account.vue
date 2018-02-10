@@ -3,7 +3,11 @@
     <v-card class="mb-4">
       <v-card-title class="headline">{{ account.name }}</v-card-title>
       <v-card-actions>
-        <v-btn flat @click="deleteAccount" color="error">Delete</v-btn>
+        <v-btn
+          flat
+          @click="deleteAccount"
+          color="error"
+        >Delete</v-btn>
       </v-card-actions>
     </v-card>
 
@@ -15,8 +19,11 @@
       @add-transaction="addTransaction"
     />
 
-    <v-dialog v-model="dialogVisible" max-width="500px">
-      <transaction-edit 
+    <v-dialog
+      v-model="dialogVisible"
+      max-width="500px"
+    >
+      <transaction-edit
         :transaction="transaction"
         :account="account"
         @close="dialogVisible = false"
