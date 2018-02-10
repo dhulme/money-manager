@@ -28,11 +28,11 @@ export default new Router({
       name: 'bulkTransaction',
       component: BulkTransaction,
     }, {
-      path: '/:accountCategory/new',
+      path: '/:accountType/:accountCategory/new',
       name: 'newAccount',
       component: NewAccount,
     }, {
-      path: '/:accountCategory/:accountId',
+      path: '/:accountType/:accountCategory/:accountId',
       name: 'account',
       component: Account,
     },

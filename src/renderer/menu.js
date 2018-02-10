@@ -5,6 +5,8 @@ export default {
     saveClick,
     accountsClick,
     bulkTransactionsClick,
+    undoClick,
+    redoClick,
   }) {
     if (!remote) {
       return;
@@ -17,6 +19,19 @@ export default {
           {
             label: 'Save',
             click: saveClick,
+          },
+        ],
+      },
+      {
+        label: 'Edit',
+        submenu: [
+          {
+            label: 'Undo',
+            click: undoClick,
+          },
+          {
+            label: 'Redo',
+            click: redoClick,
           },
         ],
       },

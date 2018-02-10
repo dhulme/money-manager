@@ -36,6 +36,7 @@
   export default {
     props: {
       accountCategory: String,
+      accountType: String,
       search: String,
       hideOnEmpty: Boolean,
     },
@@ -74,6 +75,7 @@
           params: {
             accountId: 'new',
             accountCategory: this.accountCategory,
+            accountType: this.accountType
           },
         });
       },
@@ -84,6 +86,7 @@
           params: {
             accountId,
             accountCategory: account.category,
+            accountType: account.type
           },
         });
       },

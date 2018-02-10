@@ -42,6 +42,9 @@
       accountCategory() {
         return this.$route.params.accountCategory;
       },
+      accountType() {
+        return this.$route.params.accountType;
+      }
     },
     watch: {
       name(name) {
@@ -54,7 +57,8 @@
         this.$store.dispatch('addAccount', {
           name: this.name,
           balance: this.openingBalance,
-          type: this.$route.params.accountCategory,
+          category: this.accountCategory,
+          type: this.accountType,
         });
 
         this.resetForm();

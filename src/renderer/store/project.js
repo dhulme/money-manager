@@ -14,6 +14,14 @@ const project = {
     bulkTransactionTransactions: {},
   },
   mutations: {
+    init(state, data) {
+      state.accounts = data.accounts;
+      state.transactions = data.transactions;
+      state.summary = data.summary;
+      state.bulkTransactions = data.bulkTransactions;
+      state.bulkTransactionTransactions = data.bulkTransactionTransactions;
+    },
+
     addTransaction(state, {
       id,
       transaction,
@@ -53,6 +61,7 @@ const project = {
       name,
       balance,
       type,
+      category,
     }) {
       const existingIds = state.accounts.map(account => account.id);
       const newAccount = {
@@ -60,6 +69,7 @@ const project = {
         id: util.getFriendlyId(name, existingIds),
         balance,
         type,
+        category,
         name,
       };
       state.accounts.push(newAccount);
@@ -221,11 +231,13 @@ const project = {
       name,
       balance,
       type,
+      category,
     }) {
       commit('addAccount', {
         name,
         balance,
         type,
+        category,
       });
     },
   },
@@ -246,9 +258,6 @@ const project = {
         text: account.name,
         value: account.id,
       }));
-    },
-    accountsByType(state) {
-      return type => state.accounts.filter(account => account.type === type);
     },
     accountsByCategory(state) {
       return category => state.accounts.filter(account => account.category === category);
@@ -295,6 +304,8 @@ const project = {
     },
   },
 };
+
+window.projectStore = project;
 
 export default project;
 

@@ -11,18 +11,21 @@
 
     <account-list
       account-category="Assets"
+      account-type="asset"
       :search="search"
       hide-on-empty
     />
 
     <account-list
       account-category="Liabilities"
+      account-type="asset"
       :search="search"
       hide-on-empty 
     />
       
     <account-list
       account-category="Budgets"
+      account-type="budget"
       :search="search"
       hide-on-empty
     />

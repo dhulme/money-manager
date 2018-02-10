@@ -9,7 +9,7 @@ import router from './router';
 import messages from './messages.json';
 import store from './store/index';
 
-import project from './project';
+import history from './history';
 import ipc from './ipc';
 
 import('../../node_modules/vuetify/dist/vuetify.min.css');
@@ -18,8 +18,9 @@ Vue.config.productionTip = false;
 
 Vue.use(VueI18n);
 Vue.use(Vuetify);
+Vue.use(history, store);
 
-project.load().then((data) => {
+Vue.history.init().then(() => {
   Vue.filter('currency', (value) => {
     if (value === undefined || value === null) {
       return '';
@@ -31,18 +32,15 @@ project.load().then((data) => {
     return value ? moment(value).format('DD/MM/YYYY') : '';
   });
 
-  store.state.project = data;
-
-  Vue.prototype.$project = project;
   Vue.prototype.$ipc = ipc;
 
   new Vue({
     el: '#app',
     router,
-    template: '<App/>',
     components: {
       App,
     },
+    template: '<App/>',
     i18n: new VueI18n({
       locale: 'en',
       messages,

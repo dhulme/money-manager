@@ -26,7 +26,7 @@
     mounted() {
       menu.init({
         saveClick: () => {
-          this.$project.save(this.$store.state.project);
+          this.$history.save();
         },
         accountsClick: () => {
           this.$router.push({
@@ -37,6 +37,12 @@
           this.$router.push({
             name: 'bulkTransactions',
           });
+        },
+        undoClick: () => {
+          this.$history.undo();
+        },
+        redoClick: () => {
+          this.$history.redo();
         },
       });
       document.addEventListener('keyup', (event) => {
