@@ -1,0 +1,11 @@
+{
+  "eslint.validate": [
+        "javascript",
+        {"language": "html", "autoFix": true},
+        {"language": "vue", "autoFix": true},
+    ],
+    "emmet.includeLanguages": {
+        "vue-html": "html",
+        "vue": "html"
+    }
+}

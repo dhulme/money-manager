@@ -2,17 +2,18 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    sourceType: 'module'
+      sourceType: 'module',
+      parser: 'babel-eslint',
+      ecmaVersion: 2017,
   },
   env: {
     browser: true,
   },
-  extends: 'airbnb-base',
-  // required to lint *.vue files
-  plugins: [
-    'html'
+  extends: [
+    'plugin:vue/recommended',
+    'airbnb-base',
   ],
   // check if imports actually resolve
   'settings': {
@@ -35,6 +36,10 @@ module.exports = {
     }],
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'linebreak-style': ['error', 'windows']
+    'linebreak-style': ['error', 'windows'],
+    'vue/html-indent': ['error', 2],
+    'vue/script-indent': ['error', 2, {
+        'baseIndent': 1
+    }],
   }
 }
