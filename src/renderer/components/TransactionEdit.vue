@@ -138,7 +138,7 @@
         return !this.transaction.account;
       },
       accounts() {
-        return this.$store.getters.accountItems.filter((account) => account.value !== this.account.id);
+        return this.$store.getters.accountItems.filter(account => account.value !== this.account.id);
       },
     },
     watch: {
