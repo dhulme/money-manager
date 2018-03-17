@@ -5,7 +5,11 @@
         <span class="headline">
           Transactions
         </span>
-        <v-btn flat color="primary" @click="$emit('add-transaction')">Add</v-btn>
+        <v-btn
+          flat
+          color="primary"
+          @click="$emit('add-transaction')"
+        >Add</v-btn>
         <v-spacer />
         <v-text-field
           append-icon="search"
@@ -13,6 +17,7 @@
           single-line
           hide-details
           v-model="search"
+          ref="search"
         />
       </v-card-title>
       <v-data-table
@@ -22,7 +27,10 @@
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
       >
-        <template slot="items" slot-scope="props">
+        <template
+          slot="items"
+          slot-scope="props"
+        >
           <tr @click="$emit('transaction-click', props.item)">
             <td>{{ props.item.date | date }}</td>
             <td>{{ props.item.description }}</td>
@@ -61,7 +69,7 @@
     valueIn: '',
     valueOut: '',
     account: 'none',
-    note: ''
+    note: '',
   };
 
   export default {
@@ -112,6 +120,9 @@
           rowsPerPage,
         },
       };
+    },
+    mounted() {
+      this.$refs.search.focus();
     },
     methods: {
       resetForm() {

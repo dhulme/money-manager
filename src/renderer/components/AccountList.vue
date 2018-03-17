@@ -1,9 +1,16 @@
 <template>
-  <v-card class="mb-4" v-show="visible">
+  <v-card
+    class="mb-4"
+    v-show="visible"
+  >
     <v-card-title>
       <span class="headline">{{ accountCategory }}</span>
       <v-spacer />
-      <v-btn flat color="primary" @click="newAccount">Add</v-btn>
+      <v-btn
+        flat
+        color="primary"
+        @click="newAccount"
+      >Add</v-btn>
     </v-card-title>
 
     <v-data-table
@@ -13,17 +20,26 @@
       :search="search"
       :pagination.sync="pagination"
     >
-      <template slot="items" slot-scope="props">
+      <template
+        slot="items"
+        slot-scope="props"
+      >
         <tr @click="openAccount(props.item.id)">
           <td>{{ props.item.name }}</td>
-          <td class="text-xs-right account-balance" :class="{ 'red--text': parseFloat(props.item.balance) < 0 }">
+          <td
+            class="text-xs-right account-balance"
+            :class="{ 'red--text': parseFloat(props.item.balance) < 0 }"
+          >
             {{ props.item.balance | currency }}
           </td>
         </tr>
       </template>
       <template slot="footer">
-        <td></td>
-        <td class="text-xs-right" :class="{ 'red--text': parseFloat(total) < 0 }">
+        <td/>
+        <td
+          class="text-xs-right"
+          :class="{ 'red--text': parseFloat(total) < 0 }"
+        >
           {{ total | currency }}
         </td>
       </template>
@@ -39,8 +55,6 @@
       accountType: String,
       search: String,
       hideOnEmpty: Boolean,
-    },
-    components: {
     },
     data() {
       return {
@@ -75,7 +89,7 @@
           params: {
             accountId: 'new',
             accountCategory: this.accountCategory,
-            accountType: this.accountType
+            accountType: this.accountType,
           },
         });
       },
@@ -86,7 +100,7 @@
           params: {
             accountId,
             accountCategory: account.category,
-            accountType: account.type
+            accountType: account.type,
           },
         });
       },

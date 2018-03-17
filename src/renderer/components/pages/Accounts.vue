@@ -7,6 +7,7 @@
       single-line
       hide-details
       v-model="search"
+      ref="search"
     />
 
     <account-list
@@ -43,6 +44,9 @@
       return {
         search: '',
       };
+    },
+    mounted() {
+      this.$refs.search.focus();
     },
     created() {
       this.$ipc.setTitle();

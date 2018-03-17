@@ -4,10 +4,15 @@
       {{ isNewTransaction ? 'Add' : 'Edit' }} Transaction
     </v-card-title>
     <v-card-text>
-      <v-form v-model="valid" ref="form" lazy-validation>
+      <v-form
+        v-model="valid"
+        ref="form"
+        lazy-validation
+      >
         <v-menu
           lazy
-          :close-content-on-click="false"
+          ref="dateMenu"
+          :close-on-content-click="false"
           v-model="dateMenu"
           transition="scale-transition"
           offset-y
@@ -24,35 +29,36 @@
             readonly
             required
             :rules="dateValidationRules"
-            @blur="date = parseDate(newTransaction.prettyDate)"
           />
           <v-date-picker
             v-model="date"
             no-title
             scrollable
-            actions
             @input="newTransaction.prettyDate = $options.filters.date($event)"
           >
-            <template slot-scope="{ save, cancel }">
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                <v-btn flat color="primary" @click="save">OK</v-btn>
-              </v-card-actions>
-            </template>
+            <v-spacer/>
+            <v-btn
+              flat
+              color="primary"
+              @click="dateMenu = false"
+            >OK</v-btn>
           </v-date-picker>
         </v-menu>
+
         <v-text-field
           v-model="newTransaction.description"
           label="Description"
           prepend-icon="description"
           required
           :rules="descriptionValidationRules"
+          ref="description"
+          @keyup.enter="addTransaction"
         />
         <v-text-field
           v-model="newTransaction.note"
           label="Note"
           prepend-icon="note"
+          @keyup.enter="addTransaction"
         />
         <v-select
           :items="accounts"
@@ -62,24 +68,34 @@
           prepend-icon="account_balance"
           required
           :rules="accountValidationRules"
+          @keyup.enter="addTransaction"
         />
         <v-text-field
           v-model="newTransaction.valueIn"
           label="In"
           prefix="£"
           :rules="valueValidationRules"
+          @keyup.enter="addTransaction"
         />
         <v-text-field
           v-model="newTransaction.valueOut"
           label="Out"
           prefix="£"
           :rules="valueValidationRules"
+          @keyup.enter="addTransaction"
         />
       </v-form>
     </v-card-text>
     <v-card-actions>
-      <v-btn flat @click="$emit('close')">Close</v-btn>
-      <v-btn color="primary" flat @click="addTransaction">{{ isNewTransaction ? 'Add' : 'Update' }}</v-btn>
+      <v-btn
+        flat
+        @click="$emit('close')"
+      >Close</v-btn>
+      <v-btn
+        color="primary"
+        flat
+        @click="addTransaction"
+      >OK</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -122,14 +138,13 @@
         return !this.transaction.account;
       },
       accounts() {
-        return this.$store.getters.accountItems.filter((account) => {
-          return account.value !== this.account.id;
-        });
+        return this.$store.getters.accountItems.filter((account) => account.value !== this.account.id);
       },
     },
     watch: {
       transaction(transaction) {
         this.$refs.form.reset();
+        this.$refs.description.focus();
         this.newTransaction = {
           ...transaction,
           prettyDate: this.$options.filters.date(transaction.date),

@@ -12,7 +12,7 @@ import store from './store/index';
 import history from './history';
 import ipc from './ipc';
 
-import('../../node_modules/vuetify/dist/vuetify.min.css');
+import('vuetify/dist/vuetify.min.css');
 
 Vue.config.productionTip = false;
 
