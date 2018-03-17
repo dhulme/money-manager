@@ -3,6 +3,18 @@ import moment from 'moment';
 
 import util from '../util';
 
+function getAddTransactionParams(transaction) {
+  return {
+    transaction: {
+      ...transaction,
+    },
+    id: util.getId(),
+    value: transaction.value,
+    toAccountId: transaction.to,
+    fromAccountId: transaction.from,
+  };
+}
+
 const project = {
   state: {
     accounts: [],
@@ -32,14 +44,14 @@ const project = {
       state.transactions[id] = transaction;
       const fromAccount = state.accounts.find(_ => _.id === fromAccountId);
       if (!fromAccount) {
-        debugger
+        throw new Error(`Cannot find 'from' account called ${fromAccountId}`);
       }
       fromAccount.balance = new Big(fromAccount.balance).minus(value);
       fromAccount.transactionIds.push(id);
 
       const toAccount = state.accounts.find(_ => _.id === toAccountId);
       if (!toAccount) {
-        debugger
+        throw new Error(`Cannot find 'to' account called ${fromAccountId}`);
       }
       toAccount.balance = new Big(toAccount.balance).add(value);
       toAccount.transactionIds.push(id);
@@ -121,10 +133,7 @@ const project = {
     },
   },
   actions: {
-    addTransaction({
-      state,
-      commit,
-    }, {
+    addTransaction({ commit }, {
       to,
       from,
       date = moment(),
@@ -133,7 +142,7 @@ const project = {
       note,
       expense,
     }) {
-      const transaction = {
+      commit('addTransaction', getAddTransactionParams({
         to,
         from,
         date,
@@ -141,77 +150,35 @@ const project = {
         description,
         note,
         expense,
-      };
-      const id = util.getId();
-  
-      commit('addTransaction', {
-        transaction,
-        id,
-        value,
-        toAccountId: to,
-        fromAccountId: from,
-      });
-      
+      }));
       commit('updateSummaryBalance');
     },
 
-    addTransactions({
-      dispatch,
-    }, transactions) {
-      transactions.forEach((transaction) => {
-        dispatch('addTransaction', transaction);
-      });
+    addDualTransaction({ commit }, { primary, secondary }) {
+      commit('addTransaction', getAddTransactionParams(primary));
+      commit('addTransaction', getAddTransactionParams(secondary));
+      commit('updateSummaryBalance');
     },
 
-    deleteAccount({
-      commit,
-    }, accountId) {
+    deleteAccount({ commit }, accountId) {
       commit('deleteAccount', accountId);
       commit('updateSummaryBalance');
     },
 
-    runBulkTransactionTransaction({
-      dispatch,
-    }, {
-      bulkTransaction,
-      transaction,
-    }) {
-      dispatch('addTransaction', {
-        ...transaction,
-        description: bulkTransaction.description,
-        note: 'Bulk Transaction',
-      });
-    },
-
-    runBulkTransactionTransactions({
-      dispatch,
-    }, {
+    runBulkTransactionTransactions({ commit }, {
       bulkTransaction,
       transactions,
     }) {
       transactions.forEach((transaction) => {
-        dispatch('runBulkTransactionTransaction', {
-          bulkTransaction,
-          transaction,
-        });
+        commit('addTransaction', getAddTransactionParams({
+          ...transaction,
+          description: bulkTransaction.description,
+          note: 'Bulk Transaction',
+        }));
       });
     },
 
-    addBulkTransactionTransactions({
-      commit,
-    }, {
-      bulkTransaction,
-      transactions,
-    }) {
-      transactions.forEach(transaction => commit('addUpdateBulkTransactionTransaction', {
-        bulkTransaction,
-        transaction,
-      }));
-    },
-
-    updateBulkTransactionTransaction({
-      commit,
-    }, {
+    updateBulkTransactionTransaction({ commit }, {
       transaction,
       transactionId,
     }) {
@@ -221,21 +188,22 @@ const project = {
       });
     },
 
-    addBulkTransaction({
-      commit,
-    }, {
+    addBulkTransaction({ commit }, {
       description,
       name,
+      transactions,
     }) {
-      commit('addBulkTransaction', {
+      const bulkTransaction = commit('addBulkTransaction', {
         description,
         name,
       });
+      transactions.forEach(transaction => commit('addUpdateBulkTransactionTransaction', {
+        bulkTransaction,
+        transaction,
+      }));
     },
 
-    addAccount({
-      commit,
-    }, {
+    addAccount({ commit }, {
       name,
       balance,
       type,

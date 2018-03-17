@@ -90,13 +90,9 @@
         this.newTransaction = {};
       },
       addBulkTransaction() {
-        const bulkTransaction = this.$store.dispatch('addBulkTransaction', {
+        this.$store.dispatch('addBulkTransaction', {
           name: this.name,
           description: this.description,
-        });
-
-        this.$store.dispatch('addBulkTransactionTransactions', {
-          bulkTransaction,
           transactions: this.transactions,
         });
 

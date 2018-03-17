@@ -8,7 +8,6 @@ const history = {
     let newAction = true;
 
     store.subscribeAction((action) => {
-      debugger
       done.push(action);
       ipc.setEdited();
       if (newAction) {

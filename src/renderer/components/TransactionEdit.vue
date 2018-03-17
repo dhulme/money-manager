@@ -199,24 +199,29 @@
             transaction.value = uiTransaction.valueIn;
             transaction.from = 'none';
             transaction.to = this.account.id;
-            this.$store.dispatch('addTransaction', {
-              ...transaction,
-              from: 'none',
-              to: uiTransaction.account,
-              expense: this.account.id,
+            this.$store.dispatch('addDualTransaction', {
+              primary: transaction,
+              secondary: {
+                ...transaction,
+                from: 'none',
+                to: uiTransaction.account,
+                expense: this.account.id,
+              },
             });
           } else {
             transaction.value = uiTransaction.valueOut;
             transaction.from = this.account.id;
             transaction.to = 'none';
-            this.$store.dispatch('addTransaction', {
-              ...transaction,
-              to: 'none',
-              from: uiTransaction.account,
-              expense: this.account.id,
+            this.$store.dispatch('addDualTransaction', {
+              primary: transaction,
+              secondary: {
+                ...transaction,
+                to: 'none',
+                from: uiTransaction.account,
+                expense: this.account.id,
+              },
             });
           }
-          this.$store.dispatch('addTransaction', transaction);
         }
 
         this.$emit('added', transaction);

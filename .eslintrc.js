@@ -42,5 +42,7 @@ module.exports = {
     'vue/script-indent': ['error', 2, {
         'baseIndent': 1
     }],
+
+    'no-param-reassign': 0
   }
 }
