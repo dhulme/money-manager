@@ -9,6 +9,10 @@ const ipc = {
     return electron.ipcRenderer.send(channel, data);
   },
 
+  on(channel, callback) {
+    return electron.ipcRenderer.on(channel, callback);
+  },
+
   setTitle(title = defaultTitle) {
     currentTitle = title;
     ipc.updateTitle();
@@ -27,6 +31,10 @@ const ipc = {
     stateEdited = false;
     ipc.updateTitle();
   },
+
+  openProject() {
+    ipc.send('projectOpen');
+  }
 };
 
 export default ipc;
