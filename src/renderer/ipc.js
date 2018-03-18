@@ -34,6 +34,14 @@ const ipc = {
 
   openProject() {
     ipc.send('projectOpen');
+  },
+
+  initMenu(data) {
+    ipc.send('menuInit', data);
+  },
+
+  saveProject(data) {
+    ipc.send('projectSave', JSON.stringify(data));
   }
 };
 

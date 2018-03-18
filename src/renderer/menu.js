@@ -1,5 +1,4 @@
-// const remote = window.require ? window.require('electron').remote : null;
-const remote = null;
+const remote = require('electron').remote;
 
 export default {
   init({
@@ -9,10 +8,6 @@ export default {
     undoClick,
     redoClick,
   }) {
-    if (!remote) {
-      return;
-    }
-
     const menu = remote.Menu.buildFromTemplate([
       {
         label: 'File',

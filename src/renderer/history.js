@@ -14,12 +14,13 @@ const history = {
       }
     });
 
-    ipc.openProject();
-
     ipc.on('projectOpened', (event, data) => {
       store.commit('init', data);
       ipc.setSaved();
     });
+    ipc.openProject();
+
+    
     
     Vue.prototype.$history = {
       async undo() {
@@ -47,8 +48,8 @@ const history = {
       save() {
         done = [];
         undone = [];
+        ipc.saveProject(store.state.project);
         ipc.setSaved();
-        // return project.save(store.state.project);
       },
     };
   },
