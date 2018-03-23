@@ -1,26 +1,27 @@
 const electron = require('electron');
 const ipc = require('./ipc');
 
-const app = electron.app;
-
-const BrowserWindow = electron.BrowserWindow;
+const {
+  app,
+  BrowserWindow,
+} = electron;
+const development = process.env.NODE_ENV !== 'production';
 
 let mainWindow;
-const development = process.env.NODE_ENV !== 'production';
 
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
-if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+if (development) {
+  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\');
 }
 
 const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
+  ? 'http://localhost:9080'
+  : `file://${__dirname}/index.html`;
 
-function createWindow () {
+function createWindow() {
   /**
    * Initial window options
    */
@@ -30,14 +31,14 @@ function createWindow () {
   });
   mainWindow.maximize();
 
-  mainWindow.loadURL(winURL)
+  mainWindow.loadURL(winURL);
 
   mainWindow.on('closed', () => {
-    mainWindow = null
-  })
+    mainWindow = null;
+  });
 }
 
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 electron.ipcMain.on('setWindowTitle', (event, title) => {
   mainWindow.setTitle(title);
@@ -45,15 +46,15 @@ electron.ipcMain.on('setWindowTitle', (event, title) => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
-})
+});
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    createWindow()
+    createWindow();
   }
-})
+});
 
 /**
  * Auto Updater
