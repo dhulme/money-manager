@@ -93,7 +93,7 @@
     "eslint-loader": "^1.9.0",
     "eslint-plugin-html": "^3.1.1",
     "eslint-plugin-import": "^2.9.0",
-    "eslint-plugin-vue": "^4.3.0",
+    "eslint-plugin-vue": "^4.4.0",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.30.1",

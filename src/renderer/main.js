@@ -12,7 +12,7 @@ import store from './store/index';
 import history from './history';
 import ipc from './ipc';
 
-import('vuetify/dist/vuetify.min.css');
+require('vuetify/dist/vuetify.min.css');
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 
@@ -31,6 +31,13 @@ Vue.filter('currency', (value) => {
 
 Vue.filter('date', (value) => {
   return value ? moment(value).format('DD/MM/YYYY') : '';
+});
+
+Vue.directive('focus', {
+  inserted(element) {
+    const inputElement = element.tagName === 'DIV' ? element.querySelector('input') : element;
+    inputElement.focus();
+  },
 });
 
 Vue.prototype.$ipc = ipc;

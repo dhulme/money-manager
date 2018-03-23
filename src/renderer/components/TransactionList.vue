@@ -12,12 +12,12 @@
         >Add</v-btn>
         <v-spacer />
         <v-text-field
+          v-focus
+          v-model="search"
           append-icon="search"
           label="Search"
           single-line
           hide-details
-          v-model="search"
-          ref="search"
         />
       </v-card-title>
       <v-data-table
@@ -42,10 +42,10 @@
         </template>
         <template slot="footer">
           <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td/>
+            <td/>
+            <td/>
+            <td/>
             <td class="text-xs-right">Balance</td>
             <td :class="{ 'red--text': parseFloat(account.balance) < 0 }">
               {{ account.balance | currency }}
@@ -59,8 +59,6 @@
 
 <script>
   import moment from 'moment';
-
-  import util from '@/util';
 
   const dateFormat = 'DD/MM/YYYY';
   const defaultTransaction = {
@@ -120,9 +118,6 @@
           rowsPerPage,
         },
       };
-    },
-    mounted() {
-      this.$refs.search.focus();
     },
     methods: {
       resetForm() {

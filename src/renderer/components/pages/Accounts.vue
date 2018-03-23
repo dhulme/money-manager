@@ -1,33 +1,33 @@
 <template>
   <div>
     <v-text-field
+      v-focus
+      v-model="search"
       class="mb-4"
       append-icon="search"
       label="Search"
       single-line
       hide-details
-      v-model="search"
-      ref="search"
     />
 
     <account-list
+      :search="search"
       account-category="Assets"
       account-type="asset"
-      :search="search"
       hide-on-empty
     />
 
     <account-list
+      :search="search"
       account-category="Liabilities"
       account-type="asset"
-      :search="search"
       hide-on-empty
     />
 
     <account-list
+      :search="search"
       account-category="Budgets"
       account-type="budget"
-      :search="search"
       hide-on-empty
     />
   </div>
@@ -44,9 +44,6 @@
       return {
         search: '',
       };
-    },
-    mounted() {
-      this.$refs.search.focus();
     },
     created() {
       this.$ipc.setTitle();

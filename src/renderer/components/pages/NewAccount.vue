@@ -7,15 +7,18 @@
       <v-card-text>
         <form @submit="addAccount">
           <v-text-field
+            v-focus
             v-model="name"
-            ref="name"
             label="Name"
           />
           <v-text-field
-            label="Opening Balance"
             v-model="openingBalance"
+            label="Opening Balance"
           />
-          <v-btn type="submit" color="primary">Submit</v-btn>
+          <v-btn
+            type="submit"
+            color="primary"
+          >Submit</v-btn>
         </form>
       </v-card-text>
     </v-card>
@@ -66,7 +69,6 @@
       resetForm() {
         this.name = '';
         this.openingBalance = '';
-        this.$refs.name.focus();
       },
       goToAccount(account) {
         this.$router.push({
