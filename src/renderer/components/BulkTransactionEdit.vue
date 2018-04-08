@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="headline">
-      {{ transactionId ? 'Edit' : 'Add' }} Transaction
+      {{ transaction.id ? 'Edit' : 'Add' }} Transaction
     </v-card-title>
     <v-card-text>
       <v-select
@@ -38,12 +38,14 @@
         color="primary"
         flat
         @click="saveTransaction"
-      >{{ transactionId ? 'Update' : 'Add' }}</v-btn>
+      >{{ transaction.id ? 'Update' : 'Add' }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+  import util from '../util';
+
   export default {
     props: {
       transaction: {
@@ -58,7 +60,6 @@
     data() {
       return {
         newTransaction: {},
-        transactionId: '',
       };
     },
     computed: {
@@ -68,7 +69,6 @@
     },
     watch: {
       transaction(transaction) {
-        this.transactionId = this.$store.getters.bulkTransactionTransactionId(transaction);
         this.newTransaction = {
           ...transaction,
         };
@@ -76,18 +76,20 @@
     },
     methods: {
       saveTransaction() {
-        if (this.transactionId) {
+        if (this.transaction.id) {
           this.$store.dispatch('updateBulkTransactionTransaction', {
             transaction: this.newTransaction,
-            transactionId: this.transactionId,
+            bulkTransaction: this.bulkTransaction,
           });
         } else {
+          this.newTransaction.id = util.getId();
           this.$store.dispatch('addBulkTransactionTransaction', {
             transaction: this.newTransaction,
             bulkTransaction: this.bulkTransaction,
           });
         }
-        this.$emit('close');
+
+        this.$emit('saved', this.newTransaction);
       },
     },
   };

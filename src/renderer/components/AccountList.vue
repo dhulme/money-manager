@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="mb-4"
     v-show="visible"
+    class="mb-4"
   >
     <v-card-title>
       <span class="headline">{{ accountCategory }}</span>
@@ -27,8 +27,8 @@
         <tr @click="openAccount(props.item.id)">
           <td>{{ props.item.name }}</td>
           <td
-            class="text-xs-right account-balance"
             :class="{ 'red--text': parseFloat(props.item.balance) < 0 }"
+            class="text-xs-right account-balance"
           >
             {{ props.item.balance | currency }}
           </td>
@@ -37,8 +37,8 @@
       <template slot="footer">
         <td/>
         <td
-          class="text-xs-right"
           :class="{ 'red--text': parseFloat(total) < 0 }"
+          class="text-xs-right"
         >
           {{ total | currency }}
         </td>
@@ -65,6 +65,7 @@
         }, {
           text: 'Balance',
           value: 'balance',
+          align: 'right',
         }],
         pagination: {
           rowsPerPage: -1,

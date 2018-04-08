@@ -8,7 +8,6 @@ function getAddTransactionParams(transaction) {
     transaction: {
       ...transaction,
     },
-    id: util.getId(),
     value: transaction.value,
     toAccountId: transaction.to,
     fromAccountId: transaction.from,
@@ -41,6 +40,7 @@ const project = {
       toAccountId,
       fromAccountId,
     }) {
+      transaction.id = id;
       state.transactions[id] = transaction;
       const fromAccount = state.accounts.find(_ => _.id === fromAccountId);
       if (!fromAccount) {
@@ -117,19 +117,23 @@ const project = {
         from,
         value,
         note,
+        id,
       },
-      transactionId = util.getId(),
       bulkTransaction,
     }) {
-      state.bulkTransactionTransactions[transactionId] = {
+      state.bulkTransactionTransactions[id] = {
         to,
         from,
         value,
         note,
+        id,
       };
-      if (bulkTransaction) {
-        bulkTransaction.transactionIds.push(transactionId);
+      if (bulkTransaction && !bulkTransaction.transactionIds.includes(id)) {
+        console.log('pushing');
+        console.log(id);
+        bulkTransaction.transactionIds.push(id);
       }
+      return state.bulkTransactionTransactions[id];
     },
   },
   actions: {
@@ -281,14 +285,6 @@ const project = {
     bulkTransactionTransactions(state) {
       return (bulkTransaction) => {
         return bulkTransaction.transactionIds.map(id => state.bulkTransactionTransactions[id]);
-      };
-    },
-    bulkTransactionTransactionId(state) {
-      return (transaction) => {
-        const entry = Object.entries(state.bulkTransactionTransactions).find((_) => {
-          return _[1] === transaction;
-        });
-        return entry ? entry[0] : null;
       };
     },
   },

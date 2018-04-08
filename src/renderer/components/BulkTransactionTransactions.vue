@@ -5,7 +5,10 @@
     :search="search"
     :rows-per-page-items="rowsPerPageItems"
   >
-    <template slot="items" slot-scope="props">
+    <template
+      slot="items"
+      slot-scope="props"
+    >
       <tr @click="$emit('transaction-click', props.item)">
         <td>{{ accountName(props.item.from) }}</td>
         <td>{{ accountName(props.item.to) }}</td>
@@ -39,6 +42,7 @@
         }, {
           text: 'Amount',
           value: 'amount',
+          align: 'right',
         }],
         rowsPerPageItems: [10, 20, 50],
       };

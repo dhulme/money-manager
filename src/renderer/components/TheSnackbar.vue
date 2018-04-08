@@ -1,7 +1,7 @@
 <template>
   <v-snackbar
     v-model="active"
-    :timeout="3000"
+    :timeout="4000"
     bottom
   >
     {{ $store.state.snackbar.message }}

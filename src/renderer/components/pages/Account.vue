@@ -5,16 +5,16 @@
       <v-card-actions>
         <v-btn
           flat
-          @click="deleteAccount"
           color="error"
+          @click="deleteAccount"
         >Delete</v-btn>
       </v-card-actions>
     </v-card>
 
     <transaction-list
-      editable
       :account="account"
       :transactions="transactions"
+      editable
       @transaction-click="editTransaction"
       @add-transaction="addTransaction"
     />
@@ -27,7 +27,7 @@
         :transaction="transaction"
         :account="account"
         @close="dialogVisible = false"
-        @added="updateTransactions"
+        @added="pushTransaction"
       />
     </v-dialog>
   </div>
@@ -71,8 +71,10 @@
         });
       },
       editTransaction(transaction) {
-        this.transaction = transaction;
-        this.dialogVisible = true;
+        // TODO: this is disabled for now because editing transactions will be quite difficult
+        // - think about dual transactions
+        // this.transaction = transaction;
+        // this.dialogVisible = true;
       },
       addTransaction() {
         this.transaction = {
@@ -80,7 +82,7 @@
         };
         this.dialogVisible = true;
       },
-      updateTransactions(transaction) {
+      pushTransaction(transaction) {
         this.transactions.push(transaction);
         this.dialogVisible = false;
       },

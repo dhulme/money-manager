@@ -224,7 +224,8 @@
           }
         }
 
-        this.$emit('added', transaction);
+        const event = this.isNewTransaction ? 'added' : 'updated';
+        this.$emit(event, transaction);
       },
       parseDate(date) {
         return date ? moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;

@@ -37,7 +37,7 @@
       <bulk-transaction-edit
         :transaction="transaction"
         :bulk-transaction="bulkTransaction"
-        @close="dialogVisible = false"
+        @saved="savedTransaction"
       />
     </v-dialog>
   </div>
@@ -59,17 +59,16 @@
         search: '',
         dialogVisible: false,
         transaction: {},
+        transactions: [],
       };
     },
     computed: {
       bulkTransaction() {
         return this.$store.getters.bulkTransaction(this.$route.params.bulkTransactionId);
       },
-      transactions() {
-        return this.$store.getters.bulkTransactionTransactions(this.bulkTransaction);
-      },
     },
     created() {
+      this.transactions = this.$store.getters.bulkTransactionTransactions(this.bulkTransaction);
       this.$ipc.setTitle(this.bulkTransaction.name);
     },
     methods: {
@@ -90,6 +89,15 @@
       addTransaction() {
         this.transaction = {};
         this.dialogVisible = true;
+      },
+      savedTransaction(transaction) {
+        this.dialogVisible = false;
+        const index = this.transactions.findIndex(_ => _.id === transaction.id);
+        if (index !== -1) {
+          this.transactions.splice(index, 1, transaction);
+        } else {
+          this.transactions.push(transaction);
+        }
       },
     },
   };
