@@ -5,6 +5,7 @@ const history = {
     let done = [];
     let undone = [];
     let newAction = true;
+    let initData;
 
     store.subscribeAction((action) => {
       done.push(action);
@@ -15,19 +16,20 @@ const history = {
     });
 
     ipc.on('projectOpened', (event, data) => {
-      store.commit('init', data);
+      initData = data;
+      store.commit('init', initData);
       ipc.setSaved();
     });
     ipc.openProject();
 
-    
-    
     Vue.prototype.$history = {
-      async undo() {
-        undone.push(done.pop());
+      undo() {
+        const toUndo = done.pop();
+        console.log(toUndo);
+        undone.push(toUndo);
 
         newAction = false;
-        await Vue.history.init();
+        store.commit('init', initData);
         done.forEach((action) => {
           store.dispatch(action.type, action.payload);
           done.pop();

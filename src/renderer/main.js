@@ -42,6 +42,10 @@ Vue.directive('focus', {
 
 Vue.prototype.$ipc = ipc;
 
+Vue.config.keyCodes = {
+  add: 65 // a
+};
+
 /* eslint-disable no-new */
 new Vue({
   router,

@@ -46,6 +46,8 @@
 <script>
   import moment from 'moment';
 
+  import util from '../../util';
+
   import BulkTransactionTransactions from '../BulkTransactionTransactions';
   import BulkTransactionEdit from '../BulkTransactionEdit';
 
@@ -77,6 +79,7 @@
           bulkTransaction: this.bulkTransaction,
           transactions: this.transactions.map(transaction => ({
             ...transaction,
+            id: util.getId(),
             date: moment(),
           })),
         });

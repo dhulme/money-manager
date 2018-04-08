@@ -34,27 +34,25 @@ const project = {
     },
 
     addTransaction(state, {
-      id,
       transaction,
       value,
       toAccountId,
       fromAccountId,
     }) {
-      transaction.id = id;
-      state.transactions[id] = transaction;
+      state.transactions[transaction.id] = transaction;
       const fromAccount = state.accounts.find(_ => _.id === fromAccountId);
       if (!fromAccount) {
         throw new Error(`Cannot find 'from' account called ${fromAccountId}`);
       }
       fromAccount.balance = new Big(fromAccount.balance).minus(value);
-      fromAccount.transactionIds.push(id);
+      fromAccount.transactionIds.push(transaction.id);
 
       const toAccount = state.accounts.find(_ => _.id === toAccountId);
       if (!toAccount) {
         throw new Error(`Cannot find 'to' account called ${fromAccountId}`);
       }
       toAccount.balance = new Big(toAccount.balance).add(value);
-      toAccount.transactionIds.push(id);
+      toAccount.transactionIds.push(transaction.id);
     },
 
     updateSummaryBalance(state) {
@@ -129,8 +127,6 @@ const project = {
         id,
       };
       if (bulkTransaction && !bulkTransaction.transactionIds.includes(id)) {
-        console.log('pushing');
-        console.log(id);
         bulkTransaction.transactionIds.push(id);
       }
       return state.bulkTransactionTransactions[id];

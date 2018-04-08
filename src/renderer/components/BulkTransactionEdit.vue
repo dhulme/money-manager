@@ -22,11 +22,13 @@
         v-model="newTransaction.note"
         label="Note"
         prepend-icon="note"
+        @keyup.enter="save"
       />
       <v-text-field
         v-model="newTransaction.value"
         label="Amount"
         prefix="£"
+        @keyup.enter="save"
       />
     </v-card-text>
     <v-card-actions>
@@ -37,7 +39,7 @@
       <v-btn
         color="primary"
         flat
-        @click="saveTransaction"
+        @click="save"
       >{{ transaction.id ? 'Update' : 'Add' }}</v-btn>
     </v-card-actions>
   </v-card>
@@ -75,7 +77,7 @@
       },
     },
     methods: {
-      saveTransaction() {
+      save() {
         if (this.transaction.id) {
           this.$store.dispatch('updateBulkTransactionTransaction', {
             transaction: this.newTransaction,
