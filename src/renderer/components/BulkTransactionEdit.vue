@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title class="headline">
-      Edit Transaction
+      {{ transactionId ? 'Edit' : 'Add' }} Transaction
     </v-card-title>
     <v-card-text>
       <v-select
@@ -30,8 +30,15 @@
       />
     </v-card-text>
     <v-card-actions>
-      <v-btn flat @click="$emit('close')">Close</v-btn>
-      <v-btn color="primary" flat @click="saveTransaction">Update</v-btn>
+      <v-btn
+        flat
+        @click="$emit('close')"
+      >Close</v-btn>
+      <v-btn
+        color="primary"
+        flat
+        @click="saveTransaction"
+      >{{ transactionId ? 'Update' : 'Add' }}</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -39,7 +46,14 @@
 <script>
   export default {
     props: {
-      transaction: Object,
+      transaction: {
+        type: Object,
+        required: true,
+      },
+      bulkTransaction: {
+        type: Object,
+        default: null,
+      },
     },
     data() {
       return {
@@ -62,10 +76,17 @@
     },
     methods: {
       saveTransaction() {
-        this.$store.dispatch('updateBulkTransactionTransaction', {
-          transaction: this.newTransaction,
-          transactionId: this.transactionId,
-        });
+        if (this.transactionId) {
+          this.$store.dispatch('updateBulkTransactionTransaction', {
+            transaction: this.newTransaction,
+            transactionId: this.transactionId,
+          });
+        } else {
+          this.$store.dispatch('addBulkTransactionTransaction', {
+            transaction: this.newTransaction,
+            bulkTransaction: this.bulkTransaction,
+          });
+        }
         this.$emit('close');
       },
     },

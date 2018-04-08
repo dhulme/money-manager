@@ -52,13 +52,13 @@
           required
           :rules="descriptionValidationRules"
           ref="description"
-          @keyup.enter="addTransaction"
+          @keyup.enter="save"
         />
         <v-text-field
           v-model="newTransaction.note"
           label="Note"
           prepend-icon="note"
-          @keyup.enter="addTransaction"
+          @keyup.enter="save"
         />
         <v-select
           :items="accounts"
@@ -68,21 +68,21 @@
           prepend-icon="account_balance"
           required
           :rules="accountValidationRules"
-          @keyup.enter="addTransaction"
+          @keyup.enter="save"
         />
         <v-text-field
           v-model="newTransaction.valueIn"
           label="In"
           prefix="£"
           :rules="valueValidationRules"
-          @keyup.enter="addTransaction"
+          @keyup.enter="save"
         />
         <v-text-field
           v-model="newTransaction.valueOut"
           label="Out"
           prefix="£"
           :rules="valueValidationRules"
-          @keyup.enter="addTransaction"
+          @keyup.enter="save"
         />
       </v-form>
     </v-card-text>
@@ -94,7 +94,7 @@
       <v-btn
         color="primary"
         flat
-        @click="addTransaction"
+        @click="save"
       >OK</v-btn>
     </v-card-actions>
   </v-card>
@@ -115,7 +115,7 @@
         valid: false,
         valueValidationRules: [
           () => {
-            if (this.newTransaction.valueOut || this.newTransaction.valueIn) {
+            if (this.newTransaction.valueOut !== undefined || this.newTransaction.valueIn !== undefined) {
               return true;
             }
             return 'A value for in or out is required';
@@ -159,7 +159,7 @@
       },
     },
     methods: {
-      addTransaction() {
+      save() {
         if (!this.$refs.form.validate()) {
           return;
         }

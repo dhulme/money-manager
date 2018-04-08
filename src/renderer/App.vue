@@ -6,6 +6,7 @@
         <router-view class="router-container" />
       </v-content>
     </main>
+    <the-snackbar />
   </v-app>
 </template>
 
@@ -13,10 +14,12 @@
   import menu from './menu';
 
   import TheToolbar from './components/TheToolbar';
+  import TheSnackbar from './components/TheSnackbar';
 
   export default {
     components: {
       TheToolbar,
+      TheSnackbar,
     },
     computed: {
       development() {

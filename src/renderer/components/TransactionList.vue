@@ -2,9 +2,7 @@
   <div>
     <v-card>
       <v-card-title>
-        <span class="headline">
-          Transactions
-        </span>
+        <span class="headline">Transactions</span>
         <v-btn
           flat
           color="primary"
@@ -60,9 +58,8 @@
 <script>
   import moment from 'moment';
 
-  const dateFormat = 'DD/MM/YYYY';
   const defaultTransaction = {
-    date: moment().format(dateFormat),
+    date: moment(),
     description: '',
     valueIn: '',
     valueOut: '',

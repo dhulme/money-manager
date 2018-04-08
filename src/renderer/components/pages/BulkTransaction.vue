@@ -3,13 +3,17 @@
     <v-card>
       <v-card-title>
         <span class="headline">{{ bulkTransaction.name }}</span>
+        <v-btn
+          flat
+          @click="addTransaction"
+        >Add</v-btn>
         <v-spacer />
         <v-text-field
+          v-model="search"
           append-icon="search"
           label="Search"
           single-line
           hide-details
-          v-model="search"
         />
       </v-card-title>
       <v-subheader>
@@ -21,13 +25,18 @@
         @transaction-click="editTransaction"
       />
       <v-card-actions>
-        <v-btn @click="process" flat color="primary">Run</v-btn>
+        <v-btn
+          flat
+          color="primary"
+          @click="process"
+        >Run</v-btn>
       </v-card-actions>
     </v-card>
 
     <v-dialog v-model="dialogVisible">
       <bulk-transaction-edit
         :transaction="transaction"
+        :bulk-transaction="bulkTransaction"
         @close="dialogVisible = false"
       />
     </v-dialog>
@@ -35,6 +44,8 @@
 </template>
 
 <script>
+  import moment from 'moment';
+
   import BulkTransactionTransactions from '../BulkTransactionTransactions';
   import BulkTransactionEdit from '../BulkTransactionEdit';
 
@@ -50,9 +61,6 @@
         transaction: {},
       };
     },
-    created() {
-      this.$ipc.setTitle(this.bulkTransaction.name);
-    },
     computed: {
       bulkTransaction() {
         return this.$store.getters.bulkTransaction(this.$route.params.bulkTransactionId);
@@ -61,16 +69,27 @@
         return this.$store.getters.bulkTransactionTransactions(this.bulkTransaction);
       },
     },
+    created() {
+      this.$ipc.setTitle(this.bulkTransaction.name);
+    },
     methods: {
       process() {
         this.$store.dispatch('runBulkTransactionTransactions', {
           bulkTransaction: this.bulkTransaction,
-          transactions: this.transactions,
+          transactions: this.transactions.map(transaction => ({
+            ...transaction,
+            date: moment(),
+          })),
         });
+        this.$store.dispatch('openSnackbar', 'Transactions done');
       },
       editTransaction(transaction) {
-        this.dialogVisible = true;
         this.transaction = transaction;
+        this.dialogVisible = true;
+      },
+      addTransaction() {
+        this.transaction = {};
+        this.dialogVisible = true;
       },
     },
   };

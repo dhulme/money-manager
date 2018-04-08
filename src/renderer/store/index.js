@@ -7,6 +7,10 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     error: '',
+    snackbar: {
+      message: '',
+      active: false,
+    },
   },
   mutations: {
     setSummaryBalance(state, value) {
@@ -16,9 +20,18 @@ const store = new Vuex.Store({
       state.error = value;
       return value;
     },
+    setSnackbarActive(state, value) {
+      state.snackbar.active = value;
+    },
+    setSnackbarMessage(state, value) {
+      state.snackbar.message = value;
+    },
   },
   actions: {
-
+    openSnackbar({ commit }, message) {
+      commit('setSnackbarMessage', message);
+      commit('setSnackbarActive', true);
+    },
   },
   modules: {
     project,

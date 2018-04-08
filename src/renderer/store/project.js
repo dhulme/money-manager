@@ -136,7 +136,7 @@ const project = {
     addTransaction({ commit }, {
       to,
       from,
-      date = moment(),
+      date,
       value,
       description,
       note,
@@ -185,6 +185,16 @@ const project = {
       commit('addUpdateBulkTransactionTransaction', {
         transaction,
         transactionId,
+      });
+    },
+
+    addBulkTransactionTransaction({ commit }, {
+      bulkTransaction,
+      transaction,
+    }) {
+      commit('addUpdateBulkTransactionTransaction', {
+        bulkTransaction,
+        transaction,
       });
     },
 
@@ -274,9 +284,12 @@ const project = {
       };
     },
     bulkTransactionTransactionId(state) {
-      return transaction => Object.entries(state.bulkTransactionTransactions).find((entry) => {
-        return entry[1] === transaction;
-      })[0];
+      return (transaction) => {
+        const entry = Object.entries(state.bulkTransactionTransactions).find((_) => {
+          return _[1] === transaction;
+        });
+        return entry ? entry[0] : null;
+      };
     },
   },
 };

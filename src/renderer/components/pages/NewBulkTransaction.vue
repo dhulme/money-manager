@@ -4,16 +4,20 @@
       <v-card-title class="headline">New Bulk Transaction</v-card-title>
       <v-card-text>
         <v-text-field
-          label="Name"
           v-model="name"
+          label="Name"
         />
         <v-text-field
-          label="Description"
           v-model="description"
+          label="Description"
         />
       </v-card-text>
       <v-card-actions>
-        <v-btn flat color="secondary" @click="addBulkTransaction">Done</v-btn>
+        <v-btn
+          flat
+          color="secondary"
+          @click="addBulkTransaction"
+        >Done</v-btn>
       </v-card-actions>
     </v-card>
     <v-card class="mb-4">
