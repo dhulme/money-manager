@@ -7,6 +7,7 @@
       <span class="headline">{{ accountCategory }}</span>
       <v-spacer />
       <v-btn
+        v-hotkey.add="newAccount"
         flat
         color="primary"
         @click="newAccount"

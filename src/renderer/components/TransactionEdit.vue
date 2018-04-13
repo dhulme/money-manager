@@ -1,34 +1,34 @@
 <template>
-  <v-card>
+  <v-card v-hotkey.close="close">
     <v-card-title class="headline">
       {{ isNewTransaction ? 'Add' : 'Edit' }} Transaction
     </v-card-title>
     <v-card-text>
       <v-form
-        v-model="valid"
         ref="form"
+        v-model="valid"
         lazy-validation
       >
         <v-menu
-          lazy
           ref="dateMenu"
-          :close-on-content-click="false"
           v-model="dateMenu"
+          :close-on-content-click="false"
+          :nudge-right="40"
+          lazy
           transition="scale-transition"
           offset-y
           full-width
-          :nudge-right="40"
           max-width="290px"
           min-width="290px"
         >
           <v-text-field
             slot="activator"
-            label="Date"
             v-model="newTransaction.prettyDate"
+            :rules="dateValidationRules"
+            label="Date"
             prepend-icon="event"
             readonly
             required
-            :rules="dateValidationRules"
           />
           <v-date-picker
             v-model="date"
@@ -46,12 +46,12 @@
         </v-menu>
 
         <v-text-field
+          ref="description"
+          :rules="descriptionValidationRules"
           v-model="newTransaction.description"
           label="Description"
           prepend-icon="description"
           required
-          :rules="descriptionValidationRules"
-          ref="description"
           @keyup.enter="save"
         />
         <v-text-field
@@ -62,26 +62,26 @@
         />
         <v-select
           :items="accounts"
+          :rules="accountValidationRules"
           v-model="newTransaction.account"
           label="Account"
           autocomplete
           prepend-icon="account_balance"
           required
-          :rules="accountValidationRules"
           @keyup.enter="save"
         />
         <v-text-field
           v-model="newTransaction.valueIn"
+          :rules="valueValidationRules"
           label="In"
           prefix="£"
-          :rules="valueValidationRules"
           @keyup.enter="save"
         />
         <v-text-field
           v-model="newTransaction.valueOut"
+          :rules="valueValidationRules"
           label="Out"
           prefix="£"
-          :rules="valueValidationRules"
           @keyup.enter="save"
         />
       </v-form>
@@ -89,7 +89,7 @@
     <v-card-actions>
       <v-btn
         flat
-        @click="$emit('close')"
+        @click="close"
       >Close</v-btn>
       <v-btn
         color="primary"
@@ -229,6 +229,10 @@
       },
       parseDate(date) {
         return date ? moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
+      },
+      close() {
+        this.$emit('close');
+        console.log('closing dialog');
       },
     },
   };

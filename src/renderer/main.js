@@ -12,6 +12,8 @@ import store from './store/index';
 import history from './history';
 import ipc from './ipc';
 
+import hotkey from './hotkey';
+
 require('vuetify/dist/vuetify.min.css');
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
@@ -38,6 +40,11 @@ Vue.directive('focus', {
     const inputElement = element.tagName === 'DIV' ? element.querySelector('input') : element;
     inputElement.focus();
   },
+});
+
+hotkey.init({
+  add: 65, // a
+  close: 27, // escape
 });
 
 Vue.prototype.$ipc = ipc;

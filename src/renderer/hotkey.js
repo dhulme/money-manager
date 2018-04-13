@@ -1,0 +1,44 @@
+import Vue from 'vue';
+
+/**
+ * Binds hotkeys globally according to key map.
+ * Modifiers specify key map names to bind.
+ * Handlers are triggered FILO, until one returns false.
+ */
+
+const hotkeys = [];
+
+Vue.directive('hotkey', {
+  bind(element, {
+    modifiers,
+    value,
+  }) {
+    hotkeys.unshift({
+      names: Object.keys(modifiers),
+      action: value,
+      element,
+    });
+  },
+
+  unbind(element) {
+    hotkeys.splice(hotkeys.findIndex(hotkey => hotkey.element === element), 1);
+  },
+});
+
+export default {
+  init(keymap) {
+    document.addEventListener('keyup', (event) => {
+      hotkeys.some(({
+        names,
+        action,
+      }) => {
+        const keyCodes = names.map(name => keymap[name]);
+        if (keyCodes.includes(event.keyCode)) {
+          const returnValue = action();
+          return returnValue === false;
+        }
+        return false;
+      });
+    });
+  },
+};

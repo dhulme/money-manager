@@ -48,13 +48,6 @@
           this.$history.redo();
         },
       });
-      document.addEventListener('keyup', (event) => {
-        if (event.key === 'Escape') {
-          this.$router.push({
-            name: 'accounts',
-          });
-        }
-      });
     },
   };
 </script>

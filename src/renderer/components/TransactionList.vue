@@ -4,9 +4,10 @@
       <v-card-title>
         <span class="headline">Transactions</span>
         <v-btn
+          v-hotkey.add="addTransaction"
           flat
           color="primary"
-          @click="$emit('add-transaction')"
+          @click="addTransaction"
         >Add</v-btn>
         <v-spacer />
         <v-text-field
@@ -144,6 +145,9 @@
           accountId = transaction.to;
         }
         return accountId ? this.$store.getters.account(accountId).name : null;
+      },
+      addTransaction() {
+        this.$emit('add-transaction');
       },
     },
   };
