@@ -39,6 +39,10 @@ const project = {
       toAccountId,
       fromAccountId,
     }) {
+      if (!transaction.id) {
+        throw new Error('A transaction must have an ID');
+      }
+
       state.transactions[transaction.id] = transaction;
       const fromAccount = state.accounts.find(_ => _.id === fromAccountId);
       if (!fromAccount) {
@@ -133,24 +137,8 @@ const project = {
     },
   },
   actions: {
-    addTransaction({ commit }, {
-      to,
-      from,
-      date,
-      value,
-      description,
-      note,
-      expense,
-    }) {
-      commit('addTransaction', getAddTransactionParams({
-        to,
-        from,
-        date,
-        value,
-        description,
-        note,
-        expense,
-      }));
+    addTransaction({ commit }, transaction) {
+      commit('addTransaction', getAddTransactionParams(transaction));
       commit('updateSummaryBalance');
     },
 

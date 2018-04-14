@@ -26,3 +26,57 @@ npm run dist:dir
 
 ## Licence
 MIT
+
+## Data Structure
+### Account
+```javascript
+{
+  balance: String,
+  category: String,
+  id: String, // human readable
+  name: String,
+  transactionIds: [String...],
+  type: String
+}
+
+```
+### Transaction
+```javascript
+{
+  date: String,
+  description: String,
+  expense: String, // account ID
+  from: String, // account ID
+  to: String, // account ID
+  note: String,
+  type: String,
+  value: String
+}
+```
+
+### Summary
+```javascript
+{
+  balance: String
+}
+```
+
+### Bulk Transaction
+```javascript
+{
+  description: String,
+  id: String, // human readable
+  name: String,
+  transactionIds: [String...]
+}
+```
+
+### Bulk Transaction Transaction
+```javascript
+{
+  from: String, // account ID
+  to: String, // account ID
+  note: String,
+  value: String
+}
+```

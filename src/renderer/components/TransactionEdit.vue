@@ -103,6 +103,8 @@
 <script>
   import moment from 'moment';
 
+  import util from '../util';
+
   export default {
     props: {
       transaction: Object,
@@ -170,6 +172,7 @@
           description: uiTransaction.description,
           note: uiTransaction.note,
           date: moment(uiTransaction.date),
+          id: util.getId(),
         };
 
         if (parseFloat(uiTransaction.valueIn) < 0 || parseFloat(uiTransaction.valueOut) < 0) {
@@ -206,6 +209,7 @@
                 from: 'none',
                 to: uiTransaction.account,
                 expense: this.account.id,
+                id: util.getId(),
               },
             });
           } else {
@@ -219,6 +223,7 @@
                 to: 'none',
                 from: uiTransaction.account,
                 expense: this.account.id,
+                id: util.getId(),
               },
             });
           }
@@ -232,7 +237,6 @@
       },
       close() {
         this.$emit('close');
-        console.log('closing dialog');
       },
     },
   };
