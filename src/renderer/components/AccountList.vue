@@ -16,6 +16,7 @@
 
     <v-data-table
       v-show="visible"
+      ref="dataTable"
       :headers="headers"
       :items="accounts"
       :search="search"
@@ -82,6 +83,11 @@
       },
       visible() {
         return this.hideOnEmpty ? this.pagination.totalItems > 0 : true;
+      },
+    },
+    watch: {
+      'pagination.totalItems': function handler() {
+        this.$emit('searched', this.$refs.dataTable.filteredItems);
       },
     },
     methods: {

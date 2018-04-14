@@ -11,7 +11,7 @@
         >Add</v-btn>
         <v-spacer />
         <v-text-field
-          v-focus
+          v-hotkey-ignore.add
           v-model="search"
           append-icon="search"
           label="Search"
