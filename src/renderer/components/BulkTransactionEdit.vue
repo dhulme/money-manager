@@ -66,7 +66,7 @@
     },
     computed: {
       accounts() {
-        return this.$store.getters.accountItems;
+        return this.$store.getters['project/accountItems'];
       },
     },
     watch: {
@@ -79,13 +79,13 @@
     methods: {
       save() {
         if (this.transaction.id) {
-          this.$store.dispatch('updateBulkTransactionTransaction', {
+          this.$store.dispatch('project/updateBulkTransactionTransaction', {
             transaction: this.newTransaction,
             bulkTransaction: this.bulkTransaction,
           });
         } else {
           this.newTransaction.id = util.getId();
-          this.$store.dispatch('addBulkTransactionTransaction', {
+          this.$store.dispatch('project/addBulkTransactionTransaction', {
             transaction: this.newTransaction,
             bulkTransaction: this.bulkTransaction,
           });

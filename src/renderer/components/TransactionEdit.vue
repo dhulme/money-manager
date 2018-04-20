@@ -140,7 +140,7 @@
         return !this.transaction.account;
       },
       accounts() {
-        return this.$store.getters.accountItems.filter(account => account.value !== this.account.id);
+        return this.$store.getters['project/accountItems'].filter(account => account.value !== this.account.id);
       },
     },
     watch: {
@@ -167,7 +167,7 @@
         }
 
         const uiTransaction = this.newTransaction;
-        const transactionAccount = this.$store.getters.account(uiTransaction.account);
+        const transactionAccount = this.$store.getters['project/account'](uiTransaction.account);
         const transaction = {
           description: uiTransaction.description,
           note: uiTransaction.note,
@@ -195,14 +195,14 @@
             transaction.from = this.account.id;
             transaction.to = uiTransaction.account;
           }
-          this.$store.dispatch('addTransaction', transaction);
+          this.$store.dispatch('project/addTransaction', transaction);
         } else {
           transaction.expense = uiTransaction.account;
           if (uiTransaction.valueIn) {
             transaction.value = uiTransaction.valueIn;
             transaction.from = 'none';
             transaction.to = this.account.id;
-            this.$store.dispatch('addDualTransaction', {
+            this.$store.dispatch('project/addDualTransaction', {
               primary: transaction,
               secondary: {
                 ...transaction,
@@ -216,7 +216,7 @@
             transaction.value = uiTransaction.valueOut;
             transaction.from = this.account.id;
             transaction.to = 'none';
-            this.$store.dispatch('addDualTransaction', {
+            this.$store.dispatch('project/addDualTransaction', {
               primary: transaction,
               secondary: {
                 ...transaction,

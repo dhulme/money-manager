@@ -23,10 +23,10 @@
   export default {
     computed: {
       summaryBalance() {
-        return this.$store.getters.summaryBalance;
+        return this.$store.getters['project/summaryBalance'];
       },
       showBudgetWarning() {
-        return !this.error && !this.$store.getters.summaryBalanceEqualsZero;
+        return !this.error && !this.$store.getters['project/summaryBalanceEqualsZero'];
       },
       color() {
         return parseFloat(this.summaryBalance) >= 0 ? 'info' : 'error';

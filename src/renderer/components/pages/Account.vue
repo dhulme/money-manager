@@ -53,19 +53,19 @@
     },
     computed: {
       account() {
-        return this.$store.getters.account(this.accountId);
+        return this.$store.getters['project/account'](this.accountId);
       },
       accountId() {
         return this.$route.params.accountId;
       },
     },
     created() {
-      this.transactions = this.$store.getters.transactions(this.account);
+      this.transactions = this.$store.getters['project/transactions'](this.account);
       this.$ipc.setTitle(this.account.name);
     },
     methods: {
       deleteAccount() {
-        this.$store.dispatch('deleteAccount', this.accountId);
+        this.$store.dispatch('project/deleteAccount', this.accountId);
         this.$router.push({
           name: 'accounts',
         });

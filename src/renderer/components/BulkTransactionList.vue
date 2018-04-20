@@ -1,7 +1,7 @@
 <template>
   <v-list two-line>
     <v-list-tile
-      v-for="bulkTransaction in $store.getters.bulkTransactions"
+      v-for="bulkTransaction in $store.getters['project/bulkTransactions']"
       :key="bulkTransaction.id"
       @click="openBulkTransaction(bulkTransaction.id)"
     >

@@ -1,4 +1,17 @@
 import ipc from './ipc';
+import menu from './menu';
+
+const actionNames = {
+  addTransaction: 'Add transaction',
+  addDualTransaction: 'Add transaction',
+  deleteAccount: 'Delete account',
+  runBulkTransactionTransactions: 'Run bulk transactions',
+  updateBulkTransactionTransaction: 'Update transaction',
+  addBulkTransactionTransaction: 'Add transaction',
+  addBulkTransaction: 'Add bulk transaction',
+  addAccount: 'Add account',
+};
+const storePrefix = 'project/';
 
 const history = {
   install(Vue, store) {
@@ -8,8 +21,11 @@ const history = {
     let initData;
 
     store.subscribeAction((action) => {
+      if (!action.type.startsWith(storePrefix)) return;
+
       done.push(action);
       ipc.setEdited();
+      menu.updateUndoLabel(actionNames[action.type.replace(storePrefix, '')]);
       if (newAction) {
         undone = [];
       }
@@ -17,8 +33,7 @@ const history = {
 
     ipc.on('projectOpened', (event, data) => {
       initData = data;
-      console.log('hi');
-      store.commit('init', initData);
+      store.commit(`${storePrefix}init`, initData);
       ipc.setSaved();
     });
     ipc.openProject();
@@ -26,16 +41,15 @@ const history = {
     Vue.prototype.$history = {
       undo() {
         const toUndo = done.pop();
-        console.log(toUndo);
         undone.push(toUndo);
 
         newAction = false;
-        store.commit('init', initData);
+        store.commit(`${storePrefix}init`, initData);
         done.forEach((action) => {
           store.dispatch(action.type, action.payload);
           done.pop();
         });
-        store.commit('updateSummaryBalance');
+        store.commit(`${storePrefix}updateSummaryBalance`);
         newAction = true;
 
         if (done.length === 0) {

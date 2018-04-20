@@ -31,16 +31,6 @@
         saveClick: () => {
           this.$history.save();
         },
-        accountsClick: () => {
-          this.$router.push({
-            name: 'accounts',
-          });
-        },
-        bulkTransactionsClick: () => {
-          this.$router.push({
-            name: 'bulkTransactions',
-          });
-        },
         undoClick: () => {
           this.$history.undo();
         },

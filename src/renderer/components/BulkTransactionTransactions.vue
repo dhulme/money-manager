@@ -49,7 +49,7 @@
     },
     methods: {
       accountName(accountId) {
-        return this.$store.getters.account(accountId).name;
+        return this.$store.getters['project/account'](accountId).name;
       },
     },
   };

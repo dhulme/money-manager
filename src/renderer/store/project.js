@@ -15,6 +15,7 @@ function getAddTransactionParams(transaction) {
 }
 
 const project = {
+  namespaced: true,
   state: {
     accounts: [],
     transactions: {},

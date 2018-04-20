@@ -70,16 +70,16 @@
     },
     computed: {
       bulkTransaction() {
-        return this.$store.getters.bulkTransaction(this.$route.params.bulkTransactionId);
+        return this.$store.getters['project/bulkTransaction'](this.$route.params.bulkTransactionId);
       },
     },
     created() {
-      this.transactions = this.$store.getters.bulkTransactionTransactions(this.bulkTransaction);
+      this.transactions = this.$store.getters['project/bulkTransactionTransactions'](this.bulkTransaction);
       this.$ipc.setTitle(this.bulkTransaction.name);
     },
     methods: {
       process() {
-        this.$store.dispatch('runBulkTransactionTransactions', {
+        this.$store.dispatch('project/runBulkTransactionTransactions', {
           bulkTransaction: this.bulkTransaction,
           transactions: this.transactions.map(transaction => ({
             ...transaction,

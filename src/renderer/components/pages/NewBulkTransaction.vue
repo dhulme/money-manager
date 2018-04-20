@@ -77,7 +77,7 @@
     },
     computed: {
       projectItems() {
-        return this.$store.getters.accounts.map(account => ({
+        return this.$store.getters['project/accounts'].map(account => ({
           text: account.name,
           value: account.id,
         }));
@@ -94,7 +94,7 @@
         this.newTransaction = {};
       },
       addBulkTransaction() {
-        this.$store.dispatch('addBulkTransaction', {
+        this.$store.dispatch('project/addBulkTransaction', {
           name: this.name,
           description: this.description,
           transactions: this.transactions,

@@ -76,10 +76,10 @@
     },
     computed: {
       accounts() {
-        return this.$store.getters.accountsByCategory(this.accountCategory);
+        return this.$store.getters['project/accountsByCategory'](this.accountCategory);
       },
       total() {
-        return this.$store.getters.accountsTotal(this.accountCategory);
+        return this.$store.getters['project/accountsTotal'](this.accountCategory);
       },
       visible() {
         return this.hideOnEmpty ? this.pagination.totalItems > 0 : true;
@@ -102,7 +102,7 @@
         });
       },
       openAccount(accountId) {
-        const account = this.$store.getters.account(accountId);
+        const account = this.$store.getters['project/account'](accountId);
         this.$router.push({
           name: 'account',
           params: {

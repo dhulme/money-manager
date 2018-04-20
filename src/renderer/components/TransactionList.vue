@@ -143,7 +143,7 @@
         } else {
           accountId = transaction.to;
         }
-        return accountId ? this.$store.getters.account(accountId).name : null;
+        return accountId ? this.$store.getters['project/account'](accountId).name : null;
       },
       addTransaction() {
         this.$emit('add-transaction');

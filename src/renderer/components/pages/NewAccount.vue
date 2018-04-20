@@ -57,7 +57,7 @@
     methods: {
       addAccount(event) {
         event.preventDefault();
-        this.$store.dispatch('addAccount', {
+        this.$store.dispatch('project/addAccount', {
           name: this.name,
           balance: this.openingBalance,
           category: this.accountCategory,
