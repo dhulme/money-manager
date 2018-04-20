@@ -1,9 +1,23 @@
 <template>
-  <v-toolbar dark class="primary" app fixed>
-    <toolbar-button route-name="accounts" :child-route-names="['account']">Accounts</toolbar-button>
-    <toolbar-button route-name="bulkTransactions" :child-route-names="['bulkTransaction']">Bulk Transactions</toolbar-button>
-    <v-spacer></v-spacer>
-    <summary-alert></summary-alert>
+  <v-toolbar
+    class="primary"
+    dark
+    app
+    fixed
+  >
+    <toolbar-button
+      :child-route-names="['account', 'newAccount']"
+      route-name="accounts"
+    >Accounts</toolbar-button>
+
+    <toolbar-button
+      :child-route-names="['bulkTransaction', 'newBulkTransaction']"
+      route-name="bulkTransactions"
+    >Bulk Transactions</toolbar-button>
+
+    <v-spacer/>
+    <summary-alert/>
+
   </v-toolbar>
 </template>
 

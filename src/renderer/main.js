@@ -42,10 +42,17 @@ Vue.directive('focus', {
   },
 });
 
-// hotkey.init({
-//   add: 65, // a
-//   close: 27, // escape
-// });
+hotkey.init({
+  add: {
+    name: 'n',
+    code: 78,
+    ctrl: true,
+  },
+  close: {
+    name: 'escape',
+    code: 27,
+  },
+});
 
 Vue.prototype.$ipc = ipc;
 

@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div
+    v-hotkey.close="goToBulkTransactionsIfDialogClosed"
+    v-hotkey.add="addTransaction"
+  >
     <v-card>
       <v-card-title>
         <span class="headline">{{ bulkTransaction.name }}</span>
@@ -38,6 +41,7 @@
         :transaction="transaction"
         :bulk-transaction="bulkTransaction"
         @saved="savedTransaction"
+        @close="dialogVisible = false"
       />
     </v-dialog>
   </div>
@@ -100,6 +104,13 @@
           this.transactions.splice(index, 1, transaction);
         } else {
           this.transactions.push(transaction);
+        }
+      },
+      goToBulkTransactionsIfDialogClosed() {
+        if (!this.dialogVisible) {
+          this.$router.push({
+            name: 'bulkTransactions',
+          });
         }
       },
     },

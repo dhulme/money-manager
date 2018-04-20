@@ -4,13 +4,9 @@ import Vue from 'vue';
  * Binds hotkeys globally according to key map.
  * Modifiers specify key map names to bind.
  * Handlers are triggered FILO, until one returns false.
- * 
- * It is possible to stop an element triggering a certain handler if the element has the focus.
- * Add `v-hotkey-ignore` to the element with modifiers of which keys to ignore.
  */
 
 const hotkeys = [];
-const ignored = [];
 
 Vue.directive('hotkey', {
   bind(element, {
@@ -29,21 +25,6 @@ Vue.directive('hotkey', {
   },
 });
 
-Vue.directive('hotkey-ignore', {
-  bind(element, {
-    modifiers,
-  }) {
-    ignored.push({
-      names: Object.keys(modifiers),
-      element,
-    });
-  },
-
-  unbind(element) {
-    ignored.splice(ignored.findIndex(ignore => ignore.element === element), 1);
-  },
-});
-
 export default {
   init(keymap) {
     document.addEventListener('keyup', (event) => {
@@ -51,13 +32,13 @@ export default {
         names,
         action,
       }) => {
-        const keyCodes = names.map(name => keymap[name]);
-        const ignoredElementFocussed = ignored.find((ignore) => {
-          const ignoreKeyCodes = ignore.names.map(name => keymap[name]);
-          return ignoreKeyCodes.includes(event.keyCode) && ignore.element.contains(document.activeElement);
+        const keys = names.map(name => keymap[name]);
+
+        const pressed = keys.some((key) => {
+          return key.code === event.keyCode && event.ctrlKey === !!key.ctrl && event.altKey === !!key.alt;
         });
 
-        if (!ignoredElementFocussed && keyCodes.includes(event.keyCode)) {
+        if (pressed) {
           const returnValue = action();
           return returnValue === false;
         }

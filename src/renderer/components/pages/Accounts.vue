@@ -2,7 +2,6 @@
   <div>
     <v-text-field
       v-focus
-      v-hotkey-ignore.add
       v-model="search"
       class="mb-4"
       append-icon="search"

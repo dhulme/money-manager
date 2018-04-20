@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-hotkey.close="goToBulkTransactions">
     <v-card class="mb-4">
       <v-card-title class="headline">New Bulk Transaction</v-card-title>
       <v-card-text>
@@ -100,6 +100,11 @@
           transactions: this.transactions,
         });
 
+        this.$router.push({
+          name: 'bulkTransactions',
+        });
+      },
+      goToBulkTransactions() {
         this.$router.push({
           name: 'bulkTransactions',
         });

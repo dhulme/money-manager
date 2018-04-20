@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-hotkey.close="goToAccounts">
     <v-card>
       <v-card-title>
         <span class="headline">New {{ accountCategory }}</span>
@@ -77,6 +77,11 @@
             accountId: account.id,
             accountCategory: account.category,
           },
+        });
+      },
+      goToAccounts() {
+        this.$router.push({
+          name: 'accounts',
         });
       },
     },

@@ -1,5 +1,5 @@
 <template>
-  <div v-hotkey.close="openAccountsIfDialogClosed">
+  <div v-hotkey.close="goToAccountsIfDialogClosed">
     <v-card class="mb-4">
       <v-card-title class="headline">{{ account.name }}</v-card-title>
       <v-card-actions>
@@ -86,7 +86,7 @@
         this.transactions.push(transaction);
         this.dialogVisible = false;
       },
-      openAccountsIfDialogClosed() {
+      goToAccountsIfDialogClosed() {
         if (!this.dialogVisible) {
           this.$router.push({
             name: 'accounts',

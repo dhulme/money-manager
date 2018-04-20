@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card v-hotkey.close="close">
     <v-card-title class="headline">
       {{ transaction.id ? 'Edit' : 'Add' }} Transaction
     </v-card-title>
@@ -34,7 +34,7 @@
     <v-card-actions>
       <v-btn
         flat
-        @click="$emit('close')"
+        @click="close"
       >Close</v-btn>
       <v-btn
         color="primary"
@@ -92,6 +92,9 @@
         }
 
         this.$emit('saved', this.newTransaction);
+      },
+      close() {
+        this.$emit('close');
       },
     },
   };

@@ -17,6 +17,7 @@ const history = {
 
     ipc.on('projectOpened', (event, data) => {
       initData = data;
+      console.log('hi');
       store.commit('init', initData);
       ipc.setSaved();
     });

@@ -1,9 +1,13 @@
 <template>
-  <v-card>
+  <v-card v-hotkey.add="newBulkTransaction">
     <v-card-title>
       <span class="title">Bulk Transactions</span>
       <v-spacer />
-      <v-btn flat color="primary" @click="newBulkTransaction">Add</v-btn>
+      <v-btn
+        flat
+        color="primary"
+        @click="newBulkTransaction"
+      >Add</v-btn>
     </v-card-title>
     <bulk-transaction-list />
   </v-card>
