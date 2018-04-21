@@ -27,11 +27,12 @@ const project = {
   },
   mutations: {
     init(state, data) {
-      state.accounts = data.accounts;
-      state.transactions = data.transactions;
-      state.summary = data.summary;
-      state.bulkTransactions = data.bulkTransactions;
-      state.bulkTransactionTransactions = data.bulkTransactionTransactions;
+      const clonedData = JSON.parse(JSON.stringify(data));
+      state.accounts = clonedData.accounts;
+      state.transactions = clonedData.transactions;
+      state.summary = clonedData.summary;
+      state.bulkTransactions = clonedData.bulkTransactions;
+      state.bulkTransactionTransactions = clonedData.bulkTransactionTransactions;
     },
 
     addTransaction(state, {
