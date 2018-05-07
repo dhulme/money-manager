@@ -36,7 +36,7 @@ const history = {
       store.commit(`${storePrefix}init`, initData);
       ipc.setSaved();
     });
-    ipc.openProject();
+    ipc.openDefaultProject();
 
     Vue.prototype.$history = {
       undo() {
@@ -67,6 +67,12 @@ const history = {
         undone = [];
         ipc.saveProject(store.state.project);
         ipc.setSaved();
+      },
+      open() {
+        ipc.openProject();
+      },
+      saveAs() {
+        ipc.saveProjectAs(store.state.project);
       },
     };
   },

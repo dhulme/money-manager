@@ -5,7 +5,7 @@ It uses [Electron](https://electron.atom.io/) as the application platform and [V
 
 ## Development Setup
 
-Uses [Electron Webpack](https://webpack.electron.build/) package to manage build process, and [Electron Webpack Vue](https://github.com/stoufa88/electron-webpack-vue) as a Vue boilerplate.
+Uses [Electron Vue]() to integrate Vue with Electron and handle build process.
 
 ``` bash
 # install dependencies

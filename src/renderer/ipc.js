@@ -36,13 +36,21 @@ const ipc = {
     ipc.send('projectOpen');
   },
 
+  openDefaultProject() {
+    ipc.send('projectOpenDefault');
+  },
+
   initMenu(data) {
     ipc.send('menuInit', data);
   },
 
   saveProject(data) {
-    ipc.send('projectSave', JSON.stringify(data));
-  }
+    ipc.send('projectSave', data);
+  },
+
+  saveProjectAs(data) {
+    ipc.send('projectSaveAs', data);
+  },
 };
 
 export default ipc;

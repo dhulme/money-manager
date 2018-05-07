@@ -1,20 +1,58 @@
-const fs = require('fs-extra');
-const path = require('path');
-const electron = require('electron');
-const ipcMain = electron.ipcMain;
+import { ipcMain, dialog } from 'electron';
 
-const root = path.resolve(__dirname, '../../');
+import defaultProject from './default-project.json';
+import settings from './settings';
+import project from './project';
 
-ipcMain.on('projectOpen', (event) => {
-  fs.readFile('D:/Documents/Money/project.json', (err, project) => {
-    event.sender.send('projectOpened', JSON.parse(project));
+const filters = [{
+  name: 'JSON',
+  extensions: ['json'],
+}];
+
+function saveAs(data) {
+  dialog.showSaveDialog({
+    filters,
+  }, (path) => {
+    settings.setProjectPath(path);
+    settings.save();
+
+    project.save(path, data);
   });
+}
+
+ipcMain.on('projectSave', async (event, data) => {
+  const projectPath = settings.getProjectPath();
+  if (projectPath) {
+    project.save(projectPath, data);
+  } else {
+    saveAs();
+  }
 });
 
-ipcMain.on('projectSave', (event, data) => {
-  fs.writeFile('D:/Documents/Money/project.json', data, (err) => {
-    if (err) {
-      throw new Error('Failed to save project');
-    }
+ipcMain.on('projectSaveAs', async (event, data) => {
+  saveAs(data);
+});
+
+ipcMain.on('projectOpenDefault', async (event) => {
+  const projectPath = settings.getProjectPath();
+  if (projectPath) {
+    const data = await project.open(projectPath);
+    event.sender.send('projectOpened', data || defaultProject);
+  } else {
+    event.sender.send('projectOpened', defaultProject);
+  }
+});
+
+ipcMain.on('projectOpen', (event) => {
+  dialog.showOpenDialog({
+    filters,
+  }, async ([projectPath = null] = []) => {
+    if (!projectPath) return;
+
+    settings.setProjectPath(projectPath);
+    settings.save();
+
+    const data = await project.open(projectPath);
+    event.sender.send('projectOpened', data);
   });
 });

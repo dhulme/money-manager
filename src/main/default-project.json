@@ -1,0 +1,44 @@
+{
+  "accounts": [
+    {
+      "balance": "0",
+      "id": "none",
+      "name": "None",
+      "transactionIds": []
+    },
+    {
+      "balance": "0",
+      "category": "Assets",
+      "id": "cash",
+      "name": "Cash",
+      "transactionIds": []
+    },
+    {
+      "balance": "0",
+      "category": "Assets",
+      "id": "bank",
+      "name": "Bank",
+      "transactionIds": []
+    },
+    {
+      "balance": "0",
+      "category": "Liabilities",
+      "id": "creditCard",
+      "name": "Credit Card",
+      "transactionIds": []
+    },
+    {
+      "balance": "0",
+      "category": "Budgets",
+      "id": "toSpend",
+      "name": "To Spend",
+      "transactionIds": []
+    }
+  ],
+  "transactions": {},
+  "summary": {
+    "balance": "0"
+  },
+  "bulkTransactions": [],
+  "bulkTransactionTransactions": {}
+}

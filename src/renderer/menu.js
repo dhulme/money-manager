@@ -1,13 +1,24 @@
 const remote = require('electron').remote;
 
+const openMenuItemTemplate = {
+  label: 'Open',
+  accelerator: 'CmdOrCtrl+O',
+};
 const saveMenuItemTemplate = {
   label: 'Save',
+  accelerator: 'CmdOrCtrl+S',
+};
+const saveAsMenuItemTemplate = {
+  label: 'Save as',
+  accelerator: 'CmdOrCtrl+Shift+S',
 };
 const undoMenuItemTemplate = {
   label: 'Undo',
+  accelerator: 'CmdOrCtrl+Z',
 };
 const redoMenuItemTemplate = {
   label: 'Redo',
+  accelerator: 'CmdOrCtrl+Y',
 };
 
 let menu;
@@ -15,7 +26,9 @@ const menuTemplate = [
   {
     label: 'File',
     submenu: [
+      openMenuItemTemplate,
       saveMenuItemTemplate,
+      saveAsMenuItemTemplate,
     ],
   },
   {
@@ -44,11 +57,15 @@ function updateMenu() {
 
 export default {
   init({
+    openClick,
     saveClick,
     undoClick,
     redoClick,
+    saveAsClick,
   }) {
+    openMenuItemTemplate.click = openClick;
     saveMenuItemTemplate.click = saveClick;
+    saveAsMenuItemTemplate.click = saveAsClick;
     undoMenuItemTemplate.click = undoClick;
     redoMenuItemTemplate.click = redoClick;
     updateMenu();

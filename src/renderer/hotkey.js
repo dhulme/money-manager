@@ -34,9 +34,12 @@ export default {
       }) => {
         const keys = names.map(name => keymap[name]);
 
-        const pressed = keys.some((key) => {
-          return key.code === event.keyCode && event.ctrlKey === !!key.ctrl && event.altKey === !!key.alt;
-        });
+        const pressed = keys.some(key => (
+          key.code === event.keyCode &&
+          event.ctrlKey === !!key.ctrl &&
+          event.altKey === !!key.alt &&
+          event.shiftKey === !!key.shiftKey
+        ));
 
         if (pressed) {
           const returnValue = action();

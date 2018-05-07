@@ -52,6 +52,32 @@ hotkey.init({
     name: 'escape',
     code: 27,
   },
+  save: {
+    name: 's',
+    code: 83,
+    ctrl: true,
+  },
+  saveAs: {
+    name: 's',
+    code: 83,
+    ctrl: true,
+    shift: true,
+  },
+  open: {
+    name: 'o',
+    code: 79,
+    ctrl: true,
+  },
+  undo: {
+    name: 'z',
+    code: 90,
+    ctrl: true,
+  },
+  redo: {
+    name: 'y',
+    code: 89,
+    ctrl: true,
+  },
 });
 
 Vue.prototype.$ipc = ipc;

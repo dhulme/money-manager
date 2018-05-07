@@ -1,5 +1,11 @@
 <template>
-  <v-app>
+  <v-app
+    v-hotkey.save="$history.save"
+    v-hotkey.saveAs="$history.saveAs"
+    v-hotkey.open="$history.open"
+    v-hotkey.undo="$history.undo"
+    v-hotkey.redo="$history.redo"
+  >
     <the-toolbar />
     <main>
       <v-content class="app-content">
@@ -28,15 +34,11 @@
     },
     mounted() {
       menu.init({
-        saveClick: () => {
-          this.$history.save();
-        },
-        undoClick: () => {
-          this.$history.undo();
-        },
-        redoClick: () => {
-          this.$history.redo();
-        },
+        openClick: () => this.$history.open(),
+        saveClick: () => this.$history.save(),
+        undoClick: () => this.$history.undo(),
+        redoClick: () => this.$history.redo(),
+        saveAsClick: () => this.$history.saveAs(),
       });
     },
   };
