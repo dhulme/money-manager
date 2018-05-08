@@ -56,3 +56,9 @@ ipcMain.on('projectOpen', (event) => {
     event.sender.send('projectOpened', data);
   });
 });
+
+ipcMain.on('projectNew', (event) => {
+  settings.setProjectPath(null);
+  settings.save();
+  event.sender.send('projectOpened', defaultProject);
+});

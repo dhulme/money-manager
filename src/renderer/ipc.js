@@ -40,6 +40,10 @@ const ipc = {
     ipc.send('projectOpenDefault');
   },
 
+  newProject() {
+    ipc.send('projectNew');
+  },
+
   initMenu(data) {
     ipc.send('menuInit', data);
   },

@@ -34,6 +34,7 @@
     },
     mounted() {
       menu.init({
+        newClick: () => this.$history.new(),
         openClick: () => this.$history.open(),
         saveClick: () => this.$history.save(),
         undoClick: () => this.$history.undo(),

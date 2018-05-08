@@ -1,5 +1,8 @@
-const remote = require('electron').remote;
+import { remote } from 'electron';
 
+const newMenuItemTemplate = {
+  label: 'New',
+};
 const openMenuItemTemplate = {
   label: 'Open',
   accelerator: 'CmdOrCtrl+O',
@@ -26,6 +29,7 @@ const menuTemplate = [
   {
     label: 'File',
     submenu: [
+      newMenuItemTemplate,
       openMenuItemTemplate,
       saveMenuItemTemplate,
       saveAsMenuItemTemplate,
@@ -62,7 +66,9 @@ export default {
     undoClick,
     redoClick,
     saveAsClick,
+    newClick,
   }) {
+    newMenuItemTemplate.click = newClick;
     openMenuItemTemplate.click = openClick;
     saveMenuItemTemplate.click = saveClick;
     saveAsMenuItemTemplate.click = saveAsClick;

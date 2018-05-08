@@ -4,35 +4,40 @@
       "balance": "0",
       "id": "none",
       "name": "None",
-      "transactionIds": []
+      "transactionIds": [],
+      "type": "none"
     },
     {
       "balance": "0",
       "category": "Assets",
       "id": "cash",
       "name": "Cash",
-      "transactionIds": []
+      "transactionIds": [],
+      "type": "asset"
     },
     {
       "balance": "0",
       "category": "Assets",
       "id": "bank",
       "name": "Bank",
-      "transactionIds": []
+      "transactionIds": [],
+      "type": "asset"
     },
     {
       "balance": "0",
       "category": "Liabilities",
       "id": "creditCard",
       "name": "Credit Card",
-      "transactionIds": []
+      "transactionIds": [],
+      "type": "asset"
     },
     {
       "balance": "0",
       "category": "Budgets",
       "id": "toSpend",
       "name": "To Spend",
-      "transactionIds": []
+      "transactionIds": [],
+      "type": "budget"
     }
   ],
   "transactions": {},

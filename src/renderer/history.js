@@ -74,6 +74,9 @@ const history = {
       saveAs() {
         ipc.saveProjectAs(store.state.project);
       },
+      new() {
+        ipc.newProject();
+      },
     };
   },
 };
