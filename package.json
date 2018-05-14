@@ -3,7 +3,11 @@
   "version": "0.0.0",
   "author": "David Hulme <dhulme@outlook.com>",
   "description": "An electron-vue project",
-  "license": null,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dhulme/money-manager.git"
+  },
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js && electron-builder",
@@ -17,7 +21,9 @@
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "postinstall": "npm run lint:fix",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "test": "npm run test:unit",
+    "test:unit": "cross-env NODE_ENV=test BABEL_ENV=test jest --config test/unit/jest.conf.js --coverage"
   },
   "build": {
     "productName": "money-manager",
@@ -55,7 +61,6 @@
   },
   "dependencies": {
     "accounting": "^0.4.1",
-    "babel-preset-env": "^1.6.1",
     "big.js": "^3.1.3",
     "crypto-random-string": "^1.0.0",
     "fs-extra": "^4.0.3",
@@ -71,7 +76,10 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^7.2.3",
+    "babel-jest": "^22.4.3",
     "babel-loader": "^7.1.1",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-stage-0": "^6.24.1",
@@ -98,6 +106,8 @@
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.30.1",
+    "jest": "^22.4.3",
+    "jest-serializer-vue": "^1.0.0",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
     "node-sass": "^4.9.0",
@@ -106,6 +116,7 @@
     "url-loader": "^0.5.9",
     "vue-eslint-parser": "^2.0.3",
     "vue-html-loader": "^1.2.4",
+    "vue-jest": "^2.5.0",
     "vue-loader": "^13.0.5",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.4.2",
