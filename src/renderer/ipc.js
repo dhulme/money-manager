@@ -49,11 +49,11 @@ const ipc = {
   },
 
   saveProject(data) {
-    ipc.send('projectSave', data);
+    ipc.send('projectSave', JSON.stringify(data));
   },
 
   saveProjectAs(data) {
-    ipc.send('projectSaveAs', data);
+    ipc.send('projectSaveAs', JSON.stringify(data));
   },
 };
 

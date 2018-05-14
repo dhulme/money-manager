@@ -2,8 +2,10 @@ const fs = require('fs-extra');
 
 const project = {
   async save(path, data) {
-    console.log(typeof data);
-    return fs.writeJson(path, data).catch(() => {
+    if (typeof data !== 'string') {
+      throw new Error('Project must be stringified on client');
+    }
+    return fs.writeFile(path, data).catch(() => {
       throw new Error('Failed to save project');
     });
   },
