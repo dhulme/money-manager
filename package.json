@@ -140,6 +140,6 @@
     ]
   },
   "prettier": {
-    "quotes": true
+    "singleQuote": true
   }
 }

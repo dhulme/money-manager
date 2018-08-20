@@ -1,6 +1,6 @@
-import Big from "big.js";
+import Big from 'big.js';
 
-import util from "../util";
+import util from '../util';
 
 function required(param) {
   throw new Error(`${param} is required`);
@@ -14,12 +14,12 @@ function requireObjectProperties(object, params) {
     return acc;
   }, []);
   if (errors.length) {
-    required(errors.join(","));
+    required(errors.join(','));
   }
 }
 
 function getAddTransactionParams(transaction) {
-  requireObjectProperties(transaction, ["value", "to", "from"]);
+  requireObjectProperties(transaction, ['value', 'to', 'from']);
   return {
     transaction: {
       ...transaction
@@ -61,7 +61,7 @@ const project = {
         fromAccountId = required()
       }
     ) {
-      requireObjectProperties(transaction, ["id", "value", "from", "to"]);
+      requireObjectProperties(transaction, ['id', 'value', 'from', 'to']);
 
       state.transactions[transaction.id] = transaction;
       const fromAccount = state.accounts.find(_ => _.id === fromAccountId);
@@ -81,11 +81,11 @@ const project = {
 
     updateSummaryBalance(state) {
       state.summary.balance = state.accounts.reduce((total, account) => {
-        if (account.type === "none") {
+        if (account.type === 'none') {
           return total;
         }
 
-        if (account.type === "budget") {
+        if (account.type === 'budget') {
           return total.minus(account.balance);
         }
 
@@ -93,14 +93,14 @@ const project = {
       }, new Big(0));
     },
 
-    deleteAccount(state, accountId) {
+    deleteAccount(state, accountId = required()) {
       state.accounts = state.accounts.filter(
         account => account.id !== accountId
       );
     },
 
-    addAccount(state, account) {
-      requireObjectProperties(account, ["name", "balance", "type", "category"]);
+    addAccount(state, account = required()) {
+      requireObjectProperties(account, ['name', 'balance', 'type', 'category']);
       const { name, balance, type, category } = account;
       const existingIds = state.accounts.map(_ => _.id);
       const newAccount = {
@@ -116,26 +116,28 @@ const project = {
       return newAccount;
     },
 
-    addBulkTransaction(state, { description, name }) {
+    addBulkTransaction(state, bulkTransaction) {
+      requireObjectProperties(bulkTransaction, ['description', 'name']);
+      const { description, name } = bulkTransaction;
       const existingIds = state.bulkTransactions.map(_ => _.id);
-      const bulkTransaction = {
+      const newBulkTransaction = {
         name,
         description,
         id: util.getFriendlyId(name, existingIds),
         transactionIds: []
       };
-      state.bulkTransactions.push(bulkTransaction);
+      state.bulkTransactions.push(newBulkTransaction);
 
       return bulkTransaction;
     },
 
     addUpdateBulkTransactionTransaction(
       state,
-      {
-        transaction: { to, from, value, note, id },
-        bulkTransaction
-      }
+      { transaction = required(), bulkTransaction = required() }
     ) {
+      requireObjectProperties(transaction, ['to', 'from', 'value', 'id']);
+      requireObjectProperties(bulkTransaction, ['transactionIds']);
+      const { to, from, value, note, id } = transaction;
       state.bulkTransactionTransactions[id] = {
         to,
         from,
@@ -143,7 +145,7 @@ const project = {
         note,
         id
       };
-      if (bulkTransaction && !bulkTransaction.transactionIds.includes(id)) {
+      if (!bulkTransaction.transactionIds.includes(id)) {
         bulkTransaction.transactionIds.push(id);
       }
       return state.bulkTransactionTransactions[id];
@@ -151,19 +153,19 @@ const project = {
   },
   actions: {
     addTransaction({ commit }, transaction) {
-      commit("addTransaction", getAddTransactionParams(transaction));
-      commit("updateSummaryBalance");
+      commit('addTransaction', getAddTransactionParams(transaction));
+      commit('updateSummaryBalance');
     },
 
     addDualTransaction({ commit }, { primary, secondary }) {
-      commit("addTransaction", getAddTransactionParams(primary));
-      commit("addTransaction", getAddTransactionParams(secondary));
-      commit("updateSummaryBalance");
+      commit('addTransaction', getAddTransactionParams(primary));
+      commit('addTransaction', getAddTransactionParams(secondary));
+      commit('updateSummaryBalance');
     },
 
     deleteAccount({ commit }, accountId) {
-      commit("deleteAccount", accountId);
-      commit("updateSummaryBalance");
+      commit('deleteAccount', accountId);
+      commit('updateSummaryBalance');
     },
 
     runBulkTransactionTransactions(
@@ -172,11 +174,11 @@ const project = {
     ) {
       transactions.forEach(transaction => {
         commit(
-          "addTransaction",
+          'addTransaction',
           getAddTransactionParams({
             ...transaction,
             description: bulkTransaction.description,
-            note: "Bulk Transaction"
+            note: 'Bulk Transaction'
           })
         );
       });
@@ -186,7 +188,7 @@ const project = {
       { commit },
       { transaction, transactionId }
     ) {
-      commit("addUpdateBulkTransactionTransaction", {
+      commit('addUpdateBulkTransactionTransaction', {
         transaction,
         transactionId
       });
@@ -196,19 +198,19 @@ const project = {
       { commit },
       { bulkTransaction, transaction }
     ) {
-      commit("addUpdateBulkTransactionTransaction", {
+      commit('addUpdateBulkTransactionTransaction', {
         bulkTransaction,
         transaction
       });
     },
 
     addBulkTransaction({ commit }, { description, name, transactions }) {
-      const bulkTransaction = commit("addBulkTransaction", {
+      const bulkTransaction = commit('addBulkTransaction', {
         description,
         name
       });
       transactions.forEach(transaction =>
-        commit("addUpdateBulkTransactionTransaction", {
+        commit('addUpdateBulkTransactionTransaction', {
           bulkTransaction,
           transaction
         })
@@ -216,7 +218,7 @@ const project = {
     },
 
     addAccount({ commit }, { name, balance, type, category }) {
-      commit("addAccount", {
+      commit('addAccount', {
         name,
         balance,
         type,

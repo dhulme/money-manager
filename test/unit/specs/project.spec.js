@@ -10,10 +10,10 @@
 //   });
 // });
 
-import store from "@/store";
-import { stat } from "fs";
+import store from '@/store';
+import { stat } from 'fs';
 
-describe("project store", () => {
+describe('project store', () => {
   const state = store.state.project;
 
   function commit(name, data) {
@@ -25,14 +25,18 @@ describe("project store", () => {
     transactions = {},
     summary = {
       balance: 0
-    }
+    },
+    bulkTransactions = [],
+    bulkTransactionTransactions = {}
   }) {
     state.accounts = accounts;
     state.transactions = transactions;
     state.summary = summary;
+    state.bulkTransactions = bulkTransactions;
+    state.bulkTransactionTransactions = bulkTransactionTransactions;
   }
 
-  it("should initialize correctly", () => {
+  it('should initialize correctly', () => {
     expect(state.summary.balance).toBe(0);
     expect(state.accounts).toHaveLength(0);
     expect(state.transactions).toEqual({});
@@ -40,11 +44,11 @@ describe("project store", () => {
     expect(state.bulkTransactionTransactions).toEqual({});
   });
 
-  describe("mutations", () => {
-    describe("init", () => {
-      it("should set state properties", () => {
-        const test = "test";
-        commit("init", {
+  describe('mutations', () => {
+    describe('init', () => {
+      it('should set state properties', () => {
+        const test = 'test';
+        commit('init', {
           accounts: test,
           transactions: test,
           summary: test,
@@ -58,16 +62,16 @@ describe("project store", () => {
         expect(state.bulkTransactionTransactions).toBe(test);
       });
 
-      it("should not allow other properties to be set", () => {
-        commit("init", {
-          test: "test"
+      it('should not allow other properties to be set', () => {
+        commit('init', {
+          test: 'test'
         });
         expect(state.test).toBeUndefined();
       });
 
-      it("should clone the data", () => {
+      it('should clone the data', () => {
         const accountsData = [];
-        commit("init", {
+        commit('init', {
           accounts: accountsData
         });
         expect(state.accounts).not.toBe(accountsData);
@@ -75,130 +79,209 @@ describe("project store", () => {
       });
     });
 
-    describe("addTransaction", () => {
-      it("should require all parameters", () => {
+    describe('addTransaction', () => {
+      it('should require all parameters', () => {
         expect(() => {
-          commit("addTransaction", {});
-        }).toThrowError("required");
+          commit('addTransaction', {});
+        }).toThrowError('required');
       });
 
-      it("should add the transaction correctly", () => {
+      it('should add the transaction correctly', () => {
         const transaction = {
-          to: "to",
-          from: "from",
+          to: 'to',
+          from: 'from',
           value: 10,
-          id: "test"
+          id: 'test'
         };
-        const fromAccount = { id: "from", balance: 0, transactionIds: [] };
-        const toAccount = { id: "to", balance: 0, transactionIds: [] };
+        const fromAccount = { id: 'from', balance: 0, transactionIds: [] };
+        const toAccount = { id: 'to', balance: 0, transactionIds: [] };
         init({
           accounts: [fromAccount, toAccount]
         });
-        commit("addTransaction", {
+        commit('addTransaction', {
           transaction,
           value: transaction.value,
           toAccountId: transaction.to,
           fromAccountId: transaction.from
         });
         expect(state.transactions[transaction.id]).toBe(transaction);
-        expect(fromAccount.balance.toString()).toEqual("-10");
-        expect(fromAccount.transactionIds).toContain("test");
-        expect(toAccount.balance.toString()).toEqual("10");
-        expect(toAccount.transactionIds).toContain("test");
+        expect(fromAccount.balance.toString()).toEqual('-10');
+        expect(fromAccount.transactionIds).toContain('test');
+        expect(toAccount.balance.toString()).toEqual('10');
+        expect(toAccount.transactionIds).toContain('test');
       });
     });
 
-    describe("updateSummaryBalance", () => {
-      it("should sum accounts", () => {
+    describe('updateSummaryBalance', () => {
+      it('should sum accounts', () => {
         init({
           accounts: [
-            { id: "a", balance: 10, transactionIds: [] },
-            { id: "b", balance: 10, transactionIds: [] }
+            { id: 'a', balance: 10, transactionIds: [] },
+            { id: 'b', balance: 10, transactionIds: [] }
           ]
         });
-        commit("updateSummaryBalance");
-        expect(state.summary.balance.toString()).toBe("20");
+        commit('updateSummaryBalance');
+        expect(state.summary.balance.toString()).toBe('20');
       });
 
-      it("should subtract budgets", () => {
+      it('should subtract budgets', () => {
         init({
           accounts: [
-            { id: "a", balance: 10, transactionIds: [], type: "budget" },
-            { id: "b", balance: 20, transactionIds: [] }
+            { id: 'a', balance: 10, transactionIds: [], type: 'budget' },
+            { id: 'b', balance: 20, transactionIds: [] }
           ]
         });
-        commit("updateSummaryBalance");
-        expect(state.summary.balance.toString()).toBe("10");
+        commit('updateSummaryBalance');
+        expect(state.summary.balance.toString()).toBe('10');
       });
 
-      it("should ignore none accounts", () => {
+      it('should ignore none accounts', () => {
         init({
           accounts: [
-            { id: "a", balance: 10, transactionIds: [], type: "none" },
-            { id: "b", balance: 10, transactionIds: [], type: "none" }
+            { id: 'a', balance: 10, transactionIds: [], type: 'none' },
+            { id: 'b', balance: 10, transactionIds: [], type: 'none' }
           ]
         });
-        commit("updateSummaryBalance");
-        expect(state.summary.balance.toString()).toBe("0");
+        commit('updateSummaryBalance');
+        expect(state.summary.balance.toString()).toBe('0');
       });
     });
 
-    describe("deleteAccount", () => {
-      it("should delete an account", () => {
-        const account = { id: "test" };
+    describe('deleteAccount', () => {
+      it('should require an account ID', () => {
+        init({});
+        expect(() => {
+          commit('deleteAccount');
+        }).toThrowError('required');
+      });
+      it('should delete an account', () => {
+        const account = { id: 'test' };
         init({
           accounts: [account]
         });
-        commit("deleteAccount", "test");
+        commit('deleteAccount', 'test');
         expect(state.accounts).not.toContain(account);
       });
 
-      it("should not delete other accounts", () => {
-        const account = { id: "test" };
+      it('should not delete other accounts', () => {
+        const account = { id: 'test' };
         init({
           accounts: [account]
         });
-        commit("deleteAccount", "bob");
+        commit('deleteAccount', 'bob');
         expect(state.accounts).toContain(account);
       });
     });
 
-    describe("addAccount", () => {
-      it("should check new account fields", () => {
+    describe('addAccount', () => {
+      it('should check new account fields', () => {
         init({});
         expect(() => {
-          commit("addAccount", {});
-        }).toThrowError("required");
+          commit('addAccount', {});
+        }).toThrowError('required');
       });
 
-      it("should add an account", () => {
+      it('should add an account', () => {
         const account = {
-          name: "test",
-          balance: "0",
-          type: "test",
-          category: "test"
+          name: 'test',
+          balance: '0',
+          type: 'test',
+          category: 'test'
         };
         init({});
-        commit("addAccount", account);
+        commit('addAccount', account);
         expect(state.accounts).toContainEqual({
           ...account,
-          id: "test",
+          id: 'test',
           transactionIds: []
         });
       });
 
-      it("should not allow duplicate IDs", () => {
+      it('should not allow duplicate IDs', () => {
         const account = {
-          name: "test",
-          balance: "0",
-          type: "test",
-          category: "test"
+          name: 'test',
+          balance: '0',
+          type: 'test',
+          category: 'test'
         };
         init({});
-        commit("addAccount", account);
+        commit('addAccount', account);
         expect(() => {
-          commit("addAccount", account);
-        }).toThrowError("Duplicate");
+          commit('addAccount', account);
+        }).toThrowError('Duplicate');
+      });
+    });
+
+    describe('addBulkTransaction', () => {
+      it('should require parameters', () => {
+        init({});
+        expect(() => {
+          commit('addBulkTransaction', {});
+        }).toThrowError('required');
+      });
+
+      it('should add a bulk transaction', () => {
+        const bulkTransaction = {
+          description: 'test',
+          name: 'test'
+        };
+        init({});
+        commit('addBulkTransaction', bulkTransaction);
+        expect(state.bulkTransactions).toContainEqual({
+          ...bulkTransaction,
+          id: 'test',
+          transactionIds: []
+        });
+      });
+
+      it('should not allow duplicate IDs', () => {
+        const bulkTransaction = {
+          description: 'test',
+          name: 'test'
+        };
+        init({});
+        commit('addBulkTransaction', bulkTransaction);
+        expect(() => {
+          commit('addBulkTransaction', bulkTransaction);
+        }).toThrowError('Duplicate');
+      });
+    });
+
+    describe('addUpdateBulkTransactionTransaction', () => {
+      it('should require parameters', () => {
+        init({});
+        expect(() => {
+          commit('addUpdateBulkTransactionTransaction', {});
+        }).toThrowError('required');
+        expect(() => {
+          commit('addUpdateBulkTransactionTransaction', {
+            transaction: {},
+            bulkTransaction: {}
+          });
+        }).toThrowError('required');
+      });
+
+      it('should add a bulk transaction transaction', () => {
+        const bulkTransaction = {
+          transactionIds: []
+        };
+        const transaction = {
+          to: 'test',
+          from: 'test',
+          value: '0',
+          id: 'test'
+        };
+        init({
+          bulkTransactions: [bulkTransaction]
+        });
+        commit('addUpdateBulkTransactionTransaction', {
+          bulkTransaction,
+          transaction
+        });
+        expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
+          transaction
+        );
+        expect(bulkTransaction.transactionIds).toContain(transaction.id);
       });
     });
   });
