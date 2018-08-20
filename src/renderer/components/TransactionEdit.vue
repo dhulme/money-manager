@@ -60,12 +60,11 @@
           prepend-icon="note"
           @keyup.enter="save"
         />
-        <v-select
+        <v-autocomplete
           :items="accounts"
           :rules="accountValidationRules"
           v-model="newTransaction.account"
           label="Account"
-          autocomplete
           prepend-icon="account_balance"
           required
           @keyup.enter="save"

@@ -28,18 +28,16 @@
           label="Amount"
           prefix="£"
         />
-        <v-select
+        <v-autocomplete
           :items="projectItems"
           v-model="newTransaction.from"
           label="From"
-          autocomplete
         />
 
-        <v-select
+        <v-autocomplete
           :items="projectItems"
           v-model="newTransaction.to"
           label="To"
-          autocomplete
         />
 
         <v-text-field

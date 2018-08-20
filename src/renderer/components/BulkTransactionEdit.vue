@@ -4,18 +4,16 @@
       {{ transaction.id ? 'Edit' : 'Add' }} Transaction
     </v-card-title>
     <v-card-text>
-      <v-select
+      <v-autocomplete
         :items="accounts"
         v-model="newTransaction.from"
         label="From"
-        autocomplete
         prepend-icon="account_balance"
       />
-      <v-select
+      <v-autocomplete
         :items="accounts"
         v-model="newTransaction.to"
         label="To"
-        autocomplete
         prepend-icon="account_balance"
       />
       <v-text-field
