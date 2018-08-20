@@ -11,6 +11,7 @@
 // });
 
 import store from "@/store";
+import { stat } from "fs";
 
 describe("project store", () => {
   const state = store.state.project;
@@ -104,6 +105,100 @@ describe("project store", () => {
         expect(fromAccount.transactionIds).toContain("test");
         expect(toAccount.balance.toString()).toEqual("10");
         expect(toAccount.transactionIds).toContain("test");
+      });
+    });
+
+    describe("updateSummaryBalance", () => {
+      it("should sum accounts", () => {
+        init({
+          accounts: [
+            { id: "a", balance: 10, transactionIds: [] },
+            { id: "b", balance: 10, transactionIds: [] }
+          ]
+        });
+        commit("updateSummaryBalance");
+        expect(state.summary.balance.toString()).toBe("20");
+      });
+
+      it("should subtract budgets", () => {
+        init({
+          accounts: [
+            { id: "a", balance: 10, transactionIds: [], type: "budget" },
+            { id: "b", balance: 20, transactionIds: [] }
+          ]
+        });
+        commit("updateSummaryBalance");
+        expect(state.summary.balance.toString()).toBe("10");
+      });
+
+      it("should ignore none accounts", () => {
+        init({
+          accounts: [
+            { id: "a", balance: 10, transactionIds: [], type: "none" },
+            { id: "b", balance: 10, transactionIds: [], type: "none" }
+          ]
+        });
+        commit("updateSummaryBalance");
+        expect(state.summary.balance.toString()).toBe("0");
+      });
+    });
+
+    describe("deleteAccount", () => {
+      it("should delete an account", () => {
+        const account = { id: "test" };
+        init({
+          accounts: [account]
+        });
+        commit("deleteAccount", "test");
+        expect(state.accounts).not.toContain(account);
+      });
+
+      it("should not delete other accounts", () => {
+        const account = { id: "test" };
+        init({
+          accounts: [account]
+        });
+        commit("deleteAccount", "bob");
+        expect(state.accounts).toContain(account);
+      });
+    });
+
+    describe("addAccount", () => {
+      it("should check new account fields", () => {
+        init({});
+        expect(() => {
+          commit("addAccount", {});
+        }).toThrowError("required");
+      });
+
+      it("should add an account", () => {
+        const account = {
+          name: "test",
+          balance: "0",
+          type: "test",
+          category: "test"
+        };
+        init({});
+        commit("addAccount", account);
+        expect(state.accounts).toContainEqual({
+          ...account,
+          id: "test",
+          transactionIds: []
+        });
+      });
+
+      it("should not allow duplicate IDs", () => {
+        const account = {
+          name: "test",
+          balance: "0",
+          type: "test",
+          category: "test"
+        };
+        init({});
+        commit("addAccount", account);
+        expect(() => {
+          commit("addAccount", account);
+        }).toThrowError("Duplicate");
       });
     });
   });

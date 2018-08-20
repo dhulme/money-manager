@@ -99,8 +99,10 @@ const project = {
       );
     },
 
-    addAccount(state, { name, balance, type, category }) {
-      const existingIds = state.accounts.map(account => account.id);
+    addAccount(state, account) {
+      requireObjectProperties(account, ["name", "balance", "type", "category"]);
+      const { name, balance, type, category } = account;
+      const existingIds = state.accounts.map(_ => _.id);
       const newAccount = {
         transactionIds: [],
         id: util.getFriendlyId(name, existingIds),

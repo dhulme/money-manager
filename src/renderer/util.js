@@ -1,10 +1,10 @@
-import cryptoRandomString from 'crypto-random-string';
+import cryptoRandomString from "crypto-random-string";
 
 export default {
   getFriendlyId(name, existingIds) {
-    const id = name.toLowerCase().replace(/[ ]/g, '-');
+    const id = name.toLowerCase().replace(/[ ]/g, "-");
     if (existingIds.includes(id)) {
-      throw new Error(`Id ${id} has already been used`);
+      throw new Error(`Duplicate ID. Id ${id} has already been used`);
     }
     return id;
   },
@@ -15,5 +15,5 @@ export default {
 
   capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  },
+  }
 };
