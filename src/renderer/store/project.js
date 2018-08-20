@@ -8,7 +8,7 @@ function required(param) {
 
 function requireObjectProperties(object, params) {
   const errors = params.reduce((acc, param) => {
-    if (acc[param] === undefined) {
+    if (object[param] === undefined) {
       return [...acc, param];
     }
     return acc;
