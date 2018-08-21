@@ -36,6 +36,7 @@
             <td>{{ transactionAccount(props.item) }}</td>
             <td>{{ transactionIn(props.item) | currency }}</td>
             <td>{{ transactionOut(props.item) | currency }}</td>
+            <td>{{ accountBalance(props.item) | currency }}</td>
           </tr>
         </template>
         <template slot="footer">
@@ -44,7 +45,8 @@
             <td/>
             <td/>
             <td/>
-            <td class="text-xs-right">Balance</td>
+            <td/>
+            <td/>
             <td :class="{ 'red--text': parseFloat(account.balance) < 0 }">
               {{ account.balance | currency }}
             </td>
@@ -104,6 +106,10 @@
           text: this.$t('transactions.out'),
           value: 'value',
           align: 'left',
+        }, {
+          text: 'Balance',
+          value: 'balance',
+          align: 'left'
         }],
         rowsPerPageItems: [rowsPerPage, {
           text: 'All',
@@ -148,6 +154,9 @@
       addTransaction() {
         this.$emit('add-transaction');
       },
+      accountBalance(transaction) {
+        return this.$store.getters['project/accountBalance'](this.account, transaction.id);
+      }
     },
   };
 </script>

@@ -288,6 +288,19 @@ const project = {
           id => state.bulkTransactionTransactions[id]
         );
       };
+    },
+    accountBalance(state) {
+      return (account, transactionId) => {
+        const transactionIds = account.transactionIds.slice(
+          account.transactionIds.indexOf(transactionId) + 1
+        );
+        return transactionIds.reduce((balance, id) => {
+          const transaction = state.transactions[id];
+          return transaction.from === account.id
+            ? balance.plus(transaction.value)
+            : balance.minus(transaction.value);
+        }, new Big(account.balance));
+      };
     }
   }
 };

@@ -23,8 +23,7 @@
         >
           <v-text-field
             slot="activator"
-            v-model="newTransaction.prettyDate"
-            :rules="dateValidationRules"
+            v-model="prettyDate"
             label="Date"
             prepend-icon="event"
             readonly
@@ -33,16 +32,8 @@
           <v-date-picker
             v-model="date"
             no-title
-            scrollable
-            @input="newTransaction.prettyDate = $options.filters.date($event)"
-          >
-            <v-spacer/>
-            <v-btn
-              flat
-              color="primary"
-              @click="dateMenu = false"
-            >OK</v-btn>
-          </v-date-picker>
+            @input="$refs.dateMenu.save(date)"
+          />
         </v-menu>
 
         <v-text-field
@@ -131,7 +122,8 @@
         accountValidationRules: [
           value => !!value || 'Transaction account is required',
         ],
-        date: null,
+        date: moment().format('YYYY-MM-DD'),
+        prettyDate: moment().format('DD/MM/YYYY')
       };
     },
     computed: {
@@ -144,12 +136,12 @@
     },
     watch: {
       transaction(transaction) {
-        this.$refs.form.reset();
+        // this.$refs.form.reset(); TODO had to disable this because of bug in vuetify
         this.$refs.description.focus();
         this.newTransaction = {
-          ...transaction,
-          prettyDate: this.$options.filters.date(transaction.date),
+          ...transaction
         };
+        this.date = moment().format('YYYY-MM-DD');
         if (transaction.from === this.account.id) {
           this.newTransaction.valueOut = transaction.value;
           this.newTransaction.account = transaction.to;
@@ -158,6 +150,11 @@
           this.newTransaction.account = transaction.from;
         }
       },
+      date: {
+        handler(date) {
+          this.prettyDate = moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+        },
+      }
     },
     methods: {
       save() {
@@ -166,11 +163,16 @@
         }
 
         const uiTransaction = this.newTransaction;
+        const date = moment(this.date);
         const transactionAccount = this.$store.getters['project/account'](uiTransaction.account);
         const transaction = {
           description: uiTransaction.description,
           note: uiTransaction.note,
-          date: moment(uiTransaction.date),
+          date: moment().set({
+            year: date.year(),
+            month: date.month(),
+            date: date.date()
+          }).toDate(),
           id: util.getId(),
         };
 
@@ -230,9 +232,6 @@
 
         const event = this.isNewTransaction ? 'added' : 'updated';
         this.$emit(event, transaction);
-      },
-      parseDate(date) {
-        return date ? moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD') : null;
       },
       close() {
         this.$emit('close');

@@ -15,7 +15,6 @@
       :account="account"
       :transactions="transactions"
       editable
-      @transaction-click="editTransaction"
       @add-transaction="addTransaction"
     />
 
@@ -27,7 +26,7 @@
         :transaction="transaction"
         :account="account"
         @close="dialogVisible = false"
-        @added="pushTransaction"
+        @added="dialogVisible = false"
       />
     </v-dialog>
   </div>
@@ -47,20 +46,21 @@
     data() {
       return {
         dialogVisible: false,
-        transaction: {},
-        transactions: [],
+        transaction: {}
       };
     },
     computed: {
       account() {
         return this.$store.getters['project/account'](this.accountId);
       },
+      transactions() {
+        return this.$store.getters['project/transactions'](this.account);
+      },
       accountId() {
         return this.$route.params.accountId;
       },
     },
     created() {
-      this.transactions = this.$store.getters['project/transactions'](this.account);
       this.$ipc.setTitle(this.account.name);
     },
     methods: {
@@ -70,21 +70,9 @@
           name: 'accounts',
         });
       },
-      editTransaction(transaction) {
-        // TODO: this is disabled for now because editing transactions will be quite difficult
-        // - think about dual transactions
-        // this.transaction = transaction;
-        // this.dialogVisible = true;
-      },
       addTransaction() {
-        this.transaction = {
-          date: Date.now(),
-        };
+        this.transaction = {};
         this.dialogVisible = true;
-      },
-      pushTransaction(transaction) {
-        this.transactions.push(transaction);
-        this.dialogVisible = false;
       },
       goToAccountsIfDialogClosed() {
         if (!this.dialogVisible) {
