@@ -2,26 +2,29 @@ import { remote } from 'electron';
 
 const newMenuItemTemplate = {
   label: 'New',
+  accelerator: 'CmdOrCtrl+Shift+N'
 };
 const openMenuItemTemplate = {
   label: 'Open',
-  accelerator: 'CmdOrCtrl+O',
+  accelerator: 'CmdOrCtrl+O'
 };
 const saveMenuItemTemplate = {
   label: 'Save',
-  accelerator: 'CmdOrCtrl+S',
+  accelerator: 'CmdOrCtrl+S'
 };
 const saveAsMenuItemTemplate = {
   label: 'Save as',
-  accelerator: 'CmdOrCtrl+Shift+S',
+  accelerator: 'CmdOrCtrl+Shift+S'
 };
 const undoMenuItemTemplate = {
   label: 'Undo',
   accelerator: 'CmdOrCtrl+Z',
+  enabled: false
 };
 const redoMenuItemTemplate = {
   label: 'Redo',
   accelerator: 'CmdOrCtrl+Y',
+  enabled: false
 };
 
 let menu;
@@ -32,25 +35,22 @@ const menuTemplate = [
       newMenuItemTemplate,
       openMenuItemTemplate,
       saveMenuItemTemplate,
-      saveAsMenuItemTemplate,
-    ],
+      saveAsMenuItemTemplate
+    ]
   },
   {
     label: 'Edit',
-    submenu: [
-      undoMenuItemTemplate,
-      redoMenuItemTemplate,
-    ],
+    submenu: [undoMenuItemTemplate, redoMenuItemTemplate]
   },
   {
     label: 'Development',
     submenu: [
       {
         label: 'Toggle dev tools',
-        role: 'toggledevtools',
-      },
-    ],
-  },
+        role: 'toggledevtools'
+      }
+    ]
+  }
 ];
 
 function updateMenu() {
@@ -60,14 +60,7 @@ function updateMenu() {
 }
 
 export default {
-  init({
-    openClick,
-    saveClick,
-    undoClick,
-    redoClick,
-    saveAsClick,
-    newClick,
-  }) {
+  init({ openClick, saveClick, undoClick, redoClick, saveAsClick, newClick }) {
     newMenuItemTemplate.click = newClick;
     openMenuItemTemplate.click = openClick;
     saveMenuItemTemplate.click = saveClick;
@@ -78,12 +71,14 @@ export default {
   },
 
   updateUndoLabel(label) {
-    undoMenuItemTemplate.label = `Undo '${label}'`;
+    undoMenuItemTemplate.label = label ? `Undo '${label}'` : 'Undo';
+    undoMenuItemTemplate.enabled = Boolean(label);
     updateMenu();
   },
 
   updateRedoLabel(label) {
-    redoMenuItemTemplate.label = `Redo '${label}'`;
+    redoMenuItemTemplate.label = label ? `Redo '${label}'` : 'Redo';
+    redoMenuItemTemplate.enabled = Boolean(label);
     updateMenu();
-  },
+  }
 };

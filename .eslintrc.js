@@ -2,55 +2,48 @@
 
 module.exports = {
   root: true,
-  parser: "vue-eslint-parser",
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    sourceType: "module",
-    parser: "babel-eslint",
+    sourceType: 'module',
+    parser: 'babel-eslint',
     ecmaVersion: 2017
   },
   env: {
     browser: true
   },
-  extends: ["plugin:vue/recommended", "airbnb-base", "prettier"],
+  extends: ['plugin:vue/recommended', 'airbnb-base', 'prettier'],
   // check if imports actually resolve
   settings: {
-    "import/resolver": {
+    'import/resolver': {
       webpack: {
-        config: "vuewebpack.config.js"
+        config: 'vuewebpack.config.js'
       }
     }
   },
   // add your custom rules here
   rules: {
     // don't require .vue extension when importing
-    "import/extensions": [
-      "error",
-      "always",
+    'import/extensions': [
+      'error',
+      'always',
       {
-        js: "never",
-        vue: "never"
+        js: 'never',
+        vue: 'never'
       }
     ],
     // allow optionalDependencies
-    "import/no-extraneous-dependencies": [
-      "error",
+    'import/no-extraneous-dependencies': [
+      'error',
       {
-        optionalDependencies: ["test/unit/index.js"]
+        optionalDependencies: ['test/unit/index.js']
       }
     ],
     // allow debugger during development
-    "no-debugger": process.env.NODE_ENV === "production" ? 2 : 0,
-    "linebreak-style": ["error", "windows"],
-    indent: "off",
-    "vue/html-indent": ["error", 2],
-    "vue/script-indent": [
-      "error",
-      2,
-      {
-        baseIndent: 1
-      }
-    ],
-
-    "no-param-reassign": 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'linebreak-style': ['error', 'windows'],
+    indent: 'off',
+    'vue/html-indent': ['error', 2],
+    'vue/script-indent': 0,
+    'no-param-reassign': 0
   }
 };

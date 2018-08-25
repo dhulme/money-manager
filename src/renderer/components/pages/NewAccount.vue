@@ -2,10 +2,15 @@
   <div v-hotkey.close="goToAccounts">
     <v-card>
       <v-card-title>
-        <span class="headline">New {{ accountCategory }}</span>
+        <div class="headline">New Account</div>
       </v-card-title>
       <v-card-text>
         <form @submit="addAccount">
+          <v-text-field
+            v-model="accountCategory"
+            label="Category"
+            disabled
+          />
           <v-text-field
             v-focus
             v-model="name"
@@ -13,12 +18,13 @@
           />
           <v-text-field
             v-model="openingBalance"
-            label="Opening Balance"
+            label="Opening balance"
+            prefix="£"
           />
           <v-btn
             type="submit"
             color="primary"
-          >Submit</v-btn>
+          >Ok</v-btn>
         </form>
       </v-card-text>
     </v-card>
@@ -26,7 +32,7 @@
 </template>
 
 <script>
-  import BackButton from '@/components/BackButton';
+  import BackButton from '../BackButton';
 
   export default {
     components: {
@@ -65,6 +71,7 @@
         });
 
         this.resetForm();
+        this.goToAccounts();
       },
       resetForm() {
         this.name = '';

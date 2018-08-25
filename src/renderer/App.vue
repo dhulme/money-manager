@@ -5,6 +5,7 @@
     v-hotkey.open="$history.open"
     v-hotkey.undo="$history.undo"
     v-hotkey.redo="$history.redo"
+    v-hotkey.new="$history.new"
   >
     <the-toolbar />
     <main>

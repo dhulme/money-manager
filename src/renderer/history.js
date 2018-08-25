@@ -9,7 +9,7 @@ const actionNames = {
   updateBulkTransactionTransaction: 'Update transaction',
   addBulkTransactionTransaction: 'Add transaction',
   addBulkTransaction: 'Add bulk transaction',
-  addAccount: 'Add account',
+  addAccount: 'Add account'
 };
 const storePrefix = 'project/';
 
@@ -20,13 +20,14 @@ const history = {
     let newAction = true;
     let initData;
 
-    store.subscribeAction((action) => {
+    store.subscribeAction(action => {
       if (!action.type.startsWith(storePrefix)) return;
 
       done.push(action);
       ipc.setEdited();
       menu.updateUndoLabel(actionNames[action.type.replace(storePrefix, '')]);
       if (newAction) {
+        menu.updateRedoLabel();
         undone = [];
       }
     });
@@ -40,12 +41,15 @@ const history = {
 
     Vue.prototype.$history = {
       undo() {
+        if (done.length === 0) return;
+
         const toUndo = done.pop();
         undone.push(toUndo);
+        menu.updateRedoLabel(actionNames[toUndo.type.replace(storePrefix, '')]);
 
         newAction = false;
         store.commit(`${storePrefix}init`, initData);
-        done.forEach((action) => {
+        done.forEach(action => {
           store.dispatch(action.type, action.payload);
           done.pop();
         });
@@ -53,14 +57,21 @@ const history = {
         newAction = true;
 
         if (done.length === 0) {
+          menu.updateUndoLabel();
           ipc.setSaved();
         }
       },
       redo() {
+        if (undone.length === 0) return;
+
         const action = undone.pop();
         newAction = false;
         store.dispatch(action.type, action.payload);
         newAction = true;
+
+        if (undone.length === 0) {
+          menu.updateRedoLabel();
+        }
       },
       save() {
         done = [];
@@ -76,9 +87,9 @@ const history = {
       },
       new() {
         ipc.newProject();
-      },
+      }
     };
-  },
+  }
 };
 
 export default history;
