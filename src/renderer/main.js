@@ -22,7 +22,6 @@ Vue.config.productionTip = false;
 
 Vue.use(VueI18n);
 Vue.use(Vuetify);
-Vue.use(history, store);
 
 Vue.filter('currency', value => {
   if (value === undefined || value === null) {
@@ -93,16 +92,20 @@ Vue.config.keyCodes = {
   add: 65 // a
 };
 
-/* eslint-disable no-new */
-new Vue({
-  router,
-  components: {
-    App
-  },
-  template: '<App/>',
-  i18n: new VueI18n({
-    locale: 'en',
-    messages
-  }),
-  store
-}).$mount('#app');
+Vue.use(history, {
+  store,
+  ready() {
+    new Vue({
+      router,
+      components: {
+        App
+      },
+      template: '<App/>',
+      i18n: new VueI18n({
+        locale: 'en',
+        messages
+      }),
+      store
+    }).$mount('#app');
+  }
+});

@@ -14,7 +14,7 @@ const actionNames = {
 const storePrefix = 'project/';
 
 const history = {
-  install(Vue, store) {
+  install(Vue, { store, ready }) {
     let done = [];
     let undone = [];
     let newAction = true;
@@ -36,6 +36,7 @@ const history = {
       initData = data;
       store.commit(`${storePrefix}init`, initData);
       ipc.setSaved();
+      ready();
     });
     ipc.openDefaultProject();
 

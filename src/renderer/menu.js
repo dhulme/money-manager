@@ -41,8 +41,10 @@ const menuTemplate = [
   {
     label: 'Edit',
     submenu: [undoMenuItemTemplate, redoMenuItemTemplate]
-  },
-  {
+  }
+];
+if (process.env.NODE_ENV !== 'production') {
+  menuTemplate.push({
     label: 'Development',
     submenu: [
       {
@@ -50,8 +52,8 @@ const menuTemplate = [
         role: 'toggledevtools'
       }
     ]
-  }
-];
+  });
+}
 
 function updateMenu() {
   if (menu) menu.destroy();
