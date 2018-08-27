@@ -4,6 +4,10 @@ Money Manager is a desktop application for managing your personal finances and a
 
 It uses [Electron](https://electron.atom.io/) as the application platform and [Vue.js](https://vuejs.org/) as the Front-End UI framework.
 
+## Installation
+
+Download the latest release [here](https://github.com/dhulme/money-manager/releases) and run the setup program. Currently on a Windows build is available.
+
 ## Screenshots
 
 ### Accounts
