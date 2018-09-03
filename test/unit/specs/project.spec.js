@@ -20,6 +20,10 @@ describe('project store', () => {
     store.commit(`project/${name}`, data);
   }
 
+  function dispatch(name, data) {
+    store.dispatch(`project/${name}`, data);
+  }
+
   function init({
     accounts = [],
     transactions = {},
@@ -282,6 +286,25 @@ describe('project store', () => {
           transaction
         );
         expect(bulkTransaction.transactionIds).toContain(transaction.id);
+      });
+    });
+  });
+
+  describe('actions', () => {
+    describe('addBulkTransaction', () => {
+      it('should run without errors', () => {
+        dispatch('addBulkTransaction', {
+          description: 'test',
+          name: 'test',
+          transactions: [
+            {
+              to: 'test',
+              from: 'test',
+              value: '0',
+              id: 'test'
+            }
+          ]
+        });
       });
     });
   });

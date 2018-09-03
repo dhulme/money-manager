@@ -60,6 +60,7 @@
 
 <script>
   import BulkTransactionTransactions from '../BulkTransactionTransactions';
+  import util from '../../util';
 
   export default {
     components: {
@@ -69,7 +70,9 @@
       return {
         name: '',
         description: '',
-        newTransaction: {},
+        newTransaction: {
+          id: util.getId()
+        },
         transactions: [],
       };
     },
@@ -89,7 +92,9 @@
     methods: {
       addTransaction() {
         this.transactions.push(this.newTransaction);
-        this.newTransaction = {};
+        this.newTransaction = {
+          id: util.getId()
+        };
       },
       addBulkTransaction() {
         this.$store.dispatch('project/addBulkTransaction', {

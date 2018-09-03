@@ -55,10 +55,10 @@ const project = {
     addTransaction(
       state,
       {
-        transaction = required(),
-        value = required(),
-        toAccountId = required(),
-        fromAccountId = required()
+        transaction = required('transaction'),
+        value = required('value'),
+        toAccountId = required('toAccountId'),
+        fromAccountId = required('fromAccountId')
       }
     ) {
       requireObjectProperties(transaction, ['id', 'value', 'from', 'to']);
@@ -93,13 +93,13 @@ const project = {
       }, new Big(0));
     },
 
-    deleteAccount(state, accountId = required()) {
+    deleteAccount(state, accountId = required('accountId')) {
       state.accounts = state.accounts.filter(
         account => account.id !== accountId
       );
     },
 
-    addAccount(state, account = required()) {
+    addAccount(state, account = required('account')) {
       requireObjectProperties(account, ['name', 'balance', 'type', 'category']);
       const { name, balance, type, category } = account;
       const existingIds = state.accounts.map(_ => _.id);
@@ -112,8 +112,6 @@ const project = {
         name
       };
       state.accounts.push(newAccount);
-
-      return newAccount;
     },
 
     addBulkTransaction(state, bulkTransaction) {
@@ -123,17 +121,18 @@ const project = {
       const newBulkTransaction = {
         name,
         description,
-        id: util.getFriendlyId(name, existingIds),
+        id: bulkTransaction.id || util.getFriendlyId(name, existingIds),
         transactionIds: []
       };
       state.bulkTransactions.push(newBulkTransaction);
-
-      return bulkTransaction;
     },
 
     addUpdateBulkTransactionTransaction(
       state,
-      { transaction = required(), bulkTransaction = required() }
+      {
+        transaction = required('transaction'),
+        bulkTransaction = required('bulkTransaction')
+      }
     ) {
       requireObjectProperties(transaction, ['to', 'from', 'value', 'id']);
       requireObjectProperties(bulkTransaction, ['transactionIds']);
@@ -148,7 +147,6 @@ const project = {
       if (!bulkTransaction.transactionIds.includes(id)) {
         bulkTransaction.transactionIds.push(id);
       }
-      return state.bulkTransactionTransactions[id];
     }
   },
   actions: {
@@ -204,11 +202,18 @@ const project = {
       });
     },
 
-    addBulkTransaction({ commit }, { description, name, transactions }) {
-      const bulkTransaction = commit('addBulkTransaction', {
+    addBulkTransaction(
+      { commit, state, getters },
+      { description, name, transactions }
+    ) {
+      const existingIds = state.bulkTransactions.map(_ => _.id);
+      const id = util.getFriendlyId(name, existingIds);
+      commit('addBulkTransaction', {
         description,
-        name
+        name,
+        id
       });
+      const bulkTransaction = getters.bulkTransaction(id);
       transactions.forEach(transaction =>
         commit('addUpdateBulkTransactionTransaction', {
           bulkTransaction,
