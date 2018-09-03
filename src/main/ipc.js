@@ -4,20 +4,29 @@ import defaultProject from './default-project.json';
 import settings from './settings';
 import project from './project';
 
-const filters = [{
-  name: 'JSON',
-  extensions: ['json'],
-}];
+const filters = [
+  {
+    name: 'JSON',
+    extensions: ['json']
+  }
+];
 
 function saveAs(data) {
-  dialog.showSaveDialog({
-    filters,
-  }, (path) => {
-    settings.setProjectPath(path);
-    settings.save();
+  dialog.showSaveDialog(
+    {
+      filters
+    },
+    path => {
+      if (!path.endsWith('.json')) {
+        path += '.json';
+      }
 
-    project.save(path, data);
-  });
+      settings.setProjectPath(path);
+      settings.save();
+
+      project.save(path, data);
+    }
+  );
 }
 
 ipcMain.on('projectSave', async (event, data) => {
@@ -33,7 +42,7 @@ ipcMain.on('projectSaveAs', async (event, data) => {
   saveAs(data);
 });
 
-ipcMain.on('projectOpenDefault', async (event) => {
+ipcMain.on('projectOpenDefault', async event => {
   const projectPath = settings.getProjectPath();
   if (projectPath) {
     const data = await project.open(projectPath);
@@ -43,21 +52,24 @@ ipcMain.on('projectOpenDefault', async (event) => {
   }
 });
 
-ipcMain.on('projectOpen', (event) => {
-  dialog.showOpenDialog({
-    filters,
-  }, async ([projectPath = null] = []) => {
-    if (!projectPath) return;
+ipcMain.on('projectOpen', event => {
+  dialog.showOpenDialog(
+    {
+      filters
+    },
+    async ([projectPath = null] = []) => {
+      if (!projectPath) return;
 
-    settings.setProjectPath(projectPath);
-    settings.save();
+      settings.setProjectPath(projectPath);
+      settings.save();
 
-    const data = await project.open(projectPath);
-    event.sender.send('projectOpened', data);
-  });
+      const data = await project.open(projectPath);
+      event.sender.send('projectOpened', data);
+    }
+  );
 });
 
-ipcMain.on('projectNew', (event) => {
+ipcMain.on('projectNew', event => {
   settings.setProjectPath(null);
   settings.save();
   event.sender.send('projectOpened', defaultProject);
