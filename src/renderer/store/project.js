@@ -184,11 +184,11 @@ const project = {
 
     updateBulkTransactionTransaction(
       { commit },
-      { transaction, transactionId }
+      { bulkTransaction, transaction }
     ) {
       commit('addUpdateBulkTransactionTransaction', {
-        transaction,
-        transactionId
+        bulkTransaction,
+        transaction
       });
     },
 
