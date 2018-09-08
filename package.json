@@ -53,7 +53,7 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "logo.png"
     },
     "linux": {
       "icon": "build/icons"
