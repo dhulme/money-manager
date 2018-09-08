@@ -55,6 +55,10 @@ const ipc = {
   saveProjectAs(data) {
     ipc.send('projectSaveAs', JSON.stringify(data));
   },
+
+  exportSummaryCsv(data) {
+    ipc.send('exportSummaryCsv', data);
+  }
 };
 
 export default ipc;

@@ -17,6 +17,10 @@ function saveAs(data) {
       filters
     },
     path => {
+      if (!path) {
+        return;
+      }
+
       if (!path.endsWith('.json')) {
         path += '.json';
       }
@@ -73,4 +77,29 @@ ipcMain.on('projectNew', event => {
   settings.setProjectPath(null);
   settings.save();
   event.sender.send('projectOpened', defaultProject);
+});
+
+ipcMain.on('exportSummaryCsv', (event, data) => {
+  dialog.showSaveDialog(
+    {
+      filters: [
+        {
+          name: 'CSV',
+          extensions: ['csv']
+        }
+      ],
+      title: 'Export summary CSV'
+    },
+    path => {
+      if (!path) {
+        return;
+      }
+
+      if (!path.endsWith('.csv')) {
+        path += '.csv';
+      }
+
+      project.exportCsv(path, data);
+    }
+  );
 });

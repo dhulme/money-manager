@@ -26,6 +26,9 @@ const redoMenuItemTemplate = {
   accelerator: 'CmdOrCtrl+Y',
   enabled: false
 };
+const exportSummaryMenuItemTemplate = {
+  label: 'Export summary as CSV'
+};
 
 let menu;
 const menuTemplate = [
@@ -41,6 +44,10 @@ const menuTemplate = [
   {
     label: 'Edit',
     submenu: [undoMenuItemTemplate, redoMenuItemTemplate]
+  },
+  {
+    label: 'Export',
+    submenu: [exportSummaryMenuItemTemplate]
   }
 ];
 if (process.env.NODE_ENV !== 'production') {
@@ -62,13 +69,22 @@ function updateMenu() {
 }
 
 export default {
-  init({ openClick, saveClick, undoClick, redoClick, saveAsClick, newClick }) {
+  init({
+    openClick,
+    saveClick,
+    undoClick,
+    redoClick,
+    saveAsClick,
+    newClick,
+    exportSummaryClick
+  }) {
     newMenuItemTemplate.click = newClick;
     openMenuItemTemplate.click = openClick;
     saveMenuItemTemplate.click = saveClick;
     saveAsMenuItemTemplate.click = saveAsClick;
     undoMenuItemTemplate.click = undoClick;
     redoMenuItemTemplate.click = redoClick;
+    exportSummaryMenuItemTemplate.click = exportSummaryClick;
     updateMenu();
   },
 

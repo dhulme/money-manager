@@ -41,6 +41,7 @@
         undoClick: () => this.$history.undo(),
         redoClick: () => this.$history.redo(),
         saveAsClick: () => this.$history.saveAs(),
+        exportSummaryClick: () => this.$history.exportSummary()
       });
     },
   };

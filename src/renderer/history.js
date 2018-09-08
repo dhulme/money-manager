@@ -1,3 +1,5 @@
+import json2csv from 'json2csv';
+
 import ipc from './ipc';
 import menu from './menu';
 
@@ -88,6 +90,15 @@ const history = {
       },
       new() {
         ipc.newProject();
+      },
+      exportSummary() {
+        const summary = store.state.project.accounts.map(account => ({
+          Name: account.name,
+          Category: account.category,
+          Type: account.type,
+          Balance: Number(account.balance)
+        }));
+        ipc.exportSummaryCsv(json2csv.parse(summary));
       }
     };
   }

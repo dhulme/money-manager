@@ -15,6 +15,12 @@ const project = {
       throw new Error('Failed to open project');
     });
   },
+
+  async exportCsv(path, data) {
+    return fs.writeFile(path, data).catch(() => {
+      throw new Error('Failed to export');
+    });
+  }
 };
 
 export default project;

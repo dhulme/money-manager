@@ -64,6 +64,7 @@
     "big.js": "^5.1.2",
     "crypto-random-string": "^1.0.0",
     "fs-extra": "^7.0.0",
+    "json2csv": "^4.2.1",
     "moment": "^2.22.1",
     "source-map-support": "^0.5.5",
     "vue": "^2.5.17",
