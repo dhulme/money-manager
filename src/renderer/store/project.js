@@ -268,6 +268,9 @@ const project = {
           return entry[1] === transaction;
         })[0];
     },
+    transaction(state) {
+      return id => state.transactions[id];
+    },
     summaryBalance(state) {
       return state.summary.balance;
     },

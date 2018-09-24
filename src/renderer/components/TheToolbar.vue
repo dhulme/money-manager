@@ -15,6 +15,10 @@
       route-name="bulkTransactions"
     >Bulk Transactions</toolbar-button>
 
+    <toolbar-button
+      route-name="insights"
+    >Insights</toolbar-button>
+
     <v-spacer/>
     <summary-alert/>
 
