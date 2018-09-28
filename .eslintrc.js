@@ -11,7 +11,11 @@ module.exports = {
   env: {
     browser: true
   },
-  extends: ['plugin:vue/recommended', 'airbnb-base', 'prettier'],
+  extends: [
+    'airbnb-base',
+    'plugin:prettier/recommended',
+    'plugin:vue/recommended'
+  ],
   // check if imports actually resolve
   settings: {
     'import/resolver': {
@@ -41,9 +45,15 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'linebreak-style': ['error', 'windows'],
-    indent: 'off',
-    'vue/html-indent': ['error', 2],
-    'vue/script-indent': 0,
+    // indent: 'off',
+    'vue/html-indent': 'off',
+    'vue/script-indent': [
+      'error',
+      2,
+      {
+        baseIndent: 0
+      }
+    ],
     'no-param-reassign': 0
   }
 };
