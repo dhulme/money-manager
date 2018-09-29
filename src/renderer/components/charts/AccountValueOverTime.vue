@@ -1,16 +1,21 @@
 <script>
   import { Line } from 'vue-chartjs';
+  import moment from 'moment';
 
   export default {
     extends: Line,
     props: {
       account: {
-        required: true,
-        type: Object
+        type: Object,
+        default: null
       }
     },
     computed: {
       data() {
+        if (!this.account) {
+          return null;
+        }
+
         return this.account.transactionIds
           .map(transactionId => {
             const transaction = this.$store.getters['project/transaction'](
@@ -31,7 +36,7 @@
       }
     },
     watch: {
-      transactions: 'render'
+      data: 'render'
     },
     mounted() {
       this.render();
@@ -44,16 +49,44 @@
               {
                 data: this.data,
                 backgroundColor: 'transparent',
-                borderColor: '#1976d2'
+                borderColor: '#1976d2',
+                steppedLine: true
               }
             ]
           },
           {
             responsive: true,
+            legend: {
+              display: false
+            },
+            tooltips: {
+              displayColors: false,
+              callbacks: {
+              title([point], config) {
+                const datum = config.datasets[point.datasetIndex].data[point.index];
+                return moment(datum.x).format('Do MMMM YYYY')
+              },
+              label(point) {
+                return `£${point.yLabel}`
+              }
+              }
+            },
             scales: {
               xAxes: [
                 {
-                  type: 'time'
+                  type: 'time',
+                  scaleLabel: {
+                    labelString: 'Time'
+                  }
+                }
+              ],
+              yAxes: [
+                {
+                  ticks: {
+                    callback(value) {
+                      return `£${value}`;
+                    }
+                  }
                 }
               ]
             }

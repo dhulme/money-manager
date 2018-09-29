@@ -42,14 +42,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'linebreak-style': ['error', 'windows'],
     // indent: 'off',
-    'vue/html-indent': 'off',
-    'vue/script-indent': [
-      'error',
-      2,
-      {
-        baseIndent: 0
-      }
-    ],
+    'vue/script-indent': 'off',
     'no-param-reassign': 0
   }
 };
