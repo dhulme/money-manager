@@ -11,11 +11,7 @@ module.exports = {
   env: {
     browser: true
   },
-  extends: [
-    'airbnb-base',
-    'plugin:prettier/recommended',
-    'plugin:vue/recommended'
-  ],
+  extends: ['airbnb-base', 'prettier', 'plugin:vue/recommended'],
   // check if imports actually resolve
   settings: {
     'import/resolver': {

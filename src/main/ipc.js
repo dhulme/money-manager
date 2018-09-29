@@ -79,7 +79,7 @@ ipcMain.on('projectNew', event => {
   event.sender.send('projectOpened', defaultProject);
 });
 
-ipcMain.on('exportSummaryCsv', (event, data) => {
+ipcMain.on('exportCsv', (event, { type, data }) => {
   dialog.showSaveDialog(
     {
       filters: [
@@ -88,7 +88,7 @@ ipcMain.on('exportSummaryCsv', (event, data) => {
           extensions: ['csv']
         }
       ],
-      title: 'Export summary CSV'
+      title: `Export ${type} CSV`
     },
     path => {
       if (!path) {

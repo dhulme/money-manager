@@ -1,4 +1,5 @@
 import json2csv from 'json2csv';
+import moment from 'moment';
 
 import ipc from './ipc';
 import menu from './menu';
@@ -98,7 +99,32 @@ const history = {
           Type: account.type,
           Balance: Number(account.balance)
         }));
-        ipc.exportSummaryCsv(json2csv.parse(summary));
+        ipc.exportCsv('summary', json2csv.parse(summary));
+      },
+      exportTransactions() {
+        const accountNamesById = store.state.project.accounts.reduce(
+          (acc, account) => ({
+            ...acc,
+            [account.id]: account.name
+          }),
+          {}
+        );
+        const transactions = Object.values(store.state.project.transactions)
+          .sort((a, b) => {
+            const aDateValue = new Date(a.date).valueOf();
+            const bDateValue = new Date(b.date).valueOf();
+            return aDateValue - bDateValue;
+          })
+          .map(transaction => ({
+            Date: moment(transaction.date).format('YYYY-MM-DD'),
+            From: accountNamesById[transaction.from],
+            To: accountNamesById[transaction.to],
+            Expense: accountNamesById[transaction.expense],
+            Description: transaction.description,
+            Note: transaction.note,
+            Value: Number(transaction.value)
+          }));
+        ipc.exportCsv('transactions', json2csv.parse(transactions));
       }
     };
   }

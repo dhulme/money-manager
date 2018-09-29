@@ -64,7 +64,6 @@
     "big.js": "^5.1.2",
     "chart.js": "^2.7.2",
     "crypto-random-string": "^1.0.0",
-    "eslint-plugin-prettier": "^2.7.0",
     "fs-extra": "^7.0.0",
     "json2csv": "^4.2.1",
     "moment": "^2.22.1",
