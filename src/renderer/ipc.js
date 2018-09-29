@@ -4,6 +4,10 @@ const defaultTitle = 'Money Manager';
 let stateEdited = false;
 let currentTitle = '';
 
+// electron.ipcRenderer.on('close', () => {
+//   console.log('test');
+// })
+
 const ipc = {
   send(channel, data) {
     return electron.ipcRenderer.send(channel, data);
@@ -58,6 +62,10 @@ const ipc = {
 
   exportCsv(type, data) {
     ipc.send('exportCsv', { type, data });
+  },
+
+  showCloseWarning(data) {
+    ipc.send('showCloseWarning', JSON.stringify(data));
   }
 };
 

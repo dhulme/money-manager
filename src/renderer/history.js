@@ -43,6 +43,19 @@ const history = {
     });
     ipc.openDefaultProject();
 
+    let canClose = false;
+    window.addEventListener('beforeunload', e => {
+      if (!canClose && done.length > 0) {
+        ipc.showCloseWarning(store.state.project);
+        e.returnValue = false;
+      }
+    });
+
+    ipc.on('closeConfirmed', () => {
+      canClose = true;
+      window.close();
+    });
+
     Vue.prototype.$history = {
       undo() {
         if (done.length === 0) return;
@@ -87,7 +100,10 @@ const history = {
         ipc.openProject();
       },
       saveAs() {
+        done = [];
+        undone = [];
         ipc.saveProjectAs(store.state.project);
+        ipc.setSaved();
       },
       new() {
         ipc.newProject();

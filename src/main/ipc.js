@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, BrowserWindow } from 'electron';
 
 import defaultProject from './default-project.json';
 import settings from './settings';
@@ -11,35 +11,42 @@ const filters = [
   }
 ];
 
-function saveAs(data) {
-  dialog.showSaveDialog(
-    {
-      filters
-    },
-    path => {
-      if (!path) {
-        return;
+async function saveAs(data) {
+  return new Promise(resolve => {
+    dialog.showSaveDialog(
+      {
+        filters
+      },
+      async path => {
+        if (!path) {
+          return;
+        }
+
+        if (!path.endsWith('.json')) {
+          path += '.json';
+        }
+
+        settings.setProjectPath(path);
+        settings.save();
+
+        await project.save(path, data);
+        resolve();
       }
+    );
+  });
+}
 
-      if (!path.endsWith('.json')) {
-        path += '.json';
-      }
-
-      settings.setProjectPath(path);
-      settings.save();
-
-      project.save(path, data);
-    }
-  );
+async function save(data) {
+  const projectPath = settings.getProjectPath();
+  if (projectPath) {
+    await project.save(projectPath, data);
+  } else {
+    await saveAs(data);
+  }
 }
 
 ipcMain.on('projectSave', async (event, data) => {
-  const projectPath = settings.getProjectPath();
-  if (projectPath) {
-    project.save(projectPath, data);
-  } else {
-    saveAs();
-  }
+  save(data);
 });
 
 ipcMain.on('projectSaveAs', async (event, data) => {
@@ -100,6 +107,25 @@ ipcMain.on('exportCsv', (event, { type, data }) => {
       }
 
       project.exportCsv(path, data);
+    }
+  );
+});
+
+ipcMain.on('showCloseWarning', (event, data) => {
+  dialog.showMessageBox(
+    {
+      type: 'warning',
+      title: 'Money Manager',
+      buttons: ['Save', "Don't save"],
+      message: 'Do you want to save changes to your project?'
+    },
+    async response => {
+      if (response === 0) {
+        await save(data);
+        event.sender.send('closeConfirmed');
+      } else {
+        event.sender.send('closeConfirmed');
+      }
     }
   );
 });
