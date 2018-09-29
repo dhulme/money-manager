@@ -1,4 +1,4 @@
-import { ipcMain, dialog, BrowserWindow } from 'electron';
+import { ipcMain, dialog } from 'electron';
 
 import defaultProject from './default-project.json';
 import settings from './settings';
