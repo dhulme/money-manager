@@ -1,4 +1,5 @@
 import Big from 'big.js';
+import Vue from 'vue';
 
 import util from '../util';
 
@@ -22,7 +23,8 @@ function getAddTransactionParams(transaction) {
   requireObjectProperties(transaction, ['value', 'to', 'from']);
   return {
     transaction: {
-      ...transaction
+      ...transaction,
+      highlighted: false
     },
     value: transaction.value,
     toAccountId: transaction.to,
@@ -77,6 +79,12 @@ const project = {
       }
       toAccount.balance = new Big(toAccount.balance).add(value);
       toAccount.transactionIds.push(transaction.id);
+    },
+
+    updateTransaction(state, transaction) {
+      state.transactions[transaction.id] = {
+        ...transaction
+      };
     },
 
     updateSummaryBalance(state) {
@@ -159,6 +167,10 @@ const project = {
       commit('addTransaction', getAddTransactionParams(primary));
       commit('addTransaction', getAddTransactionParams(secondary));
       commit('updateSummaryBalance');
+    },
+
+    updateTransaction({ commit }, transaction) {
+      commit('updateTransaction', transaction);
     },
 
     deleteAccount({ commit }, accountId) {

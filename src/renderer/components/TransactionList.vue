@@ -26,10 +26,13 @@
         :pagination.sync="pagination"
       >
         <template
-          slot="items"
           slot-scope="props"
+          slot="items"
         >
-          <tr @click="$emit('transaction-click', props.item)">
+          <tr 
+            :style="{ background: props.item.highlighted ? '#E3F2FD' : 'none' }" 
+            @click="$emit('highlight-transaction', props.item)"
+          >
             <td>{{ props.item.date | date }}</td>
             <td>{{ props.item.description }}</td>
             <td>{{ props.item.note }}</td>
@@ -58,105 +61,126 @@
 </template>
 
 <script>
-  import moment from 'moment';
+import moment from 'moment';
 
-  const defaultTransaction = {
-    date: moment(),
-    description: '',
-    valueIn: '',
-    valueOut: '',
-    account: 'none',
-    note: '',
-  };
+const defaultTransaction = {
+  date: moment(),
+  description: '',
+  valueIn: '',
+  valueOut: '',
+  account: 'none',
+  note: ''
+};
 
-  export default {
-    props: {
-      editable: Boolean,
-      account: Object,
-      transactions: Array,
+export default {
+  props: {
+    account: {
+      type: Object,
+      default: () => ({})
     },
-    data() {
-      const rowsPerPage = 10;
-      return {
-        transaction: {
-          ...defaultTransaction,
-        },
-        search: '',
-        headers: [{
+    transactions: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data() {
+    const rowsPerPage = 10;
+    return {
+      transaction: {
+        ...defaultTransaction
+      },
+      search: '',
+      headers: [
+        {
           text: this.$t('transactions.date'),
           value: 'date',
-          align: 'left',
-        }, {
+          align: 'left'
+        },
+        {
           text: this.$t('transactions.description'),
           value: 'description',
-          align: 'left',
-        }, {
+          align: 'left'
+        },
+        {
           text: this.$t('transactions.note'),
           value: 'note',
-          align: 'left',
-        }, {
+          align: 'left'
+        },
+        {
           text: 'Account',
           value: 'account',
-          align: 'left',
-        }, {
+          align: 'left'
+        },
+        {
           text: this.$t('transactions.in'),
           value: 'value',
-          align: 'left',
-        }, {
+          align: 'left'
+        },
+        {
           text: this.$t('transactions.out'),
           value: 'value',
-          align: 'left',
-        }, {
+          align: 'left'
+        },
+        {
           text: 'Balance',
           value: 'balance',
           align: 'left'
-        }],
-        rowsPerPageItems: [rowsPerPage, {
+        }
+      ],
+      rowsPerPageItems: [
+        rowsPerPage,
+        {
           text: 'All',
-          value: -1,
-        }],
-        pagination: {
-          sortBy: 'date',
-          descending: true,
-          rowsPerPage,
-        },
+          value: -1
+        }
+      ],
+      pagination: {
+        sortBy: 'date',
+        descending: true,
+        rowsPerPage
+      }
+    };
+  },
+  methods: {
+    resetForm() {
+      this.transaction = {
+        ...defaultTransaction
       };
     },
-    methods: {
-      resetForm() {
-        this.transaction = {
-          ...defaultTransaction,
-        };
-      },
-      transactionIn(transaction) {
-        if (transaction.to === this.account.id) {
-          return transaction.value;
-        }
-        return null;
-      },
-      transactionOut(transaction) {
-        if (transaction.from === this.account.id) {
-          return transaction.value;
-        }
-        return null;
-      },
-      transactionAccount(transaction) {
-        let accountId;
-        if (transaction.expense) {
-          accountId = transaction.expense;
-        } else if (transaction.to === this.account.id) {
-          accountId = transaction.from;
-        } else {
-          accountId = transaction.to;
-        }
-        return accountId ? this.$store.getters['project/account'](accountId).name : null;
-      },
-      addTransaction() {
-        this.$emit('add-transaction');
-      },
-      accountBalance(transaction) {
-        return this.$store.getters['project/accountBalance'](this.account, transaction.id);
+    transactionIn(transaction) {
+      if (transaction.to === this.account.id) {
+        return transaction.value;
       }
+      return null;
     },
-  };
+    transactionOut(transaction) {
+      if (transaction.from === this.account.id) {
+        return transaction.value;
+      }
+      return null;
+    },
+    transactionAccount(transaction) {
+      let accountId;
+      if (transaction.expense) {
+        accountId = transaction.expense;
+      } else if (transaction.to === this.account.id) {
+        accountId = transaction.from;
+      } else {
+        accountId = transaction.to;
+      }
+      return accountId
+        ? this.$store.getters['project/account'](accountId).name
+        : null;
+    },
+    addTransaction() {
+      this.$emit('add-transaction');
+    },
+    accountBalance(transaction) {
+      return this.$store.getters['project/accountBalance'](
+        this.account,
+        transaction.id
+      );
+    }
+  }
+};
 </script>

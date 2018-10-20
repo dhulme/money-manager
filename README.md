@@ -68,7 +68,8 @@ MIT
   from: String, // account ID
   to: String, // account ID
   note: String,
-  value: String
+  value: String,
+  highlighted: Boolean
 }
 ```
 

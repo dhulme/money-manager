@@ -14,7 +14,7 @@
     <transaction-list
       :account="account"
       :transactions="transactions"
-      editable
+      @highlight-transaction="highlightTransaction"
       @add-transaction="addTransaction"
     />
 
@@ -81,6 +81,10 @@
           });
         }
       },
+      highlightTransaction(transaction) {
+        transaction.highlighted = !transaction.highlighted;
+        this.$store.dispatch('project/updateTransaction', transaction);
+      }
     },
   };
 </script>

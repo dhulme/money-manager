@@ -45,7 +45,11 @@ const history = {
 
     let canClose = false;
     window.addEventListener('beforeunload', e => {
-      if (!canClose && done.length > 0) {
+      if (
+        process.env.NODE_ENV === 'production' &&
+        !canClose &&
+        done.length > 0
+      ) {
         ipc.showCloseWarning(store.state.project);
         e.returnValue = false;
       }
