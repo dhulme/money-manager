@@ -1,6 +1,9 @@
 <template>
-  <v-btn :color="color" :flat="flat" @click="click">
-    <slot></slot>
+  <v-btn 
+    :color="color" 
+    :flat="flat" 
+    @click="click">
+    <slot/>
   </v-btn>
 </template>
 

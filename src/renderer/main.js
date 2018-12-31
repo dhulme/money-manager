@@ -30,9 +30,7 @@ Vue.filter('currency', value => {
   return accounting.formatMoney(value, '£', 2, ',', '.');
 });
 
-Vue.filter('date', value => {
-  return value ? moment(value).format('DD/MM/YYYY') : '';
-});
+Vue.filter('date', value => (value ? moment(value).format('DD/MM/YYYY') : ''));
 
 Vue.directive('focus', {
   inserted(element) {

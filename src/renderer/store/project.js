@@ -276,9 +276,9 @@ const project = {
     },
     transactionId(state) {
       return transaction =>
-        Object.entries(state.transactions).find(entry => {
-          return entry[1] === transaction;
-        })[0];
+        Object.entries(state.transactions).find(
+          entry => entry[1] === transaction
+        )[0];
     },
     transaction(state) {
       return id => state.transactions[id];
@@ -290,11 +290,10 @@ const project = {
       return new Big(state.summary.balance).eq(0);
     },
     accountsTotal(state, getters) {
-      return category => {
-        return getters.accountsByCategory(category).reduce((total, account) => {
-          return total.plus(account.balance);
-        }, new Big(0));
-      };
+      return category =>
+        getters
+          .accountsByCategory(category)
+          .reduce((total, account) => total.plus(account.balance), new Big(0));
     },
     bulkTransactions(state) {
       return state.bulkTransactions;
@@ -303,11 +302,10 @@ const project = {
       return id => state.bulkTransactions.find(_ => _.id === id);
     },
     bulkTransactionTransactions(state) {
-      return bulkTransaction => {
-        return bulkTransaction.transactionIds.map(
+      return bulkTransaction =>
+        bulkTransaction.transactionIds.map(
           id => state.bulkTransactionTransactions[id]
         );
-      };
     },
     accountBalance(state) {
       return (account, transactionId) => {

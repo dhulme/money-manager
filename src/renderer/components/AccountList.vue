@@ -23,8 +23,8 @@
       :pagination.sync="pagination"
     >
       <template
-        slot="items"
         slot-scope="props"
+        slot="items"
       >
         <tr @click="openAccount(props.item.id)">
           <td>{{ props.item.name }}</td>

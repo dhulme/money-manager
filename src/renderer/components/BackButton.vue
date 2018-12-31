@@ -1,6 +1,6 @@
 <template>
   <v-btn @click="back">
-    {{ $t('backButton.backTo')}} {{ $t(`backButton.pages.${name}`) }}</v-btn>
+    {{ $t('backButton.backTo') }} {{ $t(`backButton.pages.${name}`) }}</v-btn>
 </template>
 
 <script>

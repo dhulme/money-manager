@@ -6,8 +6,8 @@
     :rows-per-page-items="rowsPerPageItems"
   >
     <template
-      slot="items"
       slot-scope="props"
+      slot="items"
     >
       <tr @click="$emit('transaction-click', props.item)">
         <td>{{ accountName(props.item.from) }}</td>
