@@ -33,6 +33,7 @@
           color="primary"
           @click="process"
         >Run</v-btn>
+        <v-btn flat @click="duplicate">Duplicate</v-btn> 
       </v-card-actions>
     </v-card>
 
@@ -52,8 +53,8 @@
 
   import util from '../../util';
 
-  import BulkTransactionTransactions from '../BulkTransactionTransactions';
-  import BulkTransactionEdit from '../BulkTransactionEdit';
+  import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
+  import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 
   export default {
     components: {
@@ -113,6 +114,15 @@
           });
         }
       },
+      duplicate() {
+        this.$store.commit('setNewBulkTransaction', {
+          ...this.bulkTransaction,
+          transactions: this.transactions
+        });
+        this.$router.push({
+          name: 'newBulkTransaction',
+        });
+      }
     },
   };
 </script>

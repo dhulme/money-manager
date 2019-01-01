@@ -4,13 +4,22 @@ import project from './project';
 
 Vue.use(Vuex);
 
+function initialNewBulkTransaction() {
+  return {
+    name: '',
+    description: '',
+    transactions: []
+  };
+}
+
 const store = new Vuex.Store({
   state: {
     error: '',
     snackbar: {
       message: '',
-      active: false,
+      active: false
     },
+    newBulkTransaction: initialNewBulkTransaction()
   },
   mutations: {
     setSummaryBalance(state, value) {
@@ -26,16 +35,19 @@ const store = new Vuex.Store({
     setSnackbarMessage(state, value) {
       state.snackbar.message = value;
     },
+    setNewBulkTransaction(state, value) {
+      state.newBulkTransaction = value || initialNewBulkTransaction();
+    }
   },
   actions: {
     openSnackbar({ commit }, message) {
       commit('setSnackbarMessage', message);
       commit('setSnackbarActive', true);
-    },
+    }
   },
   modules: {
-    project,
-  },
+    project
+  }
 });
 
 window.store = store;

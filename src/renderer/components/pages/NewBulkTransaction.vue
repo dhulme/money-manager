@@ -62,7 +62,7 @@
 </template>
 
 <script>
-  import BulkTransactionTransactions from '../BulkTransactionTransactions';
+  import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
   import util from '../../util';
 
   export default {
@@ -70,13 +70,14 @@
       BulkTransactionTransactions,
     },
     data() {
+      const { name, description, transactions } = this.$store.state.newBulkTransaction;
       return {
-        name: '',
-        description: '',
+        name,
+        description,
         newTransaction: {
           id: util.getId()
         },
-        transactions: [],
+        transactions,
       };
     },
     computed: {

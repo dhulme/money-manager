@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import BulkTransactionList from '@/components/BulkTransactionList';
+  import BulkTransactionList from '../BulkTransactionList.vue';
 
   export default {
     components: {
@@ -25,6 +25,7 @@
     },
     methods: {
       newBulkTransaction() {
+        this.$store.commit('setNewBulkTransaction');
         this.$router.push({
           name: 'newBulkTransaction',
         });
