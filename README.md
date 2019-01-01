@@ -54,7 +54,8 @@ MIT
   id: String, // human readable
   name: String,
   transactionIds: [String...],
-  type: String // one of 'asset', 'budget' or 'none'
+  type: String // one of 'asset', 'budget' or 'none',
+  deleted: Boolean
 }
 ```
 

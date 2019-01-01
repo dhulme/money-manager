@@ -11,7 +11,18 @@
 // });
 
 import store from '@/store';
-import { stat } from 'fs';
+
+function getNewAccount(id = 'test') {
+  return {
+    name: id,
+    id,
+    balance: '0',
+    type: 'test',
+    category: 'test',
+    transactionIds: [],
+    deleted: false
+  };
+}
 
 describe('project store', () => {
   const state = store.state.project;
@@ -97,8 +108,8 @@ describe('project store', () => {
           value: 10,
           id: 'test'
         };
-        const fromAccount = { id: 'from', balance: 0, transactionIds: [] };
-        const toAccount = { id: 'to', balance: 0, transactionIds: [] };
+        const fromAccount = getNewAccount('from');
+        const toAccount = getNewAccount('to');
         init({
           accounts: [fromAccount, toAccount]
         });
@@ -159,21 +170,14 @@ describe('project store', () => {
         }).toThrowError('required');
       });
       it('should delete an account', () => {
-        const account = { id: 'test' };
+        const account = getNewAccount();
         init({
           accounts: [account]
         });
         commit('deleteAccount', 'test');
-        expect(state.accounts).not.toContain(account);
-      });
-
-      it('should not delete other accounts', () => {
-        const account = { id: 'test' };
-        init({
-          accounts: [account]
-        });
-        commit('deleteAccount', 'bob');
-        expect(state.accounts).toContain(account);
+        expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
+          true
+        );
       });
     });
 
@@ -186,28 +190,14 @@ describe('project store', () => {
       });
 
       it('should add an account', () => {
-        const account = {
-          name: 'test',
-          balance: '0',
-          type: 'test',
-          category: 'test'
-        };
+        const account = getNewAccount();
         init({});
         commit('addAccount', account);
-        expect(state.accounts).toContainEqual({
-          ...account,
-          id: 'test',
-          transactionIds: []
-        });
+        expect(state.accounts).toContainEqual(account);
       });
 
       it('should not allow duplicate IDs', () => {
-        const account = {
-          name: 'test',
-          balance: '0',
-          type: 'test',
-          category: 'test'
-        };
+        const account = getNewAccount();
         init({});
         commit('addAccount', account);
         expect(() => {

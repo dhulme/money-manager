@@ -102,9 +102,8 @@ const project = {
     },
 
     deleteAccount(state, accountId = required('accountId')) {
-      state.accounts = state.accounts.filter(
-        account => account.id !== accountId
-      );
+      const account = state.accounts.find(_ => _.id === accountId);
+      account.deleted = true;
     },
 
     addAccount(state, account = required('account')) {
@@ -117,7 +116,8 @@ const project = {
         balance,
         type,
         category,
-        name
+        name,
+        deleted: false
       };
       state.accounts.push(newAccount);
     },
@@ -265,7 +265,9 @@ const project = {
     },
     accountsByCategory(state) {
       return category =>
-        state.accounts.filter(account => account.category === category);
+        state.accounts.filter(
+          account => account.category === category && !account.deleted
+        );
     },
     account(state) {
       return id => state.accounts.find(account => account.id === id);
