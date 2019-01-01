@@ -29,14 +29,11 @@ npm install
 # dev server with hot reload at localhost:8080
 npm run dev
 
-# compile source to webpack bundle
+# build packaged distribution with electron builder
 npm run build
 
-# build packaged distribution with electron builder
-npm run dist
-
 # build unpackaged distribution with electron builder
-npm run dist:dir
+npm run build:dir
 ```
 
 ## Licence
