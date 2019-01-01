@@ -19,13 +19,14 @@
         :search="search"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
+        must-sort
       >
         <template slot-scope="props" slot="items">
           <tr
             :style="{ background: props.item.highlighted ? '#E3F2FD' : 'none' }"
             @click="$emit('highlight-transaction', props.item)"
           >
-            <td>{{ props.item.date }}</td>
+            <td>{{ props.item.prettyDate }}</td>
             <td>{{ props.item.description }}</td>
             <td>{{ props.item.note }}</td>
             <td>{{ props.item.accountName }}</td>
@@ -141,7 +142,7 @@
         return this.transactions.map(transaction => ({
           ...transaction,
           accountName: this.transactionAccount(transaction),
-          date: dateFilter(transaction.date),
+          prettyDate: dateFilter(transaction.date),
           in: currencyFilter(this.transactionIn(transaction)),
           out: currencyFilter(this.transactionOut(transaction)),
           balance: currencyFilter(this.accountBalance(transaction))
