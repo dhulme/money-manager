@@ -26,13 +26,8 @@ const ipc = {
     ipc.send('setWindowTitle', stateEdited ? `${currentTitle}*` : currentTitle);
   },
 
-  setEdited() {
-    stateEdited = true;
-    ipc.updateTitle();
-  },
-
-  setSaved() {
-    stateEdited = false;
+  setEdited(edited) {
+    stateEdited = edited;
     ipc.updateTitle();
   },
 

@@ -16,21 +16,27 @@ const actionNames = {
 };
 const storePrefix = 'project/';
 
+function setEdited(edited) {
+  ipc.setEdited(edited);
+  menu.setSaveEnabled(edited);
+}
+
 const history = {
   install(Vue, { store, ready }) {
-    let done = [];
+    const done = [];
     let undone = [];
     let newAction = true;
     let initData;
+    let savedDoneLength = 0;
 
     store.subscribeAction(action => {
       if (!action.type.startsWith(storePrefix)) return;
 
       done.push(action);
-      ipc.setEdited();
-      menu.updateUndoLabel(actionNames[action.type.replace(storePrefix, '')]);
+      setEdited(true);
+      menu.setUndoLabel(actionNames[action.type.replace(storePrefix, '')]);
       if (newAction) {
-        menu.updateRedoLabel();
+        menu.setRedoLabel();
         undone = [];
       }
     });
@@ -38,7 +44,7 @@ const history = {
     ipc.on('projectOpened', (event, data) => {
       initData = data;
       store.commit(`${storePrefix}init`, initData);
-      ipc.setSaved();
+      setEdited(false);
       ready();
     });
     ipc.openDefaultProject();
@@ -66,7 +72,7 @@ const history = {
 
         const toUndo = done.pop();
         undone.push(toUndo);
-        menu.updateRedoLabel(actionNames[toUndo.type.replace(storePrefix, '')]);
+        menu.setRedoLabel(actionNames[toUndo.type.replace(storePrefix, '')]);
 
         newAction = false;
         store.commit(`${storePrefix}init`, initData);
@@ -78,9 +84,13 @@ const history = {
         newAction = true;
 
         if (done.length === 0) {
-          menu.updateUndoLabel();
-          ipc.setSaved();
+          menu.setUndoLabel();
         }
+
+        if (done.length === savedDoneLength) {
+          menu.setUndoLabel();
+        }
+        setEdited(done.length !== savedDoneLength);
       },
       redo() {
         if (undone.length === 0) return;
@@ -91,23 +101,26 @@ const history = {
         newAction = true;
 
         if (undone.length === 0) {
-          menu.updateRedoLabel();
+          menu.setRedoLabel();
         }
+
+        if (done.length === savedDoneLength) {
+          menu.setRedoLabel();
+        }
+        setEdited(done.length !== savedDoneLength);
       },
       save() {
-        done = [];
-        undone = [];
+        savedDoneLength = done.length;
         ipc.saveProject(store.state.project);
-        ipc.setSaved();
+        setEdited(false);
       },
       open() {
         ipc.openProject();
       },
       saveAs() {
-        done = [];
-        undone = [];
+        savedDoneLength = done.length;
         ipc.saveProjectAs(store.state.project);
-        ipc.setSaved();
+        setEdited(false);
       },
       new() {
         ipc.newProject();

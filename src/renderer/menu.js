@@ -10,7 +10,8 @@ const openMenuItemTemplate = {
 };
 const saveMenuItemTemplate = {
   label: 'Save',
-  accelerator: 'CmdOrCtrl+S'
+  accelerator: 'CmdOrCtrl+S',
+  enabled: false
 };
 const saveAsMenuItemTemplate = {
   label: 'Save as',
@@ -65,7 +66,7 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-function updateMenu() {
+function refreshMenu() {
   if (menu) menu.destroy();
   menu = remote.Menu.buildFromTemplate(menuTemplate);
   remote.Menu.setApplicationMenu(menu);
@@ -90,18 +91,23 @@ export default {
     redoMenuItemTemplate.click = redoClick;
     exportSummaryMenuItemTemplate.click = exportSummaryClick;
     exportTransactionsMenuItemTemplate.click = exportTransactionsClick;
-    updateMenu();
+    refreshMenu();
   },
 
-  updateUndoLabel(label) {
+  setUndoLabel(label) {
     undoMenuItemTemplate.label = label ? `Undo '${label}'` : 'Undo';
     undoMenuItemTemplate.enabled = Boolean(label);
-    updateMenu();
+    refreshMenu();
   },
 
-  updateRedoLabel(label) {
+  setRedoLabel(label) {
     redoMenuItemTemplate.label = label ? `Redo '${label}'` : 'Redo';
     redoMenuItemTemplate.enabled = Boolean(label);
-    updateMenu();
+    refreshMenu();
+  },
+
+  setSaveEnabled(enabled) {
+    saveMenuItemTemplate.enabled = enabled;
+    refreshMenu();
   }
 };
