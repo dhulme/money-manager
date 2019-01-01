@@ -65,7 +65,7 @@ const project = {
     ) {
       requireObjectProperties(transaction, ['id', 'value', 'from', 'to']);
 
-      state.transactions[transaction.id] = transaction;
+      Vue.set(state.transactions, transaction.id, transaction);
       const fromAccount = state.accounts.find(_ => _.id === fromAccountId);
       if (!fromAccount) {
         throw new Error(`Cannot find 'from' account called ${fromAccountId}`);
@@ -145,13 +145,13 @@ const project = {
       requireObjectProperties(transaction, ['to', 'from', 'value', 'id']);
       requireObjectProperties(bulkTransaction, ['transactionIds']);
       const { to, from, value, note, id } = transaction;
-      state.bulkTransactionTransactions[id] = {
+      Vue.set(state.bulkTransactionTransactions, id, {
         to,
         from,
         value,
         note,
         id
-      };
+      });
       if (!bulkTransaction.transactionIds.includes(id)) {
         bulkTransaction.transactionIds.push(id);
       }
