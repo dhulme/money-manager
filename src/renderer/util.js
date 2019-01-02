@@ -1,8 +1,12 @@
-import cryptoRandomString from "crypto-random-string";
+import cryptoRandomString from 'crypto-random-string';
+
+// The first call to this is slow for some reason,
+// so we do this upfront so first UI operation isn't slow.
+cryptoRandomString(10);
 
 export default {
   getFriendlyId(name, existingIds) {
-    const id = name.toLowerCase().replace(/[ ]/g, "-");
+    const id = name.toLowerCase().replace(/[ ]/g, '-');
     if (existingIds.includes(id)) {
       throw new Error(`Duplicate ID. Id ${id} has already been used`);
     }
