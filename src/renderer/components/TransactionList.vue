@@ -32,7 +32,7 @@
             <td>{{ props.item.accountName }}</td>
             <td>{{ props.item.in }}</td>
             <td>{{ props.item.out }}</td>
-            <td>{{ props.item.balance }}</td>
+            <td>{{ accountBalance(props.item) | currency }}</td>
           </tr>
         </template>
         <template slot="footer">
@@ -137,15 +137,14 @@
     },
     computed: {
       prettyTransactions() {
-        const dateFilter = Vue.filter('date');
         const currencyFilter = Vue.filter('currency');
+        const dateFilter = Vue.filter('date');
         return this.transactions.map(transaction => ({
           ...transaction,
-          accountName: this.transactionAccount(transaction),
           prettyDate: dateFilter(transaction.date),
+          accountName: this.accountName(transaction),
           in: currencyFilter(this.transactionIn(transaction)),
           out: currencyFilter(this.transactionOut(transaction)),
-          balance: currencyFilter(this.accountBalance(transaction))
         }));
       }
     },
@@ -167,7 +166,7 @@
         }
         return null;
       },
-      transactionAccount(transaction) {
+      accountName(transaction) {
         let accountId;
         if (transaction.expense) {
           accountId = transaction.expense;
