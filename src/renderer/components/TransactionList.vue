@@ -26,7 +26,7 @@
             :style="{ background: props.item.highlighted ? '#E3F2FD' : 'none' }"
             @click="$emit('highlight-transaction', props.item)"
           >
-            <td>{{ props.item.prettyDate }}</td>
+            <td>{{ props.item.date | date }}</td>
             <td>{{ props.item.description }}</td>
             <td>{{ props.item.note }}</td>
             <td>{{ props.item.accountName }}</td>
@@ -138,10 +138,8 @@
     computed: {
       prettyTransactions() {
         const currencyFilter = Vue.filter('currency');
-        const dateFilter = Vue.filter('date');
         return this.transactions.map(transaction => ({
           ...transaction,
-          prettyDate: dateFilter(transaction.date),
           accountName: this.accountName(transaction),
           in: currencyFilter(this.transactionIn(transaction)),
           out: currencyFilter(this.transactionOut(transaction)),
