@@ -6,7 +6,7 @@ It uses [Electron](https://electron.atom.io/) as the application platform and [V
 
 ## Installation
 
-Download the latest release [here](https://github.com/dhulme/money-manager/releases) and run the setup program. Currently on a Windows build is available.
+Download the latest release [here](https://github.com/dhulme/money-manager/releases) and run the setup program. Currently only a Windows build is available.
 
 ## Screenshots
 
