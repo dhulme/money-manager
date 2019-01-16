@@ -8,6 +8,16 @@ It uses [Electron](https://electron.atom.io/) as the application platform and [V
 
 Download the latest release [here](https://github.com/dhulme/money-manager/releases) and run the setup program. Currently only a Windows build is available.
 
+## Getting Started
+
+*Accounts* are labelled pots of money. An account can be an asset or a budget. Assets represent real world accounts, like a bank account, credit card, or gift card. Budgets are virtual pots to help manage your real world accounts, like a budget for food or money you are owed by friends. Budgets help you keep track of your money, so rather than looking at your bank account and having no idea what money is for food, health, entertainment or savings, you're able to allocate this money to different budgets.
+
+The process is loosly based on [double-entry bookkeeping](https://en.wikipedia.org/wiki/Double-entry_bookkeeping_system). When money in an asset (real-world account) goes in or out, you must assign that change to a budget. You do this by adding a *transaction*. Transactions can be between an asset and a budget, or between assets, or betwen budgets. For example, you go to a supermarket and buy some bannanas with your credit card. You would add a transaction going out of your credit card account, and put the destination account as your food budget.
+
+In a normal double-entry bookkeeping system, you would need to enter one entry on your credit card account and another on your food budget. Money Manager makes this process easier, you only need to enter the transaction one way, and it will create the opposite transaction on the other account. If you want to do complex transactions, you can use the special 'None' account, which allows you enter the opposite transaction manually. Any time you do this, a warning will appear within Money Manager that your assets and budgets do not match.
+
+For transactions that happen regularly, such as assigning money from a salary to other budgets, you can use the Bulk Transactions feature. Once you've been using Money Manager for some time, you'll be able to visualise your transaction data on the the Insights page. This can be useful in helping you decide on any changes to your budgeting. For example, you might not notice there is always money left in your food account at the end of each month, so you could adjust your bulk transaction to transfer less money from your salary to food account.
+
 ## Screenshots
 
 ### Accounts
