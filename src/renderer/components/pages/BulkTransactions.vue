@@ -4,7 +4,7 @@
       <span class="title">Bulk Transactions</span>
       <VSpacer />
       <VBtn
-        flat
+        text
         color="primary"
         @click="newBulkTransaction"
       >Add</VBtn>

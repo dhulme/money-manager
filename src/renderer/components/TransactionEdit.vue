@@ -67,8 +67,8 @@
       </VForm>
     </VCardText>
     <VCardActions>
-      <VBtn flat @click="close">Close</VBtn>
-      <VBtn color="primary" flat @click="save">OK</VBtn>
+      <VBtn text @click="close">Close</VBtn>
+      <VBtn color="primary" text @click="save">OK</VBtn>
     </VCardActions>
   </VCard>
 </template>

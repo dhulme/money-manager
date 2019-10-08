@@ -3,7 +3,7 @@
     <VCard>
       <VCardTitle>
         <span class="headline">Transactions</span>
-        <VBtn v-hotkey.add="addTransaction" flat color="primary" @click="addTransaction">Add</VBtn>
+        <VBtn v-hotkey.add="addTransaction" text color="primary" @click="addTransaction">Add</VBtn>
         <VSpacer/>
         <VTextField
           v-model="search"

@@ -8,7 +8,7 @@
       <VSpacer />
       <VBtn
         v-hotkey.add="newAccount"
-        flat
+        text
         color="primary"
         @click="newAccount"
       >Add</VBtn>

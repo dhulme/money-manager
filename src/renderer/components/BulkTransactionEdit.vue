@@ -31,12 +31,12 @@
     </VCardText>
     <VCardActions>
       <VBtn
-        flat
+        text
         @click="close"
       >Close</VBtn>
       <VBtn
         color="primary"
-        flat
+        text
         @click="save"
       >{{ transaction.id ? 'Update' : 'Add' }}</VBtn>
     </VCardActions>

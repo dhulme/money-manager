@@ -4,25 +4,25 @@
       v-if="!bulkTransactions.length"
       class="none-message"
     ><em>No bulk transactions</em></VCardText>
-    <v-list
+    <VList
       v-if="bulkTransactions.length"
       two-line
     >
-      <VListTile
+      <VListItem
         v-for="bulkTransaction in bulkTransactions"
         :key="bulkTransaction.id"
         @click="openBulkTransaction(bulkTransaction.id)"
       >
-        <VListTileContent>
-          <VListTileTitle>
+        <VListItemContent>
+          <VListItemTitle>
             {{ bulkTransaction.name }}
-          </VListTileTitle>
-          <VListTileSubTitle>
+          </VListItemTitle>
+          <VListItemSubtitle>
             {{ bulkTransaction.description }}
-          </VListTileSubTitle>
-        </VListTileContent>
-      </VListTile>
-    </v-list>
+          </VListItemSubtitle>
+        </VListItemContent>
+      </VListItem>
+    </VList>
   </div>
 </template>
 

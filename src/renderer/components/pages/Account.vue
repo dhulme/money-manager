@@ -4,7 +4,7 @@
       <VCardTitle class="headline">{{ account.name }}</VCardTitle>
       <VCardActions>
         <VBtn
-          flat
+          text
           color="error"
           @click="deleteAccount"
         >Delete</VBtn>

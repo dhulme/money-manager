@@ -1,7 +1,7 @@
 <template>
   <VBtn 
     :color="color" 
-    :flat="flat" 
+    :text="text" 
     @click="click">
     <slot/>
   </VBtn>
@@ -24,7 +24,7 @@
       color() {
         return this.active ? 'black' : '';
       },
-      flat() {
+      text() {
         return !this.active;
       },
     },

@@ -2,7 +2,7 @@
   <div>
     <VAlert
       v-show="error"
-      value="true"
+      :value="true"
       color="error"
       icon="error"
     >
@@ -11,8 +11,8 @@
     <VAlert
       v-show="showBudgetWarning"
       :color="color"
+      :value="true"
       icon="info"
-      value="true"
     >
       Your budget and accounts don't match! {{ summaryBalance | currency }}
     </VAlert>

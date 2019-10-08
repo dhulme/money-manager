@@ -6,7 +6,7 @@
   >
     {{ $store.state.snackbar.message }}
     <VBtn
-      flat
+      text
       @click.native="active = false"
     >Close</VBtn>
   </VSnackbar>

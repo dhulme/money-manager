@@ -7,7 +7,7 @@
       <VCardTitle>
         <span class="headline">{{ bulkTransaction.name }}</span>
         <VBtn
-          flat
+          text
           @click="addTransaction"
         >Add</VBtn>
         <VSpacer />
@@ -29,11 +29,11 @@
       />
       <VCardActions>
         <VBtn
-          flat
+          text
           color="primary"
           @click="process"
         >Run</VBtn>
-        <VBtn flat @click="duplicate">Duplicate</VBtn> 
+        <VBtn text @click="duplicate">Duplicate</VBtn> 
       </VCardActions>
     </VCard>
 

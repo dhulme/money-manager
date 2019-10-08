@@ -14,7 +14,7 @@
       </VCardText>
       <VCardActions>
         <VBtn
-          flat
+          text
           color="secondary"
           @click="addBulkTransaction"
         >Done</VBtn>
@@ -47,7 +47,7 @@
       </VCardText>
       <VCardActions>
         <VBtn 
-          flat 
+          text 
           color="primary" 
           @click="addTransaction">Add</VBtn>
       </VCardActions>

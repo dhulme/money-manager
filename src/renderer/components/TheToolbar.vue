@@ -1,5 +1,5 @@
 <template>
-  <VToolbar
+  <VAppBar
     class="primary"
     dark
     app
@@ -22,7 +22,7 @@
     <VSpacer/>
     <SummaryAlert/>
 
-  </VToolbar>
+  </VAppBar>
 </template>
 
 <script>
