@@ -1,10 +1,7 @@
 const electron = require('electron');
-const ipc = require('./ipc');
+require('./ipc');
 
-const {
-  app,
-  BrowserWindow,
-} = electron;
+const { app, BrowserWindow } = electron;
 const development = process.env.NODE_ENV !== 'production';
 
 let mainWindow;
@@ -14,12 +11,15 @@ let mainWindow;
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (development) {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\');
+  global.__static = require('path')
+    .join(__dirname, '/static')
+    .replace(/\\/g, '\\\\');
 }
 
-const winURL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:9080'
-  : `file://${__dirname}/index.html`;
+const winURL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:9080'
+    : `file://${__dirname}/index.html`;
 
 function createWindow() {
   /**
@@ -27,7 +27,7 @@ function createWindow() {
    */
   mainWindow = new BrowserWindow({
     width: 1024,
-    height: 768,
+    height: 768
   });
   mainWindow.maximize();
 

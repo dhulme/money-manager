@@ -20,7 +20,7 @@ Download the latest release [here](https://github.com/dhulme/money-manager/relea
 
 ## Development Setup
 
-Uses [Electron Vue]() to integrate Vue with Electron and handle build process.
+Uses [Electron Vue](https://github.com/SimulatedGREG/electron-vue) to integrate Vue with Electron and handle build process.
 
 ```bash
 # install dependencies
