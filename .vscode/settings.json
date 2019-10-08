@@ -1,11 +1,12 @@
 {
   "eslint.validate": [
-        "javascript",
-        {"language": "html", "autoFix": true},
-        {"language": "vue", "autoFix": true},
-    ],
-    "emmet.includeLanguages": {
-        "vue-html": "html",
-        "vue": "html"
-    }
+    "javascript",
+    { "language": "html", "autoFix": true },
+    { "language": "vue", "autoFix": true }
+  ],
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "vue": "html"
+  },
+  "cSpell.words": ["chartjs", "keyup", "prepend"]
 }
