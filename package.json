@@ -1,8 +1,8 @@
 {
   "name": "money-manager",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "author": "David Hulme <dhulme@outlook.com>",
-  "description": "An electron-vue project",
+  "description": "A desktop application for managing your personal finances and accounts",
   "license": "MIT",
   "repository": {
     "type": "git",
