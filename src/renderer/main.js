@@ -16,8 +16,6 @@ import hotkey from './hotkey';
 
 require('vuetify/dist/vuetify.min.css');
 
-if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
-
 Vue.config.productionTip = false;
 
 Vue.use(VueI18n);
