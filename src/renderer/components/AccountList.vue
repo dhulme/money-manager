@@ -1,20 +1,20 @@
 <template>
-  <v-card
+  <VCard
     v-show="visible"
     class="mb-4"
   >
-    <v-card-title>
+    <VCardTitle>
       <span class="headline">{{ accountCategory }}</span>
-      <v-spacer />
-      <v-btn
+      <VSpacer />
+      <VBtn
         v-hotkey.add="newAccount"
         flat
         color="primary"
         @click="newAccount"
-      >Add</v-btn>
-    </v-card-title>
+      >Add</VBtn>
+    </VCardTitle>
 
-    <v-data-table
+    <VDataTable
       v-show="visible"
       ref="dataTable"
       :headers="headers"
@@ -45,8 +45,8 @@
           {{ total | currency }}
         </td>
       </template>
-    </v-data-table>
-  </v-card>
+    </VDataTable>
+  </VCard>
 </template>
 
 <script>

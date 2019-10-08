@@ -1,28 +1,28 @@
 <template>
-  <v-toolbar
+  <VToolbar
     class="primary"
     dark
     app
     fixed
   >
-    <toolbar-button
+    <ToolbarButton
       :child-route-names="['account', 'newAccount']"
       route-name="accounts"
-    >Accounts</toolbar-button>
+    >Accounts</ToolbarButton>
 
-    <toolbar-button
+    <ToolbarButton
       :child-route-names="['bulkTransaction', 'newBulkTransaction']"
       route-name="bulkTransactions"
-    >Bulk Transactions</toolbar-button>
+    >Bulk Transactions</ToolbarButton>
 
-    <toolbar-button
+    <ToolbarButton
       route-name="insights"
-    >Insights</toolbar-button>
+    >Insights</ToolbarButton>
 
-    <v-spacer/>
-    <summary-alert/>
+    <VSpacer/>
+    <SummaryAlert/>
 
-  </v-toolbar>
+  </VToolbar>
 </template>
 
 <script>

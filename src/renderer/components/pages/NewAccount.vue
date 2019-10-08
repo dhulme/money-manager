@@ -1,33 +1,33 @@
 <template>
   <div v-hotkey.close="goToAccounts">
-    <v-card>
-      <v-card-title>
+    <VCard>
+      <VCardTitle>
         <div class="headline">New Account</div>
-      </v-card-title>
-      <v-card-text>
+      </VCardTitle>
+      <VCardText>
         <form @submit="addAccount">
-          <v-text-field
+          <VTextField
             v-model="accountCategory"
             label="Category"
             disabled
           />
-          <v-text-field
+          <VTextField
             v-focus
             v-model="name"
             label="Name"
           />
-          <v-text-field
+          <VTextField
             v-model="openingBalance"
             label="Opening balance"
             prefix="£"
           />
-          <v-btn
+          <VBtn
             type="submit"
             color="primary"
-          >Ok</v-btn>
+          >Ok</VBtn>
         </form>
-      </v-card-text>
-    </v-card>
+      </VCardText>
+    </VCard>
   </div>
 </template>
 

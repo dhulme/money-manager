@@ -9,7 +9,7 @@
         <span class="title">
           Welcome to your new project!
         </span>
-        <system-information/>
+        <SystemInformation/>
       </div>
 
       <div class="right-side">

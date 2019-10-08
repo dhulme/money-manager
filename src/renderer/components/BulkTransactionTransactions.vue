@@ -1,5 +1,5 @@
 <template>
-  <v-data-table
+  <VDataTable
     :headers="headers"
     :items="transactions"
     :search="search"
@@ -16,7 +16,7 @@
         <td class="text-xs-right">{{ props.item.value | currency }}</td>
       </tr>
     </template>
-  </v-data-table>
+  </VDataTable>
 </template>
 
 <script>

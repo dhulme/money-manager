@@ -1,27 +1,27 @@
 <template>
   <div>
-    <v-card-text
+    <VCardText
       v-if="!bulkTransactions.length"
       class="none-message"
-    ><em>No bulk transactions</em></v-card-text>
+    ><em>No bulk transactions</em></VCardText>
     <v-list
       v-if="bulkTransactions.length"
       two-line
     >
-      <v-list-tile
+      <VListTile
         v-for="bulkTransaction in bulkTransactions"
         :key="bulkTransaction.id"
         @click="openBulkTransaction(bulkTransaction.id)"
       >
-        <v-list-tile-content>
-          <v-list-tile-title>
+        <VListTileContent>
+          <VListTileTitle>
             {{ bulkTransaction.name }}
-          </v-list-tile-title>
-          <v-list-tile-sub-title>
+          </VListTileTitle>
+          <VListTileSubTitle>
             {{ bulkTransaction.description }}
-          </v-list-tile-sub-title>
-        </v-list-tile-content>
-      </v-list-tile>
+          </VListTileSubTitle>
+        </VListTileContent>
+      </VListTile>
     </v-list>
   </div>
 </template>

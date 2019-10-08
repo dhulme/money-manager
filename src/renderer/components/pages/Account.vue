@@ -1,34 +1,34 @@
 <template>
   <div v-hotkey.close="goToAccountsIfDialogClosed">
-    <v-card class="mb-4">
-      <v-card-title class="headline">{{ account.name }}</v-card-title>
-      <v-card-actions>
-        <v-btn
+    <VCard class="mb-4">
+      <VCardTitle class="headline">{{ account.name }}</VCardTitle>
+      <VCardActions>
+        <VBtn
           flat
           color="error"
           @click="deleteAccount"
-        >Delete</v-btn>
-      </v-card-actions>
-    </v-card>
+        >Delete</VBtn>
+      </VCardActions>
+    </VCard>
 
-    <transaction-list
+    <TransactionList
       :account="account"
       :transactions="transactions"
       @highlight-transaction="highlightTransaction"
       @add-transaction="addTransaction"
     />
 
-    <v-dialog
+    <VDialog
       v-model="dialogVisible"
       max-width="500px"
     >
-      <transaction-edit
+      <TransactionEdit
         :transaction="transaction"
         :account="account"
         @close="dialogVisible = false"
         @added="dialogVisible = false"
       />
-    </v-dialog>
+    </VDialog>
   </div>
 </template>
 

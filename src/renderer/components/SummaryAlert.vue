@@ -1,21 +1,21 @@
 <template>
   <div>
-    <v-alert
+    <VAlert
       v-show="error"
       value="true"
       color="error"
       icon="error"
     >
       {{ error }}
-    </v-alert>
-    <v-alert
+    </VAlert>
+    <VAlert
       v-show="showBudgetWarning"
       :color="color"
       icon="info"
       value="true"
     >
       Your budget and accounts don't match! {{ summaryBalance | currency }}
-    </v-alert>
+    </VAlert>
   </div>
 </template>
 

@@ -1,18 +1,18 @@
 <template>
   <div>
-    <v-card class="mb-4">
-      <v-card-title class="headline pb-0">Insights</v-card-title>
-      <v-card-text>
-        <account-select v-model="accountId" />
-      </v-card-text>
-    </v-card>
+    <VCard class="mb-4">
+      <VCardTitle class="headline pb-0">Insights</VCardTitle>
+      <VCardText>
+        <AccountSelect v-model="accountId" />
+      </VCardText>
+    </VCard>
     
-    <v-card>
-      <v-card-title>Account value over time</v-card-title>
-      <account-value-over-time 
+    <VCard>
+      <VCardTitle>Account value over time</VCardTitle>
+      <AccountValueOverTime 
         :account="account" 
         :height="200" />
-    </v-card>
+    </VCard>
   </div>
 </template>
 

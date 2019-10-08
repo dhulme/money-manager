@@ -1,5 +1,5 @@
 <template>
-  <v-autocomplete 
+  <VAutocomplete 
     :value="value" 
     :items="accounts"
     label="Account"

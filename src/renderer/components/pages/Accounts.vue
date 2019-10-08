@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-text-field
+    <VTextField
       v-focus
       v-model="search"
       class="mb-4"
@@ -11,7 +11,7 @@
       @keyup.enter="openSearchedAccount"
     />
 
-    <account-list
+    <AccountList
       :search="search"
       account-category="Assets"
       account-type="asset"
@@ -19,7 +19,7 @@
       @searched="items => searched.assets = items"
     />
 
-    <account-list
+    <AccountList
       :search="search"
       account-category="Liabilities"
       account-type="asset"
@@ -27,7 +27,7 @@
       @searched="items => searched.liabilities = items"
     />
 
-    <account-list
+    <AccountList
       :search="search"
       account-category="Budgets"
       account-type="budget"

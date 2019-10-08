@@ -1,19 +1,19 @@
 <template>
   <div>
-    <v-card>
-      <v-card-title>
+    <VCard>
+      <VCardTitle>
         <span class="headline">Transactions</span>
-        <v-btn v-hotkey.add="addTransaction" flat color="primary" @click="addTransaction">Add</v-btn>
-        <v-spacer/>
-        <v-text-field
+        <VBtn v-hotkey.add="addTransaction" flat color="primary" @click="addTransaction">Add</VBtn>
+        <VSpacer/>
+        <VTextField
           v-model="search"
           append-icon="search"
           label="Search"
           single-line
           hide-details
         />
-      </v-card-title>
-      <v-data-table
+      </VCardTitle>
+      <VDataTable
         :headers="headers"
         :items="prettyTransactions"
         :search="search"
@@ -48,8 +48,8 @@
             >{{ account.balance | currency }}</td>
           </tr>
         </template>
-      </v-data-table>
-    </v-card>
+      </VDataTable>
+    </VCard>
   </div>
 </template>
 

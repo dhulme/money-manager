@@ -1,5 +1,5 @@
 <template>
-  <v-app
+  <VApp
     v-hotkey.save="$history.save"
     v-hotkey.saveAs="$history.saveAs"
     v-hotkey.open="$history.open"
@@ -7,14 +7,14 @@
     v-hotkey.redo="$history.redo"
     v-hotkey.new="$history.new"
   >
-    <the-toolbar />
+    <TheToolbar />
     <main>
-      <v-content class="app-content">
-        <router-view class="router-container" />
-      </v-content>
+      <VContent class="app-content">
+        <RouterView class="router-container" />
+      </VContent>
     </main>
-    <the-snackbar />
-  </v-app>
+    <TheSnackbar />
+  </VApp>
 </template>
 
 <script>

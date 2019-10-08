@@ -1,46 +1,46 @@
 <template>
-  <v-card v-hotkey.close="close">
-    <v-card-title class="headline">
+  <VCard v-hotkey.close="close">
+    <VCardTitle class="headline">
       {{ transaction.id ? 'Edit' : 'Add' }} Transaction
-    </v-card-title>
-    <v-card-text>
-      <v-autocomplete
+    </VCardTitle>
+    <VCardText>
+      <VAutocomplete
         :items="accounts"
         v-model="newTransaction.from"
         label="From"
         prepend-icon="account_balance"
       />
-      <v-autocomplete
+      <VAutocomplete
         :items="accounts"
         v-model="newTransaction.to"
         label="To"
         prepend-icon="account_balance"
       />
-      <v-text-field
+      <VTextField
         v-model="newTransaction.note"
         label="Note"
         prepend-icon="note"
         @keyup.enter="save"
       />
-      <v-text-field
+      <VTextField
         v-model="newTransaction.value"
         label="Amount"
         prefix="£"
         @keyup.enter="save"
       />
-    </v-card-text>
-    <v-card-actions>
-      <v-btn
+    </VCardText>
+    <VCardActions>
+      <VBtn
         flat
         @click="close"
-      >Close</v-btn>
-      <v-btn
+      >Close</VBtn>
+      <VBtn
         color="primary"
         flat
         @click="save"
-      >{{ transaction.id ? 'Update' : 'Add' }}</v-btn>
-    </v-card-actions>
-  </v-card>
+      >{{ transaction.id ? 'Update' : 'Add' }}</VBtn>
+    </VCardActions>
+  </VCard>
 </template>
 
 <script>

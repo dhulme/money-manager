@@ -1,10 +1,10 @@
 <template>
-  <v-btn 
+  <VBtn 
     :color="color" 
     :flat="flat" 
     @click="click">
     <slot/>
-  </v-btn>
+  </VBtn>
 </template>
 
 <script>

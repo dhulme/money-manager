@@ -1,63 +1,63 @@
 <template>
   <div v-hotkey.close="goToBulkTransactions">
-    <v-card class="mb-4">
-      <v-card-title class="headline">New Bulk Transaction</v-card-title>
-      <v-card-text>
-        <v-text-field
+    <VCard class="mb-4">
+      <VCardTitle class="headline">New Bulk Transaction</VCardTitle>
+      <VCardText>
+        <VTextField
           v-model="name"
           label="Name"
         />
-        <v-text-field
+        <VTextField
           v-model="description"
           label="Description"
         />
-      </v-card-text>
-      <v-card-actions>
-        <v-btn
+      </VCardText>
+      <VCardActions>
+        <VBtn
           flat
           color="secondary"
           @click="addBulkTransaction"
-        >Done</v-btn>
-      </v-card-actions>
-    </v-card>
-    <v-card class="mb-4">
-      <v-card-title>Add Transaction</v-card-title>
-      <v-card-text>
-        <v-text-field
+        >Done</VBtn>
+      </VCardActions>
+    </VCard>
+    <VCard class="mb-4">
+      <VCardTitle>Add Transaction</VCardTitle>
+      <VCardText>
+        <VTextField
           v-model="newTransaction.value" 
           label="Amount"
           prefix="£"
         />
-        <v-autocomplete
+        <VAutocomplete
           :items="projectItems"
           v-model="newTransaction.from"
           label="From"
         />
 
-        <v-autocomplete
+        <VAutocomplete
           :items="projectItems"
           v-model="newTransaction.to"
           label="To"
         />
 
-        <v-text-field
+        <VTextField
           v-model="newTransaction.note"
           placeholder="Note"
         />
-      </v-card-text>
-      <v-card-actions>
-        <v-btn 
+      </VCardText>
+      <VCardActions>
+        <VBtn 
           flat 
           color="primary" 
-          @click="addTransaction">Add</v-btn>
-      </v-card-actions>
-    </v-card>
-    <v-card>
-      <v-card-title>Transactions</v-card-title>
-      <bulk-transaction-transactions
+          @click="addTransaction">Add</VBtn>
+      </VCardActions>
+    </VCard>
+    <VCard>
+      <VCardTitle>Transactions</VCardTitle>
+      <BulkTransactionTransactions
         :transactions="transactions"
       />
-    </v-card>
+    </VCard>
   </div>
 </template>
 

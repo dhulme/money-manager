@@ -3,48 +3,48 @@
     v-hotkey.close="goToBulkTransactionsIfDialogClosed"
     v-hotkey.add="addTransaction"
   >
-    <v-card>
-      <v-card-title>
+    <VCard>
+      <VCardTitle>
         <span class="headline">{{ bulkTransaction.name }}</span>
-        <v-btn
+        <VBtn
           flat
           @click="addTransaction"
-        >Add</v-btn>
-        <v-spacer />
-        <v-text-field
+        >Add</VBtn>
+        <VSpacer />
+        <VTextField
           v-model="search"
           append-icon="search"
           label="Search"
           single-line
           hide-details
         />
-      </v-card-title>
-      <v-subheader>
+      </VCardTitle>
+      <VSubheader>
         {{ bulkTransaction.description }}
-      </v-subheader>
+      </VSubheader>
       <bulk-transaction-transactions
         :transactions="transactions"
         :search="search"
         @transaction-click="editTransaction"
       />
-      <v-card-actions>
-        <v-btn
+      <VCardActions>
+        <VBtn
           flat
           color="primary"
           @click="process"
-        >Run</v-btn>
-        <v-btn flat @click="duplicate">Duplicate</v-btn> 
-      </v-card-actions>
-    </v-card>
+        >Run</VBtn>
+        <VBtn flat @click="duplicate">Duplicate</VBtn> 
+      </VCardActions>
+    </VCard>
 
-    <v-dialog v-model="dialogVisible">
-      <bulk-transaction-edit
+    <VDialog v-model="dialogVisible">
+      <BulkTransactionEdit
         :transaction="transaction"
         :bulk-transaction="bulkTransaction"
         @saved="savedTransaction"
         @close="dialogVisible = false"
       />
-    </v-dialog>
+    </VDialog>
   </div>
 </template>
 

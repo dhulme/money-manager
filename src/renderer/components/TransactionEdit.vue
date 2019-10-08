@@ -1,9 +1,9 @@
 <template>
-  <v-card v-hotkey.close="close">
-    <v-card-title class="headline">{{ isNewTransaction ? 'Add' : 'Edit' }} Transaction</v-card-title>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" lazy-validation>
-        <v-menu
+  <VCard v-hotkey.close="close">
+    <VCardTitle class="headline">{{ isNewTransaction ? 'Add' : 'Edit' }} Transaction</VCardTitle>
+    <VCardText>
+      <VForm ref="form" v-model="valid" lazy-validation>
+        <VMenu
           ref="dateMenu"
           v-model="dateMenu"
           :close-on-content-click="false"
@@ -15,7 +15,7 @@
           max-width="290px"
           min-width="290px"
         >
-          <v-text-field
+          <VTextField
             slot="activator"
             v-model="prettyDate"
             label="Date"
@@ -23,10 +23,10 @@
             readonly
             required
           />
-          <v-date-picker v-model="date" no-title @input="$refs.dateMenu.save(date)"/>
-        </v-menu>
+          <VDatePicker v-model="date" no-title @input="$refs.dateMenu.save(date)"/>
+        </VMenu>
 
-        <v-text-field
+        <VTextField
           ref="description"
           :rules="descriptionValidationRules"
           v-model="newTransaction.description"
@@ -35,13 +35,13 @@
           required
           @keyup.enter="save"
         />
-        <v-text-field
+        <VTextField
           v-model="newTransaction.note"
           label="Note"
           prepend-icon="note"
           @keyup.enter="save"
         />
-        <v-autocomplete
+        <VAutocomplete
           :items="accounts"
           :rules="accountValidationRules"
           v-model="newTransaction.account"
@@ -50,27 +50,27 @@
           required
           @keyup.enter="save"
         />
-        <v-text-field
+        <VTextField
           v-model="newTransaction.valueIn"
           :rules="valueValidationRules"
           label="In"
           prefix="£"
           @keyup.enter="save"
         />
-        <v-text-field
+        <VTextField
           v-model="newTransaction.valueOut"
           :rules="valueValidationRules"
           label="Out"
           prefix="£"
           @keyup.enter="save"
         />
-      </v-form>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn flat @click="close">Close</v-btn>
-      <v-btn color="primary" flat @click="save">OK</v-btn>
-    </v-card-actions>
-  </v-card>
+      </VForm>
+    </VCardText>
+    <VCardActions>
+      <VBtn flat @click="close">Close</VBtn>
+      <VBtn color="primary" flat @click="save">OK</VBtn>
+    </VCardActions>
+  </VCard>
 </template>
 
 <script>

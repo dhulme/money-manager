@@ -1,15 +1,15 @@
 <template>
-  <v-snackbar
+  <VSnackbar
     v-model="active"
     :timeout="4000"
     bottom
   >
     {{ $store.state.snackbar.message }}
-    <v-btn
+    <VBtn
       flat
       @click.native="active = false"
-    >Close</v-btn>
-  </v-snackbar>
+    >Close</VBtn>
+  </VSnackbar>
 </template>
 
 <script>
