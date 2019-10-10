@@ -3,11 +3,7 @@
     <VCard class="mb-4">
       <VCardTitle class="headline">{{ account.name }}</VCardTitle>
       <VCardActions>
-        <VBtn
-          text
-          color="error"
-          @click="deleteAccount"
-        >Delete</VBtn>
+        <VBtn text color="error" @click="deleteAccount">Delete</VBtn>
       </VCardActions>
     </VCard>
 
@@ -18,10 +14,7 @@
       @add-transaction="addTransaction"
     />
 
-    <VDialog
-      v-model="dialogVisible"
-      max-width="500px"
-    >
+    <VDialog v-model="dialogVisible" max-width="500px">
       <TransactionEdit
         :transaction="transaction"
         :account="account"
@@ -33,58 +26,56 @@
 </template>
 
 <script>
-  import TransactionList from '../TransactionList';
-  import BackButton from '../BackButton';
-  import TransactionEdit from '../TransactionEdit';
+import TransactionList from '../TransactionList';
+import TransactionEdit from '../TransactionEdit';
 
-  export default {
-    components: {
-      TransactionList,
-      BackButton,
-      TransactionEdit,
+export default {
+  components: {
+    TransactionList,
+    TransactionEdit
+  },
+  data() {
+    return {
+      dialogVisible: false,
+      transaction: {}
+    };
+  },
+  computed: {
+    account() {
+      return this.$store.getters['project/account'](this.accountId);
     },
-    data() {
-      return {
-        dialogVisible: false,
-        transaction: {}
-      };
+    transactions() {
+      return this.$store.getters['project/transactions'](this.account);
     },
-    computed: {
-      account() {
-        return this.$store.getters['project/account'](this.accountId);
-      },
-      transactions() {
-        return this.$store.getters['project/transactions'](this.account);
-      },
-      accountId() {
-        return this.$route.params.accountId;
-      },
+    accountId() {
+      return this.$route.params.accountId;
+    }
+  },
+  created() {
+    this.$ipc.setTitle(this.account.name);
+  },
+  methods: {
+    deleteAccount() {
+      this.$store.dispatch('project/deleteAccount', this.accountId);
+      this.$router.push({
+        name: 'accounts'
+      });
     },
-    created() {
-      this.$ipc.setTitle(this.account.name);
+    addTransaction() {
+      this.transaction = {};
+      this.dialogVisible = true;
     },
-    methods: {
-      deleteAccount() {
-        this.$store.dispatch('project/deleteAccount', this.accountId);
+    goToAccountsIfDialogClosed() {
+      if (!this.dialogVisible) {
         this.$router.push({
-          name: 'accounts',
+          name: 'accounts'
         });
-      },
-      addTransaction() {
-        this.transaction = {};
-        this.dialogVisible = true;
-      },
-      goToAccountsIfDialogClosed() {
-        if (!this.dialogVisible) {
-          this.$router.push({
-            name: 'accounts',
-          });
-        }
-      },
-      highlightTransaction(transaction) {
-        transaction.highlighted = !transaction.highlighted;
-        this.$store.dispatch('project/updateTransaction', transaction);
       }
     },
-  };
+    highlightTransaction(transaction) {
+      transaction.highlighted = !transaction.highlighted;
+      this.$store.dispatch('project/updateTransaction', transaction);
+    }
+  }
+};
 </script>

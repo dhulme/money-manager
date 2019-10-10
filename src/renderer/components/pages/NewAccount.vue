@@ -6,25 +6,14 @@
       </VCardTitle>
       <VCardText>
         <form @submit="addAccount">
-          <VTextField
-            v-model="accountCategory"
-            label="Category"
-            disabled
-          />
-          <VTextField
-            v-focus
-            v-model="name"
-            label="Name"
-          />
+          <VTextField v-model="accountCategory" label="Category" disabled />
+          <VTextField v-focus v-model="name" label="Name" />
           <VTextField
             v-model="openingBalance"
             label="Opening balance"
             prefix="£"
           />
-          <VBtn
-            type="submit"
-            color="primary"
-          >Ok</VBtn>
+          <VBtn type="submit" color="primary">Ok</VBtn>
         </form>
       </VCardText>
     </VCard>
@@ -32,65 +21,60 @@
 </template>
 
 <script>
-  import BackButton from '../BackButton';
+export default {
+  data() {
+    return {
+      name: '',
+      openingBalance: '0'
+    };
+  },
+  computed: {
+    accountCategory() {
+      return this.$route.params.accountCategory;
+    },
+    accountType() {
+      return this.$route.params.accountType;
+    }
+  },
+  watch: {
+    name(name) {
+      this.$ipc.setTitle(name);
+    }
+  },
+  created() {
+    this.$ipc.setTitle();
+  },
+  methods: {
+    addAccount(event) {
+      event.preventDefault();
+      this.$store.dispatch('project/addAccount', {
+        name: this.name,
+        balance: this.openingBalance,
+        category: this.accountCategory,
+        type: this.accountType
+      });
 
-  export default {
-    components: {
-      BackButton,
+      this.resetForm();
+      this.goToAccounts();
     },
-    data() {
-      return {
-        name: '',
-        openingBalance: '0',
-      };
+    resetForm() {
+      this.name = '';
+      this.openingBalance = '';
     },
-    computed: {
-      accountCategory() {
-        return this.$route.params.accountCategory;
-      },
-      accountType() {
-        return this.$route.params.accountType;
-      },
+    goToAccount(account) {
+      this.$router.push({
+        name: 'account',
+        params: {
+          accountId: account.id,
+          accountCategory: account.category
+        }
+      });
     },
-    watch: {
-      name(name) {
-        this.$ipc.setTitle(name);
-      },
-    },
-    created() {
-      this.$ipc.setTitle();
-    },
-    methods: {
-      addAccount(event) {
-        event.preventDefault();
-        this.$store.dispatch('project/addAccount', {
-          name: this.name,
-          balance: this.openingBalance,
-          category: this.accountCategory,
-          type: this.accountType,
-        });
-
-        this.resetForm();
-        this.goToAccounts();
-      },
-      resetForm() {
-        this.name = '';
-        this.openingBalance = '';
-      },
-      goToAccount(account) {
-        this.$router.push({
-          name: 'account',
-          params: {
-            accountId: account.id,
-            accountCategory: account.category,
-          },
-        });
-      },
-      goToAccounts() {
-        this.$router.push({
-          name: 'accounts',
-        });
-      },
-    },
-  };
+    goToAccounts() {
+      this.$router.push({
+        name: 'accounts'
+      });
+    }
+  }
+};
 </script>
