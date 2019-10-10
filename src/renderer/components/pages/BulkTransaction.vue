@@ -36,7 +36,7 @@
   import util from '../../util';
 
   import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
-  import BulkTransactionEdit from '../BulkTransactionEdit.vue';
+import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 
   export default {
     components: {
