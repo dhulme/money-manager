@@ -1,39 +1,21 @@
 <template>
-  <div
-    v-hotkey.close="goToBulkTransactionsIfDialogClosed"
-    v-hotkey.add="addTransaction"
-  >
+  <div v-hotkey.close="goToBulkTransactionsIfDialogClosed" v-hotkey.add="addTransaction">
     <VCard>
       <VCardTitle>
         <span class="headline">{{ bulkTransaction.name }}</span>
-        <VBtn
-          text
-          @click="addTransaction"
-        >Add</VBtn>
+        <VBtn text @click="addTransaction">Add</VBtn>
         <VSpacer />
-        <VTextField
-          v-model="search"
-          append-icon="search"
-          label="Search"
-          single-line
-          hide-details
-        />
+        <VTextField v-model="search" append-icon="search" label="Search" single-line hide-details />
       </VCardTitle>
-      <VSubheader>
-        {{ bulkTransaction.description }}
-      </VSubheader>
-      <bulk-transaction-transactions
+      <VSubheader>{{ bulkTransaction.description }}</VSubheader>
+      <BulkTransactionTransactions
         :transactions="transactions"
         :search="search"
         @transaction-click="editTransaction"
       />
       <VCardActions>
-        <VBtn
-          text
-          color="primary"
-          @click="process"
-        >Run</VBtn>
-        <VBtn text @click="duplicate">Duplicate</VBtn> 
+        <VBtn text color="primary" @click="process">Run</VBtn>
+        <VBtn text @click="duplicate">Duplicate</VBtn>
       </VCardActions>
     </VCard>
 
@@ -59,23 +41,27 @@
   export default {
     components: {
       BulkTransactionTransactions,
-      BulkTransactionEdit,
+      BulkTransactionEdit
     },
     data() {
       return {
         search: '',
         dialogVisible: false,
         transaction: {},
-        transactions: [],
+        transactions: []
       };
     },
     computed: {
       bulkTransaction() {
-        return this.$store.getters['project/bulkTransaction'](this.$route.params.bulkTransactionId);
-      },
+        return this.$store.getters['project/bulkTransaction'](
+          this.$route.params.bulkTransactionId
+        );
+      }
     },
     created() {
-      this.transactions = this.$store.getters['project/bulkTransactionTransactions'](this.bulkTransaction);
+      this.transactions = this.$store.getters[
+        'project/bulkTransactionTransactions'
+      ](this.bulkTransaction);
       this.$ipc.setTitle(this.bulkTransaction.name);
     },
     methods: {
@@ -85,8 +71,8 @@
           transactions: this.transactions.map(transaction => ({
             ...transaction,
             id: util.getId(),
-            date: moment(),
-          })),
+            date: moment()
+          }))
         });
         this.$store.dispatch('openSnackbar', 'Transactions done');
       },
@@ -110,7 +96,7 @@
       goToBulkTransactionsIfDialogClosed() {
         if (!this.dialogVisible) {
           this.$router.push({
-            name: 'bulkTransactions',
+            name: 'bulkTransactions'
           });
         }
       },
@@ -120,10 +106,10 @@
           transactions: this.transactions
         });
         this.$router.push({
-          name: 'newBulkTransaction',
+          name: 'newBulkTransaction'
         });
       }
-    },
+    }
   };
 </script>
 

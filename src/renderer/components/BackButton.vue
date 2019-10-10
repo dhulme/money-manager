@@ -5,7 +5,9 @@
 
 <script>
   export default {
-    props: ['name'],
+    props: {
+			name: String
+		},
     methods: {
       back() {
         this.$router.push({
