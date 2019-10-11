@@ -59,6 +59,7 @@ ipcMain.on('projectOpenDefault', async event => {
     const data = await project.open(projectPath);
     event.sender.send('projectOpened', data || defaultProject);
   } else {
+    console.log('Opening default project');
     event.sender.send('projectOpened', defaultProject);
   }
 });

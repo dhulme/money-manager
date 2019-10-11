@@ -11,6 +11,7 @@ const project = {
   },
 
   async open(path) {
+    console.log(`Opening project ${path}`);
     return fs.readJson(path).catch(() => {
       throw new Error('Failed to open project');
     });
