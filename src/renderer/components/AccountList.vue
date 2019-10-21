@@ -14,12 +14,12 @@
       :headers="headers"
       :items="accounts"
     >
-      <template slot-scope="props" slot="items">
+      <template slot-scope="props" slot="item">
         <tr @click="openAccount(props.item.id)">
           <td>{{ props.item.name }}</td>
           <td
             :class="{ 'red--text': parseFloat(props.item.balance) < 0 }"
-            class="text-xs-right account-balance"
+            class="text-right account-balance"
           >
             {{ props.item.balance | currency }}
           </td>
@@ -27,10 +27,7 @@
       </template>
       <template slot="footer">
         <td />
-        <td
-          :class="{ 'red--text': parseFloat(total) < 0 }"
-          class="text-xs-right"
-        >
+        <td :class="{ 'red--text': parseFloat(total) < 0 }" class="text-right">
           {{ total | currency }}
         </td>
       </template>

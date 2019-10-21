@@ -30,74 +30,69 @@
       />
     </VCardText>
     <VCardActions>
-      <VBtn
-        text
-        @click="close"
-      >Close</VBtn>
-      <VBtn
-        color="primary"
-        text
-        @click="save"
-      >{{ transaction.id ? 'Update' : 'Add' }}</VBtn>
+      <VBtn text @click="close">Close</VBtn>
+      <VBtn color="primary" text @click="save">{{
+        transaction.id ? 'Update' : 'Add'
+      }}</VBtn>
     </VCardActions>
   </VCard>
 </template>
 
 <script>
-  import util from '../util';
+import util from '../util';
 
-  export default {
-    props: {
-      transaction: {
-        type: Object,
-        required: true,
-      },
-      bulkTransaction: {
-        type: Object,
-        default: null,
-      },
+export default {
+  props: {
+    transaction: {
+      type: Object,
+      required: true
     },
-    data() {
-      return {
-        newTransaction: {},
+    bulkTransaction: {
+      type: Object,
+      default: null
+    }
+  },
+  data() {
+    return {
+      newTransaction: {}
+    };
+  },
+  computed: {
+    accounts() {
+      return this.$store.getters['project/accountItems'];
+    }
+  },
+  watch: {
+    transaction(transaction) {
+      this.newTransaction = {
+        ...transaction
       };
-    },
-    computed: {
-      accounts() {
-        return this.$store.getters['project/accountItems'];
-      },
-    },
-    watch: {
-      transaction(transaction) {
-        this.newTransaction = {
-          ...transaction,
-        };
-      },
-    },
-    methods: {
-      save() {
+    }
+  },
+  methods: {
+    save() {
+      if (this.bulkTransaction) {
         if (this.transaction.id) {
           this.$store.dispatch('project/updateBulkTransactionTransaction', {
             transaction: this.newTransaction,
-            bulkTransaction: this.bulkTransaction,
+            bulkTransaction: this.bulkTransaction
           });
         } else {
           this.newTransaction.id = util.getId();
           this.$store.dispatch('project/addBulkTransactionTransaction', {
             transaction: this.newTransaction,
-            bulkTransaction: this.bulkTransaction,
+            bulkTransaction: this.bulkTransaction
           });
         }
+      }
 
-        this.$emit('saved', this.newTransaction);
-      },
-      close() {
-        this.$emit('close');
-      },
+      this.$emit('saved', this.newTransaction);
     },
-  };
+    close() {
+      this.$emit('close');
+    }
+  }
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

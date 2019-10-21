@@ -3,31 +3,14 @@
     <VCard class="mb-4">
       <VCardTitle class="headline">New Bulk Transaction</VCardTitle>
       <VCardText>
-        <VTextField
-          v-model="name"
-          label="Name"
-        />
-        <VTextField
-          v-model="description"
-          label="Description"
-        />
+        <VTextField v-model="name" label="Name" />
+        <VTextField v-model="description" label="Description" />
       </VCardText>
-      <VCardActions>
-        <VBtn
-          text
-          color="secondary"
-          @click="addBulkTransaction"
-        >Done</VBtn>
-      </VCardActions>
     </VCard>
     <VCard class="mb-4">
       <VCardTitle>Add Transaction</VCardTitle>
       <VCardText>
-        <VTextField
-          v-model="newTransaction.value" 
-          label="Amount"
-          prefix="£"
-        />
+        <VTextField v-model="newTransaction.value" label="Amount" prefix="£" />
         <VAutocomplete
           :items="projectItems"
           v-model="newTransaction.from"
@@ -40,82 +23,113 @@
           label="To"
         />
 
-        <VTextField
-          v-model="newTransaction.note"
-          placeholder="Note"
-        />
+        <VTextField v-model="newTransaction.note" placeholder="Note" />
       </VCardText>
       <VCardActions>
-        <VBtn 
-          text 
-          color="primary" 
-          @click="addTransaction">Add</VBtn>
+        <VBtn text color="primary" @click="addTransaction">Add</VBtn>
       </VCardActions>
     </VCard>
     <VCard>
       <VCardTitle>Transactions</VCardTitle>
       <BulkTransactionTransactions
         :transactions="transactions"
+        @transaction-click="editTransaction"
       />
     </VCard>
+    <VRow class="mt-4 ml-4">
+      <VBtn color="primary" @click="addBulkTransaction">OK</VBtn>
+    </VRow>
+
+    <VDialog v-model="dialogVisible">
+      <BulkTransactionEdit
+        :transaction="editedTransaction"
+        @saved="savedEditedTransaction"
+        @close="dialogVisible = false"
+      />
+    </VDialog>
   </div>
 </template>
 
 <script>
-  import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
-  import util from '../../util';
+import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
+import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 
-  export default {
-    components: {
-      BulkTransactionTransactions,
-    },
-    data() {
-      const { name, description, transactions } = this.$store.state.newBulkTransaction;
-      return {
-        name,
-        description,
-        newTransaction: {
-          id: util.getId()
-        },
-        transactions,
+import util from '../../util';
+
+export default {
+  components: {
+    BulkTransactionTransactions,
+    BulkTransactionEdit
+  },
+  data() {
+    const {
+      name,
+      description,
+      transactions
+    } = this.$store.state.newBulkTransaction;
+    return {
+      name,
+      description,
+      newTransaction: {
+        id: util.getId()
+      },
+      transactions,
+      editedTransaction: {
+        id: null,
+        from: '',
+        to: '',
+        value: 0,
+        note: ''
+      },
+      dialogVisible: false
+    };
+  },
+  computed: {
+    projectItems() {
+      return this.$store.getters['project/accounts'].map(account => ({
+        text: account.name,
+        value: account.id
+      }));
+    }
+  },
+  watch: {
+    name(name) {
+      this.$ipc.setTitle(name);
+    }
+  },
+  methods: {
+    addTransaction() {
+      this.transactions.push(this.newTransaction);
+      this.newTransaction = {
+        id: util.getId()
       };
     },
-    computed: {
-      projectItems() {
-        return this.$store.getters['project/accounts'].map(account => ({
-          text: account.name,
-          value: account.id,
-        }));
-      },
-    },
-    watch: {
-      name(name) {
-        this.$ipc.setTitle(name);
-      },
-    },
-    methods: {
-      addTransaction() {
-        this.transactions.push(this.newTransaction);
-        this.newTransaction = {
-          id: util.getId()
-        };
-      },
-      addBulkTransaction() {
-        this.$store.dispatch('project/addBulkTransaction', {
-          name: this.name,
-          description: this.description,
-          transactions: this.transactions,
-        });
+    addBulkTransaction() {
+      this.$store.dispatch('project/addBulkTransaction', {
+        name: this.name,
+        description: this.description,
+        transactions: this.transactions
+      });
 
-        this.$router.push({
-          name: 'bulkTransactions',
-        });
-      },
-      goToBulkTransactions() {
-        this.$router.push({
-          name: 'bulkTransactions',
-        });
-      },
+      this.$router.push({
+        name: 'bulkTransactions'
+      });
     },
-  };
+    goToBulkTransactions() {
+      this.$router.push({
+        name: 'bulkTransactions'
+      });
+    },
+    editTransaction(transaction) {
+      console.log('going to edit', transaction);
+      this.editedTransaction = transaction;
+      this.dialogVisible = true;
+    },
+    savedEditedTransaction(transaction) {
+      this.dialogVisible = false;
+      const index = this.transactions.findIndex(_ => _.id === transaction.id);
+      this.transactions.splice(index, 1, transaction);
+    }
+  }
+};
 </script>
