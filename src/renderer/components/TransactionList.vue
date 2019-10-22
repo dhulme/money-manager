@@ -25,6 +25,7 @@
         :search="search"
         :rows-per-page-items="rowsPerPageItems"
         :pagination.sync="pagination"
+        :custom-filter="customFilter"
         must-sort
       >
         <template slot-scope="props" slot="item">
@@ -193,6 +194,16 @@ export default {
       return this.$store.getters['project/accountBalance'](
         this.account,
         transaction.id
+      );
+    },
+    customFilter(value, search) {
+      if (!search) {
+        return true;
+      }
+      const valueString = value.toString().toLowerCase();
+      return (
+        valueString.includes(search) ||
+        valueString.replace(/^[a-zA-Z0-9]/g, '').includes(search)
       );
     }
   }

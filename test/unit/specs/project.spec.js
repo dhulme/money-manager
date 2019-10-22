@@ -24,6 +24,15 @@ function getNewAccount(id = 'test') {
   };
 }
 
+function getNewTransaction(id = 'test') {
+  return {
+    to: 'to',
+    from: 'from',
+    value: 10,
+    id
+  };
+}
+
 describe('project store', () => {
   const state = store.state.project;
 
@@ -102,12 +111,7 @@ describe('project store', () => {
       });
 
       it('should add the transaction correctly', () => {
-        const transaction = {
-          to: 'to',
-          from: 'from',
-          value: 10,
-          id: 'test'
-        };
+        const transaction = getNewTransaction();
         const fromAccount = getNewAccount('from');
         const toAccount = getNewAccount('to');
         init({
@@ -221,7 +225,7 @@ describe('project store', () => {
         };
         init({});
         commit('addBulkTransaction', bulkTransaction);
-        expect(state.bulkTransactions).toContainEqual({
+        expect(state.bulkTransactions[0]).toMatchObject({
           ...bulkTransaction,
           id: 'test',
           transactionIds: []
@@ -259,12 +263,7 @@ describe('project store', () => {
         const bulkTransaction = {
           transactionIds: []
         };
-        const transaction = {
-          to: 'test',
-          from: 'test',
-          value: '0',
-          id: 'test'
-        };
+        const transaction = getNewTransaction();
         init({
           bulkTransactions: [bulkTransaction]
         });
@@ -297,12 +296,7 @@ describe('project store', () => {
         const bulkTransaction = {
           transactionIds: ['test1', 'test2', 'test3']
         };
-        const transaction = {
-          to: 'test',
-          from: 'test',
-          value: '0',
-          id: 'test2'
-        };
+        const transaction = getNewTransaction('test2');
         init({
           bulkTransactions: [bulkTransaction]
         });
@@ -319,31 +313,69 @@ describe('project store', () => {
   });
 
   describe('actions', () => {
+    describe('addTransaction', () => {
+      it('should add a transaction', () => {
+        const transaction = getNewTransaction();
+        const fromAccount = getNewAccount('from');
+        const toAccount = getNewAccount('to');
+        init({
+          accounts: [fromAccount, toAccount]
+        });
+        dispatch('addTransaction', transaction);
+        expect(state.transactions[transaction.id]).toMatchObject(transaction);
+      });
+    });
+
+    describe('addDualTransaction', () => {
+      it('should add a primary and secondary transaction', () => {
+        const primary = getNewTransaction();
+        const secondary = getNewTransaction('test2');
+        const fromAccount = getNewAccount('from');
+        const toAccount = getNewAccount('to');
+        init({
+          accounts: [fromAccount, toAccount]
+        });
+        dispatch('addDualTransaction', { primary, secondary });
+        expect(state.transactions[primary.id]).toMatchObject(primary);
+        expect(state.transactions[secondary.id]).toMatchObject(secondary);
+      });
+    });
+
+    describe('updateTransaction', () => {
+      it('should update a transaction', () => {
+        const transaction = getNewTransaction();
+        const fromAccount = getNewAccount('from');
+        const toAccount = getNewAccount('to');
+        init({
+          accounts: [fromAccount, toAccount],
+          transactions: {
+            [transaction.id]: transaction
+          }
+        });
+        const updatedTransaction = {
+          ...transaction,
+          description: 'updated'
+        };
+        dispatch('updateTransaction', updatedTransaction);
+        expect(state.transactions[transaction.id]).toMatchObject(
+          updatedTransaction
+        );
+      });
+    });
+
     describe('addBulkTransaction', () => {
       it('should run without errors', () => {
         dispatch('addBulkTransaction', {
           description: 'test',
           name: 'test',
-          transactions: [
-            {
-              to: 'test',
-              from: 'test',
-              value: '0',
-              id: 'test'
-            }
-          ]
+          transactions: [getNewTransaction()]
         });
       });
     });
 
     describe('runBulkTransactionTransactions', () => {
       it('should add the transactions', () => {
-        const transaction = {
-          to: 'to',
-          from: 'from',
-          value: 10,
-          id: 'test'
-        };
+        const transaction = getNewTransaction();
         const fromAccount = getNewAccount('from');
         const toAccount = getNewAccount('to');
         init({

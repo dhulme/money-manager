@@ -1,5 +1,6 @@
 import Big from 'big.js';
 import Vue from 'vue';
+import moment from 'moment';
 
 import util from '../util';
 
@@ -130,7 +131,8 @@ const project = {
         name,
         description,
         id: bulkTransaction.id || util.getFriendlyId(name, existingIds),
-        transactionIds: []
+        transactionIds: [],
+        lastModified: moment()
       };
       state.bulkTransactions.push(newBulkTransaction);
     },
@@ -155,6 +157,7 @@ const project = {
       if (!bulkTransaction.transactionIds.includes(id)) {
         bulkTransaction.transactionIds.push(id);
       }
+      bulkTransaction.lastModified = moment();
     },
 
     deleteBulkTransactionTransaction(
@@ -172,6 +175,7 @@ const project = {
       if (index !== -1) {
         bulkTransaction.transactionIds.splice(index, 1);
       }
+      bulkTransaction.lastModified = moment();
     }
   },
   actions: {
@@ -324,7 +328,11 @@ const project = {
           .reduce((total, account) => total.plus(account.balance), new Big(0));
     },
     bulkTransactions(state) {
-      return state.bulkTransactions;
+      return state.bulkTransactions.sort(
+        (a, b) =>
+          new Date(a.lastModified).valueOf() -
+          new Date(b.lastModified).valueOf()
+      );
     },
     bulkTransaction(state) {
       return id => state.bulkTransactions.find(_ => _.id === id);

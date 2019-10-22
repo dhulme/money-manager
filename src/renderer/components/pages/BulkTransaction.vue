@@ -16,7 +16,13 @@
           hide-details
         />
       </VCardTitle>
-      <VSubheader>{{ bulkTransaction.description }}</VSubheader>
+      <VSubheader>
+        <div>{{ bulkTransaction.description }}</div>
+        <VSpacer />
+        <div v-if="bulkTransaction.lastModified" class="body-2 ml-2">
+          Updated {{ bulkTransaction.lastModified | date }}
+        </div>
+      </VSubheader>
       <BulkTransactionTransactions
         :transactions="transactions"
         :search="search"

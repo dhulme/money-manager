@@ -89,7 +89,8 @@ MIT
   description: String,
   id: String, // human readable
   name: String,
-  transactionIds: [String...]
+	transactionIds: [String...],
+	lastModified: Date
 }
 ```
 
