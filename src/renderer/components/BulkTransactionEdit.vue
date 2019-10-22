@@ -63,10 +63,13 @@ export default {
     }
   },
   watch: {
-    transaction(transaction) {
-      this.newTransaction = {
-        ...transaction
-      };
+    transaction: {
+      handler(transaction) {
+        this.newTransaction = {
+          ...transaction
+        };
+      },
+      immediate: true
     }
   },
   methods: {

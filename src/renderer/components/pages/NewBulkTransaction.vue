@@ -121,7 +121,6 @@ export default {
       });
     },
     editTransaction(transaction) {
-      console.log('going to edit', transaction);
       this.editedTransaction = transaction;
       this.dialogVisible = true;
     },
