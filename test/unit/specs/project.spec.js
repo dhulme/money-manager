@@ -278,6 +278,44 @@ describe('project store', () => {
         expect(bulkTransaction.transactionIds).toContain(transaction.id);
       });
     });
+
+    describe('deleteBulkTransactionTransaction', () => {
+      it('should require parameters', () => {
+        init({});
+        expect(() => {
+          commit('addUpdateBulkTransactionTransaction', {});
+        }).toThrowError('required');
+        expect(() => {
+          commit('addUpdateBulkTransactionTransaction', {
+            transaction: {},
+            bulkTransaction: {}
+          });
+        }).toThrowError('required');
+      });
+
+      it('should delete a bulk transaction transaction', () => {
+        const bulkTransaction = {
+          transactionIds: ['test1', 'test2', 'test3']
+        };
+        const transaction = {
+          to: 'test',
+          from: 'test',
+          value: '0',
+          id: 'test2'
+        };
+        init({
+          bulkTransactions: [bulkTransaction]
+        });
+        commit('deleteBulkTransactionTransaction', {
+          bulkTransaction,
+          transaction
+        });
+        expect(
+          state.bulkTransactionTransactions[transaction.id]
+        ).toBeUndefined();
+        expect(bulkTransaction.transactionIds).toEqual(['test1', 'test3']);
+      });
+    });
   });
 
   describe('actions', () => {

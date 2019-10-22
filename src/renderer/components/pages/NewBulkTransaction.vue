@@ -43,7 +43,8 @@
     <VDialog v-model="dialogVisible">
       <BulkTransactionEdit
         :transaction="editedTransaction"
-        @saved="savedEditedTransaction"
+        @saved="saveEditedTransaction"
+        @deleted="deleteEditedTransaction"
         @close="dialogVisible = false"
       />
     </VDialog>
@@ -124,10 +125,15 @@ export default {
       this.editedTransaction = transaction;
       this.dialogVisible = true;
     },
-    savedEditedTransaction(transaction) {
+    saveEditedTransaction(transaction) {
       this.dialogVisible = false;
       const index = this.transactions.findIndex(_ => _.id === transaction.id);
       this.transactions.splice(index, 1, transaction);
+    },
+    deleteEditedTransaction(transaction) {
+      this.dialogVisible = false;
+      const index = this.transactions.findIndex(_ => _.id === transaction.id);
+      this.transactions.splice(index, 1);
     }
   }
 };

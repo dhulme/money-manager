@@ -31,6 +31,9 @@
     </VCardText>
     <VCardActions>
       <VBtn text @click="close">Close</VBtn>
+      <VBtn v-if="transaction.id" text @click="_delete" color="error"
+        >Delete</VBtn
+      >
       <VBtn color="primary" text @click="save">{{
         transaction.id ? 'Update' : 'Add'
       }}</VBtn>
@@ -93,6 +96,16 @@ export default {
     },
     close() {
       this.$emit('close');
+    },
+    _delete() {
+      if (this.bulkTransaction) {
+        this.$store.dispatch('project/deleteBulkTransactionTransaction', {
+          transaction: this.newTransaction,
+          bulkTransaction: this.bulkTransaction
+        });
+      }
+
+      this.$emit('deleted', this.newTransaction);
     }
   }
 };

@@ -155,6 +155,23 @@ const project = {
       if (!bulkTransaction.transactionIds.includes(id)) {
         bulkTransaction.transactionIds.push(id);
       }
+    },
+
+    deleteBulkTransactionTransaction(
+      state,
+      {
+        transaction = required('transaction'),
+        bulkTransaction = required('bulkTransaction')
+      }
+    ) {
+      requireObjectProperties(transaction, ['id']);
+      const { id } = transaction;
+      requireObjectProperties(bulkTransaction, ['transactionIds']);
+      Vue.delete(state.bulkTransactionTransactions, id);
+      const index = bulkTransaction.transactionIds.indexOf(id);
+      if (index !== -1) {
+        bulkTransaction.transactionIds.splice(index, 1);
+      }
     }
   },
   actions: {
@@ -199,6 +216,16 @@ const project = {
       { bulkTransaction, transaction }
     ) {
       commit('addUpdateBulkTransactionTransaction', {
+        bulkTransaction,
+        transaction
+      });
+    },
+
+    deleteBulkTransactionTransaction(
+      { commit },
+      { bulkTransaction, transaction }
+    ) {
+      commit('deleteBulkTransactionTransaction', {
         bulkTransaction,
         transaction
       });

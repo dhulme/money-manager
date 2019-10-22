@@ -33,6 +33,7 @@
         :transaction="transaction"
         :bulk-transaction="bulkTransaction"
         @saved="savedTransaction"
+        @deleted="deletedTransaction"
         @close="dialogVisible = false"
       />
     </VDialog>
@@ -101,6 +102,11 @@ export default {
       } else {
         this.transactions.push(transaction);
       }
+    },
+    deletedTransaction(transaction) {
+      this.dialogVisible = false;
+      const index = this.transactions.findIndex(_ => _.id === transaction.id);
+      this.transactions.splice(index, 1);
     },
     goToBulkTransactionsIfDialogClosed() {
       if (!this.dialogVisible) {
