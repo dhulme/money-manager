@@ -204,8 +204,7 @@ const project = {
           'addTransaction',
           getAddTransactionParams({
             ...transaction,
-            description: bulkTransaction.description,
-            note: 'Bulk Transaction'
+            description: `Bulk Transaction (${bulkTransaction.description})`
           })
         );
       });

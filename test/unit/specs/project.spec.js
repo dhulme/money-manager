@@ -335,5 +335,33 @@ describe('project store', () => {
         });
       });
     });
+
+    describe('runBulkTransactionTransactions', () => {
+      it('should add the transactions', () => {
+        const transaction = {
+          to: 'to',
+          from: 'from',
+          value: 10,
+          id: 'test'
+        };
+        const fromAccount = getNewAccount('from');
+        const toAccount = getNewAccount('to');
+        init({
+          accounts: [fromAccount, toAccount]
+        });
+        dispatch('runBulkTransactionTransactions', {
+          bulkTransaction: {
+            description: 'test'
+          },
+          transactions: [transaction]
+        });
+
+        expect(state.transactions[transaction.id]).toMatchObject({
+          ...transaction,
+          description: 'Bulk Transaction (test)',
+          highlighted: false
+        });
+      });
+    });
   });
 });
