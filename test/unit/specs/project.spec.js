@@ -36,6 +36,8 @@ function getNewTransaction(id = 'test') {
 describe('project store', () => {
   const state = store.state.project;
 
+  beforeEach(() => init());
+
   function commit(name, data) {
     store.commit(`project/${name}`, data);
   }
@@ -52,7 +54,7 @@ describe('project store', () => {
     },
     bulkTransactions = [],
     bulkTransactionTransactions = {}
-  }) {
+  } = {}) {
     state.accounts = accounts;
     state.transactions = transactions;
     state.summary = summary;
@@ -168,7 +170,6 @@ describe('project store', () => {
 
     describe('deleteAccount', () => {
       it('should require an account ID', () => {
-        init({});
         expect(() => {
           commit('deleteAccount');
         }).toThrowError('required');
@@ -187,7 +188,6 @@ describe('project store', () => {
 
     describe('addAccount', () => {
       it('should check new account fields', () => {
-        init({});
         expect(() => {
           commit('addAccount', {});
         }).toThrowError('required');
@@ -195,14 +195,12 @@ describe('project store', () => {
 
       it('should add an account', () => {
         const account = getNewAccount();
-        init({});
         commit('addAccount', account);
         expect(state.accounts).toContainEqual(account);
       });
 
       it('should not allow duplicate IDs', () => {
         const account = getNewAccount();
-        init({});
         commit('addAccount', account);
         expect(() => {
           commit('addAccount', account);
@@ -212,7 +210,6 @@ describe('project store', () => {
 
     describe('addBulkTransaction', () => {
       it('should require parameters', () => {
-        init({});
         expect(() => {
           commit('addBulkTransaction', {});
         }).toThrowError('required');
@@ -223,7 +220,6 @@ describe('project store', () => {
           description: 'test',
           name: 'test'
         };
-        init({});
         commit('addBulkTransaction', bulkTransaction);
         expect(state.bulkTransactions[0]).toMatchObject({
           ...bulkTransaction,
@@ -237,7 +233,6 @@ describe('project store', () => {
           description: 'test',
           name: 'test'
         };
-        init({});
         commit('addBulkTransaction', bulkTransaction);
         expect(() => {
           commit('addBulkTransaction', bulkTransaction);
@@ -247,7 +242,6 @@ describe('project store', () => {
 
     describe('addUpdateBulkTransactionTransaction', () => {
       it('should require parameters', () => {
-        init({});
         expect(() => {
           commit('addUpdateBulkTransactionTransaction', {});
         }).toThrowError('required');
@@ -259,7 +253,7 @@ describe('project store', () => {
         }).toThrowError('required');
       });
 
-      it('should add a bulk transaction transaction', () => {
+      it('should add a bulk transaction transaction and then update it', () => {
         const bulkTransaction = {
           transactionIds: []
         };
@@ -267,6 +261,7 @@ describe('project store', () => {
         init({
           bulkTransactions: [bulkTransaction]
         });
+
         commit('addUpdateBulkTransactionTransaction', {
           bulkTransaction,
           transaction
@@ -275,12 +270,24 @@ describe('project store', () => {
           transaction
         );
         expect(bulkTransaction.transactionIds).toContain(transaction.id);
+
+        const updatedTransaction = {
+          ...transaction,
+          note: 'updated'
+        };
+        commit('addUpdateBulkTransactionTransaction', {
+          bulkTransaction,
+          transaction: updatedTransaction
+        });
+        expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
+          updatedTransaction
+        );
+        expect(bulkTransaction.transactionIds).toContain(updatedTransaction.id);
       });
     });
 
     describe('deleteBulkTransactionTransaction', () => {
       it('should require parameters', () => {
-        init({});
         expect(() => {
           commit('addUpdateBulkTransactionTransaction', {});
         }).toThrowError('required');
@@ -399,30 +406,68 @@ describe('project store', () => {
       });
     });
 
-    // describe('updateBulkTransactionTransaction', () => {
+    describe('updateBulkTransactionTransaction', () => {
+      it('should update a bulk transaction transaction', () => {
+        const transaction = getNewTransaction();
+        const bulkTransaction = {
+          transactionIds: [transaction.id]
+        };
+        init({
+          bulkTransactions: [bulkTransaction]
+        });
+        const updatedTransaction = {
+          ...transaction,
+          note: 'updated'
+        };
+        dispatch('updateBulkTransactionTransaction', {
+          bulkTransaction,
+          transaction: updatedTransaction
+        });
+        expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
+          updatedTransaction
+        );
+        expect(bulkTransaction.transactionIds).toContain(updatedTransaction.id);
+      });
+    });
 
-    // })
-
-    // describe('deleteBulkTransactionTransaction', () => {
-
-    // })
+    describe('deleteBulkTransactionTransaction', () => {
+      it('should delete a bulk transaction transaction', () => {
+        const transaction = getNewTransaction();
+        const bulkTransaction = {
+          transactionIds: [transaction.id]
+        };
+        init({
+          bulkTransactions: [bulkTransaction]
+        });
+        dispatch('deleteBulkTransactionTransaction', {
+          bulkTransaction,
+          transaction
+        });
+        expect(
+          state.bulkTransactionTransactions[transaction.id]
+        ).toBeUndefined();
+        expect(bulkTransaction.transactionIds).not.toContain(transaction.id);
+      });
+    });
 
     describe('addBulkTransactionTransaction', () => {
-      const bulkTransaction = {
-        transactionIds: []
-      };
-      const transaction = getNewTransaction();
-      init({
-        bulkTransactions: [bulkTransaction]
+      it('should add a bulk transaction transaction', () => {
+        const bulkTransaction = {
+          transactionIds: []
+        };
+        const transaction = getNewTransaction();
+        init({
+          bulkTransactions: [bulkTransaction]
+        });
+        dispatch('addBulkTransactionTransaction', {
+          bulkTransaction,
+          transaction
+        });
+        expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
+          transaction
+        );
+        expect(bulkTransaction.transactionIds).toContain(transaction.id);
       });
-      dispatch('addBulkTransactionTransaction', {
-        bulkTransaction,
-        transaction
-      });
-      expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
-        transaction
-      );
-      expect(bulkTransaction.transactionIds).toContain(transaction.id);
     });
 
     describe('addBulkTransaction', () => {
@@ -435,8 +480,12 @@ describe('project store', () => {
       });
     });
 
-    // describe('addAccount', () => {
-
-    // })
+    describe('addAccount', () => {
+      it('should add an account', () => {
+        const account = getNewAccount();
+        dispatch('addAccount', account);
+        expect(state.accounts).toContainEqual(account);
+      });
+    });
   });
 });
