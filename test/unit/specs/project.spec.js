@@ -33,6 +33,16 @@ function getNewTransaction(id = 'test') {
   };
 }
 
+function getNewBulkTransaction(id = 'test') {
+  return {
+    description: 'test',
+    id,
+    name: 'test',
+    transactionIds: [],
+    lastModified: new Date()
+  };
+}
+
 describe('project store', () => {
   const state = store.state.project;
 
@@ -44,6 +54,10 @@ describe('project store', () => {
 
   function dispatch(name, data) {
     store.dispatch(`project/${name}`, data);
+  }
+
+  function get(name) {
+    return store.getters[`project/${name}`];
   }
 
   function init({
@@ -216,10 +230,7 @@ describe('project store', () => {
       });
 
       it('should add a bulk transaction', () => {
-        const bulkTransaction = {
-          description: 'test',
-          name: 'test'
-        };
+        const bulkTransaction = getNewBulkTransaction();
         commit('addBulkTransaction', bulkTransaction);
         expect(state.bulkTransactions[0]).toMatchObject({
           ...bulkTransaction,
@@ -229,10 +240,7 @@ describe('project store', () => {
       });
 
       it('should not allow duplicate IDs', () => {
-        const bulkTransaction = {
-          description: 'test',
-          name: 'test'
-        };
+        const bulkTransaction = getNewBulkTransaction();
         commit('addBulkTransaction', bulkTransaction);
         expect(() => {
           commit('addBulkTransaction', bulkTransaction);
@@ -254,9 +262,7 @@ describe('project store', () => {
       });
 
       it('should add a bulk transaction transaction and then update it', () => {
-        const bulkTransaction = {
-          transactionIds: []
-        };
+        const bulkTransaction = getNewBulkTransaction();
         const transaction = getNewTransaction();
         init({
           bulkTransactions: [bulkTransaction]
@@ -409,9 +415,8 @@ describe('project store', () => {
     describe('updateBulkTransactionTransaction', () => {
       it('should update a bulk transaction transaction', () => {
         const transaction = getNewTransaction();
-        const bulkTransaction = {
-          transactionIds: [transaction.id]
-        };
+        const bulkTransaction = getNewBulkTransaction();
+        bulkTransaction.transactionIds = [transaction.id];
         init({
           bulkTransactions: [bulkTransaction]
         });
@@ -433,9 +438,8 @@ describe('project store', () => {
     describe('deleteBulkTransactionTransaction', () => {
       it('should delete a bulk transaction transaction', () => {
         const transaction = getNewTransaction();
-        const bulkTransaction = {
-          transactionIds: [transaction.id]
-        };
+        const bulkTransaction = getNewBulkTransaction();
+        bulkTransaction.transactionIds = [transaction.id];
         init({
           bulkTransactions: [bulkTransaction]
         });
@@ -452,9 +456,7 @@ describe('project store', () => {
 
     describe('addBulkTransactionTransaction', () => {
       it('should add a bulk transaction transaction', () => {
-        const bulkTransaction = {
-          transactionIds: []
-        };
+        const bulkTransaction = getNewBulkTransaction();
         const transaction = getNewTransaction();
         init({
           bulkTransactions: [bulkTransaction]
@@ -485,6 +487,147 @@ describe('project store', () => {
         const account = getNewAccount();
         dispatch('addAccount', account);
         expect(state.accounts).toContainEqual(account);
+      });
+    });
+  });
+
+  describe('getters', () => {
+    describe('accounts', () => {
+      it('should return accounts', () => {
+        const account = getNewAccount();
+        init({
+          accounts: [account]
+        });
+        const accounts = get('accounts');
+        expect(accounts).toHaveLength(1);
+        expect(accounts[0]).toMatchObject(account);
+      });
+    });
+
+    describe('accountItems', () => {
+      const accountA = getNewAccount('a');
+      const accountB = getNewAccount('b');
+      init({
+        accounts: [accountB, accountA]
+      });
+      const accounts = get('accountItems');
+      expect(accounts).toHaveLength(2);
+      expect(accounts[0]).toMatchObject({
+        text: accountA.name,
+        value: accountA.id
+      });
+      expect(accounts[1]).toMatchObject({
+        text: accountB.name,
+        value: accountB.id
+      });
+    });
+
+    describe('accountsByCategory', () => {
+      test('it gets accounts by category', () => {
+        const account = getNewAccount();
+        init({
+          accounts: [account]
+        });
+        const accounts = get('accountsByCategory')('test');
+        expect(accounts).toHaveLength(1);
+      });
+    });
+
+    describe('account', () => {
+      test('it gets account by id', () => {
+        const account = getNewAccount();
+        init({
+          accounts: [account]
+        });
+        expect(get('account')(account.id)).toBe(account);
+      });
+    });
+
+    describe('transactions', () => {
+      test('it gets transactions by account', () => {
+        const account = getNewAccount();
+        const transaction = getNewTransaction();
+        account.transactionIds = [transaction.id];
+        init({
+          accounts: [account],
+          transactions: {
+            test: transaction
+          }
+        });
+
+        const transactions = get('transactions')(account);
+        expect(transactions[0]).toBe(transaction);
+      });
+    });
+
+    describe('transaction', () => {
+      test('it gets transaction by id', () => {
+        const transaction = getNewTransaction();
+        init({
+          transactions: { [transaction.id]: transaction }
+        });
+        expect(get('transaction')(transaction.id)).toBe(transaction);
+      });
+    });
+
+    describe('summaryBalance', () => {
+      test('it gets summary balance', () => {
+        const balance = 3;
+        init({
+          summary: {
+            balance
+          }
+        });
+        expect(get('summaryBalance')).toBe(balance);
+      });
+    });
+
+    describe('summaryBalanceEqualsZero', () => {
+      test('it returns true if 0', () => {
+        init({
+          summary: {
+            balance: 0
+          }
+        });
+        expect(get('summaryBalanceEqualsZero')).toBe(true);
+      });
+
+      test('it returns false if not 0', () => {
+        init({
+          summary: {
+            balance: 3
+          }
+        });
+        expect(get('summaryBalanceEqualsZero')).toBe(false);
+      });
+    });
+
+    describe('accountsTotal', () => {
+      test('it sums accounts balances by category', () => {
+        const account1 = getNewAccount('1');
+        account1.balance = 3;
+        const account2 = getNewAccount('2');
+        account2.balance = 5;
+        init({
+          accounts: [account1, account2]
+        });
+        expect(get('accountsTotal')(account1.category)).toBe(
+          (account1.balance + account2.balance).toString()
+        );
+      });
+    });
+
+    describe('bulkTransactions', () => {
+      test('it returns bulk transactions sorted by date', () => {
+        const bulkTransaction1 = getNewBulkTransaction('1');
+        const bulkTransaction2 = getNewBulkTransaction('2');
+        bulkTransaction1.lastModified.setYear(2010);
+        init({
+          bulkTransactions: [bulkTransaction1, bulkTransaction2]
+        });
+        const bulkTransactions = get('bulkTransactions');
+        expect(bulkTransactions[0]).toMatchObject(bulkTransaction2);
+        expect(bulkTransactions[1]).toMatchObject(bulkTransaction1);
       });
     });
   });

@@ -306,12 +306,6 @@ const project = {
       return account =>
         account.transactionIds.map(id => state.transactions[id]);
     },
-    transactionId(state) {
-      return transaction =>
-        Object.entries(state.transactions).find(
-          entry => entry[1] === transaction
-        )[0];
-    },
     transaction(state) {
       return id => state.transactions[id];
     },
@@ -330,8 +324,8 @@ const project = {
     bulkTransactions(state) {
       return state.bulkTransactions.sort(
         (a, b) =>
-          new Date(a.lastModified).valueOf() -
-          new Date(b.lastModified).valueOf()
+          new Date(b.lastModified).valueOf() -
+          new Date(a.lastModified).valueOf()
       );
     },
     bulkTransaction(state) {
