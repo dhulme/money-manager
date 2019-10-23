@@ -1,6 +1,8 @@
 <template>
   <VCard v-hotkey.close="close">
-    <VCardTitle class="headline">{{ isNewTransaction ? 'Add' : 'Edit' }} Transaction</VCardTitle>
+    <VCardTitle class="headline"
+      >{{ isNewTransaction ? 'Add' : 'Edit' }} Transaction</VCardTitle
+    >
     <VCardText>
       <VForm ref="form" v-model="valid" lazy-validation>
         <VMenu
@@ -8,22 +10,21 @@
           v-model="dateMenu"
           :close-on-content-click="false"
           :nudge-right="40"
-          lazy
           transition="scale-transition"
           offset-y
-          full-width
-          max-width="290px"
           min-width="290px"
         >
-          <VTextField
-            slot="activator"
-            v-model="prettyDate"
-            label="Date"
-            prepend-icon="event"
-            readonly
-            required
-          />
-          <VDatePicker v-model="date" no-title @input="$refs.dateMenu.save(date)"/>
+          <template v-slot:activator="{ on }">
+            <VTextField
+              v-model="prettyDate"
+              label="Date"
+              prepend-icon="event"
+              readonly
+              v-on="on"
+              required
+            />
+          </template>
+          <VDatePicker v-model="date" @input="dateMenu = false" />
         </VMenu>
 
         <VTextField
@@ -74,182 +75,178 @@
 </template>
 
 <script>
-  import moment from 'moment';
+import moment from 'moment';
 
-  import util from '../util';
+import util from '../util';
 
-  export default {
-    props: {
-      transaction: {
-        type: Object,
-        default: null
-      },
-      account: {
-        type: Object,
-        default: null
-      }
+export default {
+  props: {
+    transaction: {
+      type: Object,
+      default: null
     },
-    data() {
-      return {
-        newTransaction: {},
-        dateMenu: false,
-        valid: false,
-        valueValidationRules: [
-          () => {
-            const value =
-              this.newTransaction.valueIn || this.newTransaction.valueOut;
-            if (value === undefined) {
-              return 'A value for in or out is required';
-            }
-            if (Number.isNaN(Number(value))) {
-              return 'Value must be a number';
-            }
-            return true;
+    account: {
+      type: Object,
+      default: null
+    }
+  },
+  data() {
+    return {
+      newTransaction: {},
+      dateMenu: false,
+      valid: false,
+      valueValidationRules: [
+        () => {
+          const value =
+            this.newTransaction.valueIn || this.newTransaction.valueOut;
+          if (value === undefined) {
+            return 'A value for in or out is required';
           }
-        ],
-        dateValidationRules: [value => !!value || 'Transaction date is required'],
-        descriptionValidationRules: [
-          value => !!value || 'Transaction description is required'
-        ],
-        accountValidationRules: [
-          value => !!value || 'Transaction account is required'
-        ],
-        date: null,
-        prettyDate: null
+          if (Number.isNaN(Number(value))) {
+            return 'Value must be a number';
+          }
+          return true;
+        }
+      ],
+      dateValidationRules: [value => !!value || 'Transaction date is required'],
+      descriptionValidationRules: [
+        value => !!value || 'Transaction description is required'
+      ],
+      accountValidationRules: [
+        value => !!value || 'Transaction account is required'
+      ],
+      date: null,
+      prettyDate: null
+    };
+  },
+  computed: {
+    isNewTransaction() {
+      return !this.transaction.account;
+    },
+    accounts() {
+      return this.$store.getters['project/accountItems'].filter(
+        account => account.value !== this.account.id
+      );
+    }
+  },
+  watch: {
+    transaction(transaction) {
+      this.$refs.form.reset();
+      this.$refs.description.focus();
+      this.newTransaction = {
+        ...transaction
       };
-    },
-    computed: {
-      isNewTransaction() {
-        return !this.transaction.account;
-      },
-      accounts() {
-        return this.$store.getters['project/accountItems'].filter(
-          account => account.value !== this.account.id
-        );
+      this.date = moment().format('YYYY-MM-DD');
+      if (transaction.from === this.account.id) {
+        this.newTransaction.valueOut = transaction.value;
+        this.newTransaction.account = transaction.to;
+      } else {
+        this.newTransaction.valueIn = transaction.value;
+        this.newTransaction.account = transaction.from;
       }
     },
-    watch: {
-      transaction(transaction) {
-        this.$refs.form.reset();
-        this.$refs.description.focus();
-        this.newTransaction = {
-          ...transaction
-        };
-        this.date = moment().format('YYYY-MM-DD');
-        // Required because of a weird form date resetting bug in Vuetify
-        this.$nextTick(() => {
-          this.prettyDate = moment().format('DD/MM/YYYY');
-        });
-        if (transaction.from === this.account.id) {
-          this.newTransaction.valueOut = transaction.value;
-          this.newTransaction.account = transaction.to;
-        } else {
-          this.newTransaction.valueIn = transaction.value;
-          this.newTransaction.account = transaction.from;
-        }
-      },
-      date: {
-        handler(date) {
-          this.prettyDate = moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY');
-        }
-      }
-    },
-    methods: {
-      save() {
-        if (!this.$refs.form.validate()) {
-          return;
-        }
-
-        const uiTransaction = this.newTransaction;
-        const date = moment(this.date);
-        const transactionAccount = this.$store.getters['project/account'](
-          uiTransaction.account
-        );
-        const transaction = {
-          description: uiTransaction.description,
-          note: uiTransaction.note,
-          date: moment()
-            .set({
-              year: date.year(),
-              month: date.month(),
-              date: date.date()
-            })
-            .toDate(),
-          id: util.getId()
-        };
-
-        if (
-          parseFloat(uiTransaction.valueIn) < 0 ||
-          parseFloat(uiTransaction.valueOut) < 0
-        ) {
-          throw new Error(
-            this.$store.commit('setError', 'You cannot enter negative numbers')
-          );
-        }
-        if (uiTransaction.valueIn && uiTransaction.valueOut) {
-          throw new Error(
-            this.$store.commit(
-              'setError',
-              'A transaction cannot be both in and out'
-            )
-          );
-        }
-        if (!uiTransaction.valueIn && !uiTransaction.valueOut) {
-          throw new Error(
-            this.$store.commit('setError', 'A transaction must have a value')
-          );
-        }
-
-        if (transactionAccount.type === this.account.type) {
-          if (uiTransaction.valueIn) {
-            transaction.value = uiTransaction.valueIn;
-            transaction.from = uiTransaction.account;
-            transaction.to = this.account.id;
-          } else {
-            transaction.value = uiTransaction.valueOut;
-            transaction.from = this.account.id;
-            transaction.to = uiTransaction.account;
-          }
-          this.$store.dispatch('project/addTransaction', transaction);
-        } else {
-          transaction.expense = uiTransaction.account;
-          if (uiTransaction.valueIn) {
-            transaction.value = uiTransaction.valueIn;
-            transaction.from = 'none';
-            transaction.to = this.account.id;
-            this.$store.dispatch('project/addDualTransaction', {
-              primary: transaction,
-              secondary: {
-                ...transaction,
-                from: 'none',
-                to: uiTransaction.account,
-                expense: this.account.id,
-                id: util.getId()
-              }
-            });
-          } else {
-            transaction.value = uiTransaction.valueOut;
-            transaction.from = this.account.id;
-            transaction.to = 'none';
-            this.$store.dispatch('project/addDualTransaction', {
-              primary: transaction,
-              secondary: {
-                ...transaction,
-                to: 'none',
-                from: uiTransaction.account,
-                expense: this.account.id,
-                id: util.getId()
-              }
-            });
-          }
-        }
-
-        const event = this.isNewTransaction ? 'added' : 'updated';
-        this.$emit(event, transaction);
-      },
-      close() {
-        this.$emit('close');
+    date: {
+      handler(date) {
+        this.prettyDate = moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY');
       }
     }
-  };
+  },
+  methods: {
+    save() {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+
+      const uiTransaction = this.newTransaction;
+      const date = moment(this.date);
+      const transactionAccount = this.$store.getters['project/account'](
+        uiTransaction.account
+      );
+      const transaction = {
+        description: uiTransaction.description,
+        note: uiTransaction.note,
+        date: moment()
+          .set({
+            year: date.year(),
+            month: date.month(),
+            date: date.date()
+          })
+          .toDate(),
+        id: util.getId()
+      };
+
+      if (
+        parseFloat(uiTransaction.valueIn) < 0 ||
+        parseFloat(uiTransaction.valueOut) < 0
+      ) {
+        throw new Error(
+          this.$store.commit('setError', 'You cannot enter negative numbers')
+        );
+      }
+      if (uiTransaction.valueIn && uiTransaction.valueOut) {
+        throw new Error(
+          this.$store.commit(
+            'setError',
+            'A transaction cannot be both in and out'
+          )
+        );
+      }
+      if (!uiTransaction.valueIn && !uiTransaction.valueOut) {
+        throw new Error(
+          this.$store.commit('setError', 'A transaction must have a value')
+        );
+      }
+
+      if (transactionAccount.type === this.account.type) {
+        if (uiTransaction.valueIn) {
+          transaction.value = uiTransaction.valueIn;
+          transaction.from = uiTransaction.account;
+          transaction.to = this.account.id;
+        } else {
+          transaction.value = uiTransaction.valueOut;
+          transaction.from = this.account.id;
+          transaction.to = uiTransaction.account;
+        }
+        this.$store.dispatch('project/addTransaction', transaction);
+      } else {
+        transaction.expense = uiTransaction.account;
+        if (uiTransaction.valueIn) {
+          transaction.value = uiTransaction.valueIn;
+          transaction.from = 'none';
+          transaction.to = this.account.id;
+          this.$store.dispatch('project/addDualTransaction', {
+            primary: transaction,
+            secondary: {
+              ...transaction,
+              from: 'none',
+              to: uiTransaction.account,
+              expense: this.account.id,
+              id: util.getId()
+            }
+          });
+        } else {
+          transaction.value = uiTransaction.valueOut;
+          transaction.from = this.account.id;
+          transaction.to = 'none';
+          this.$store.dispatch('project/addDualTransaction', {
+            primary: transaction,
+            secondary: {
+              ...transaction,
+              to: 'none',
+              from: uiTransaction.account,
+              expense: this.account.id,
+              id: util.getId()
+            }
+          });
+        }
+      }
+
+      const event = this.isNewTransaction ? 'added' : 'updated';
+      this.$emit(event, transaction);
+    },
+    close() {
+      this.$emit('close');
+    }
+  }
+};
 </script>

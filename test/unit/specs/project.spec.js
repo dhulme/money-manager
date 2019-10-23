@@ -363,13 +363,16 @@ describe('project store', () => {
       });
     });
 
-    describe('addBulkTransaction', () => {
-      it('should run without errors', () => {
-        dispatch('addBulkTransaction', {
-          description: 'test',
-          name: 'test',
-          transactions: [getNewTransaction()]
+    describe('deleteAccount', () => {
+      it('should delete an account', () => {
+        const account = getNewAccount();
+        init({
+          accounts: [account]
         });
+        dispatch('deleteAccount', 'test');
+        expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
+          true
+        );
       });
     });
 
@@ -395,5 +398,45 @@ describe('project store', () => {
         });
       });
     });
+
+    // describe('updateBulkTransactionTransaction', () => {
+
+    // })
+
+    // describe('deleteBulkTransactionTransaction', () => {
+
+    // })
+
+    describe('addBulkTransactionTransaction', () => {
+      const bulkTransaction = {
+        transactionIds: []
+      };
+      const transaction = getNewTransaction();
+      init({
+        bulkTransactions: [bulkTransaction]
+      });
+      dispatch('addBulkTransactionTransaction', {
+        bulkTransaction,
+        transaction
+      });
+      expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
+        transaction
+      );
+      expect(bulkTransaction.transactionIds).toContain(transaction.id);
+    });
+
+    describe('addBulkTransaction', () => {
+      it('should run without errors', () => {
+        dispatch('addBulkTransaction', {
+          description: 'test',
+          name: 'test',
+          transactions: [getNewTransaction()]
+        });
+      });
+    });
+
+    // describe('addAccount', () => {
+
+    // })
   });
 });
