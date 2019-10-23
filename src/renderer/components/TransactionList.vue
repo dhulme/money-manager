@@ -23,10 +23,11 @@
         :headers="headers"
         :items="prettyTransactions"
         :search="search"
-        :rows-per-page-items="rowsPerPageItems"
-        :pagination.sync="pagination"
         :custom-filter="customFilter"
         must-sort
+        :footer-props="footerProps"
+        sort-by="date"
+        sort-desc
       >
         <template slot-scope="props" slot="item">
           <tr
@@ -85,7 +86,6 @@ export default {
     }
   },
   data() {
-    const rowsPerPage = 10;
     return {
       transaction: {
         ...defaultTransaction
@@ -128,17 +128,8 @@ export default {
           align: 'left'
         }
       ],
-      rowsPerPageItems: [
-        rowsPerPage,
-        {
-          text: 'All',
-          value: -1
-        }
-      ],
-      pagination: {
-        sortBy: 'date',
-        descending: true,
-        rowsPerPage
+      footerProps: {
+        itemsPerPageOptions: [10, -1]
       }
     };
   },
