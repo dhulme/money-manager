@@ -67,7 +67,8 @@ MIT
   name: String,
   transactionIds: [String...],
   type: String // one of 'asset', 'budget' or 'none',
-  deleted: Boolean
+	deleted: Boolean,
+	importTransactionsFormatId: String
 }
 ```
 

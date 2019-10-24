@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Accounts from '@/components/pages/Accounts';
 import Account from '@/components/pages/Account';
-import NewAccount from '@/components/pages/NewAccount';
+import EditAccount from '@/components/pages/EditAccount';
 import NewBulkTransaction from '@/components/pages/NewBulkTransaction';
 import BulkTransactions from '@/components/pages/BulkTransactions';
 import BulkTransaction from '@/components/pages/BulkTransaction';
@@ -35,12 +35,17 @@ export default new Router({
     {
       path: '/:accountType/:accountCategory/new',
       name: 'newAccount',
-      component: NewAccount
+      component: EditAccount
     },
     {
       path: '/:accountType/:accountCategory/:accountId',
       name: 'account',
       component: Account
+    },
+    {
+      path: '/:accountType/:accountCategory/:accountId/edit',
+      name: 'editAccount',
+      component: EditAccount
     },
     {
       path: '/insights',

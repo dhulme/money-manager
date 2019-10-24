@@ -29,7 +29,8 @@
       "id": "creditCard",
       "name": "Credit Card",
       "transactionIds": [],
-      "type": "asset"
+			"type": "asset",
+			"importTransactionsFormatId": "capitalOne"
     },
     {
       "balance": "0",

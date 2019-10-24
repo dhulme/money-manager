@@ -61,6 +61,10 @@ const ipc = {
 
   showCloseWarning(data) {
     ipc.send('showCloseWarning', JSON.stringify(data));
+  },
+
+  importTransactions(format) {
+    ipc.send('importTransactions', format);
   }
 };
 

@@ -188,6 +188,21 @@ describe('mutations', () => {
     });
   });
 
+  describe('editAccount', () => {
+    it('should edit an account', () => {
+      const account = getNewAccount();
+      init({
+        accounts: [account]
+      });
+      const editedAccount = {
+        ...account,
+        name: 'edited'
+      };
+      commit('editAccount', editedAccount);
+      expect(state.accounts).toContainEqual(editedAccount);
+    });
+  });
+
   describe('addBulkTransaction', () => {
     it('should require parameters', () => {
       expect(() => {

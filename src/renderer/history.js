@@ -1,4 +1,4 @@
-import json2csv from 'json2csv';
+import { unparse } from 'papaparse';
 import moment from 'moment';
 
 import ipc from './ipc';
@@ -132,7 +132,7 @@ const history = {
           Type: account.type,
           Balance: Number(account.balance)
         }));
-        ipc.exportCsv('summary', json2csv.parse(summary));
+        ipc.exportCsv('summary', unparse(summary));
       },
       exportTransactions() {
         const accountNamesById = store.state.project.accounts.reduce(
@@ -157,7 +157,7 @@ const history = {
             Note: transaction.note,
             Value: Number(transaction.value)
           }));
-        ipc.exportCsv('transactions', json2csv.parse(transactions));
+        ipc.exportCsv('transactions', unparse(transactions));
       }
     };
   }

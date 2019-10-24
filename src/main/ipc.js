@@ -1,4 +1,5 @@
 import { ipcMain, dialog } from 'electron';
+const fs = require('fs-extra');
 
 import defaultProject from './default-project.json';
 import settings from './settings';
@@ -132,6 +133,24 @@ ipcMain.on('showCloseWarning', (event, data) => {
       } else {
         event.sender.send('closeConfirmed');
       }
+    }
+  );
+});
+
+ipcMain.on('importTransactions', (event, format) => {
+  console.log('data', format);
+  dialog.showOpenDialog(
+    { filters: [{ name: 'CSV', extensions: ['csv'] }] },
+    async ([csvPath = null] = []) => {
+      if (!csvPath) {
+        return;
+      }
+
+      const data = await fs.readFile(csvPath);
+      event.sender.send('importTransactionsDone', {
+        data: data.toString(),
+        format
+      });
     }
   );
 });

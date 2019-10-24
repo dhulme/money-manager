@@ -4,6 +4,8 @@
       <VCardTitle class="headline">{{ account.name }}</VCardTitle>
       <VCardActions>
         <VBtn text color="error" @click="deleteAccount">Delete</VBtn>
+        <VBtn text @click="goToEditAccount">Edit</VBtn>
+        <VBtn text @click="importTransactions">Import</VBtn>
       </VCardActions>
     </VCard>
 
@@ -14,12 +16,19 @@
       @add-transaction="addTransaction"
     />
 
-    <VDialog v-model="dialogVisible" max-width="500px">
+    <VDialog v-model="editTransactionDialogVisible" max-width="500px">
       <TransactionEdit
         :transaction="transaction"
         :account="account"
-        @close="dialogVisible = false"
-        @added="dialogVisible = false"
+        @close="editTransactionDialogVisible = false"
+        @added="editTransactionDialogVisible = false"
+      />
+    </VDialog>
+
+    <VDialog v-model="importTransactionsDialogVisible">
+      <ImportTransactions
+        :account="account"
+        @close="importTransactionsDialogVisible = false"
       />
     </VDialog>
   </div>
@@ -28,15 +37,18 @@
 <script>
 import TransactionList from '../TransactionList';
 import TransactionEdit from '../TransactionEdit';
+import ImportTransactions from '../ImportTransactions';
 
 export default {
   components: {
     TransactionList,
-    TransactionEdit
+    TransactionEdit,
+    ImportTransactions
   },
   data() {
     return {
-      dialogVisible: false,
+      editTransactionDialogVisible: false,
+      importTransactionsDialogVisible: false,
       transaction: {}
     };
   },
@@ -49,10 +61,20 @@ export default {
     },
     accountId() {
       return this.$route.params.accountId;
+    },
+    importedTransactions() {
+      return this.$store.state.importedTransactions;
     }
   },
   created() {
     this.$ipc.setTitle(this.account.name);
+  },
+  watch: {
+    importedTransactions(value) {
+      if (value.length) {
+        this.importTransactionsDialogVisible = true;
+      }
+    }
   },
   methods: {
     deleteAccount() {
@@ -63,18 +85,32 @@ export default {
     },
     addTransaction() {
       this.transaction = {};
-      this.dialogVisible = true;
+      this.editTransactionDialogVisible = true;
     },
     goToAccountsIfDialogClosed() {
-      if (!this.dialogVisible) {
+      if (!this.editTransactionDialogVisible) {
         this.$router.push({
           name: 'accounts'
         });
       }
     },
+    goToEditAccount() {
+      this.$router.push({
+        name: 'editAccount',
+        params: {
+          accountId: this.accountId,
+          accountCategory: this.$route.params.accountCategory,
+          accountType: this.$route.params.accountType
+        }
+      });
+    },
     highlightTransaction(transaction) {
       transaction.highlighted = !transaction.highlighted;
       this.$store.dispatch('project/updateTransaction', transaction);
+    },
+    importTransactions() {
+      console.log('to send to ipc', this.account);
+      this.$ipc.importTransactions(this.account.importTransactionsFormatId);
     }
   }
 };

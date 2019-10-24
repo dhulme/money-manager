@@ -47,7 +47,9 @@ const project = {
   mutations: {
     init(state, data) {
       const clonedData = JSON.parse(JSON.stringify(data));
+      console.log(clonedData);
       state.accounts = clonedData.accounts;
+      console.log('state.accounts', state.accounts);
       state.transactions = clonedData.transactions;
       state.summary = clonedData.summary;
       state.bulkTransactions = clonedData.bulkTransactions;
@@ -108,8 +110,20 @@ const project = {
     },
 
     addAccount(state, account = required('account')) {
-      requireObjectProperties(account, ['name', 'balance', 'type', 'category']);
-      const { name, balance, type, category } = account;
+      requireObjectProperties(account, [
+        'name',
+        'balance',
+        'type',
+        'category',
+        'importTransactionsFormatId'
+      ]);
+      const {
+        name,
+        balance,
+        type,
+        category,
+        importTransactionsFormatId
+      } = account;
       const existingIds = state.accounts.map(_ => _.id);
       const newAccount = {
         transactionIds: [],
@@ -118,9 +132,23 @@ const project = {
         type,
         category,
         name,
-        deleted: false
+        deleted: false,
+        importTransactionsFormatId
       };
       state.accounts.push(newAccount);
+    },
+
+    editAccount(state, newAccount = required('account')) {
+      requireObjectProperties(newAccount, [
+        'name',
+        'id',
+        'transactionImportFormatId'
+      ]);
+      const account = state.accounts.find(_ => _.id === newAccount.id);
+      state.accounts.splice(state.accounts.indexOf(account), 1, {
+        ...account,
+        ...newAccount
+      });
     },
 
     addBulkTransaction(state, bulkTransaction) {
@@ -264,13 +292,21 @@ const project = {
       );
     },
 
-    addAccount({ commit }, { name, balance, type, category }) {
+    addAccount(
+      { commit },
+      { name, balance, type, category, importTransactionsFormatId }
+    ) {
       commit('addAccount', {
         name,
         balance,
         type,
-        category
+        category,
+        importTransactionsFormatId
       });
+    },
+
+    editAccount({ commit }, { id, name, importTransactionsFormatId }) {
+      commit('editAccount', { id, name, importTransactionsFormatId });
     }
   },
   getters: {

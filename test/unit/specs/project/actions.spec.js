@@ -178,4 +178,19 @@ describe('actions', () => {
       expect(state.accounts).toContainEqual(account);
     });
   });
+
+  describe('editAccount', () => {
+    it('should edit an account', () => {
+      const account = getNewAccount();
+      init({
+        accounts: [account]
+      });
+      const editedAccount = {
+        ...account,
+        name: 'edited'
+      };
+      dispatch('editAccount', editedAccount);
+      expect(state.accounts).toContainEqual(editedAccount);
+    });
+  });
 });

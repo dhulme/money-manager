@@ -8,7 +8,8 @@ export function getNewAccount(id = 'test') {
     type: 'test',
     category: 'test',
     transactionIds: [],
-    deleted: false
+    deleted: false,
+    transactionImportFormatId: null
   };
 }
 
