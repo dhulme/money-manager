@@ -132,7 +132,7 @@ const project = {
         description,
         id: bulkTransaction.id || util.getFriendlyId(name, existingIds),
         transactionIds: [],
-        lastModified: moment()
+        lastModified: bulkTransaction.lastModified || moment()
       };
       state.bulkTransactions.push(newBulkTransaction);
     },
