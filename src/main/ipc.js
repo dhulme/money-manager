@@ -56,8 +56,13 @@ ipcMain.on('projectSaveAs', async (event, data) => {
 ipcMain.on('projectOpenDefault', async event => {
   const projectPath = settings.getProjectPath();
   if (projectPath) {
-    const data = await project.open(projectPath);
-    event.sender.send('projectOpened', data || defaultProject);
+    try {
+      const data = await project.open(projectPath);
+      event.sender.send('projectOpened', data || defaultProject);
+    } catch (e) {
+      settings.setProjectPath(null);
+      event.sender.send('projectOpened', defaultProject);
+    }
   } else {
     console.log('Opening default project');
     event.sender.send('projectOpened', defaultProject);

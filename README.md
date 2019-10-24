@@ -8,6 +8,18 @@ It uses [Electron](https://electron.atom.io/) as the application platform and [V
 
 Download the latest release [here](https://github.com/dhulme/money-manager/releases) and run the setup program. Currently on a Windows build is available.
 
+## Features
+
+🏦🏧💲💱💵💸💶💷💶👛🤑
+💳 Keep track of transactions to and from your bank accounts and credit cards
+💰 Assign money from your accounts to different budgets
+💹 Get insights and analyse your account and budget balances over time
+📅 Create bulk transactions that happen regularly, like paying bills or being paid your salary  
+📤 Export your accounts and transactions as CSV
+🖊️ Highlight important transactions
+💾 All your data is stored locally and never sent over the internet
+🕒 Monthly backups made of your data
+
 ## Screenshots
 
 ### Accounts
@@ -111,6 +123,7 @@ Money Manager settings are stored in your Windows user profile folder. Settings 
 
 ```javascript
 {
-  projectPath: String;
+	projectPath: String,
+	lastBackupDates: Object // one key per project
 }
 ```
