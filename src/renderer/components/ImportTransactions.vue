@@ -84,6 +84,7 @@ export default {
   methods: {
     completeImport() {
       this.$store.dispatch('project/');
+      // TOOD restructure edit transactions code so can use here
     }
   }
 };
