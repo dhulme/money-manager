@@ -34,13 +34,13 @@
             :style="{ background: props.item.highlighted ? '#E3F2FD' : 'none' }"
             @click="$emit('highlight-transaction', props.item)"
           >
-            <td>{{ props.item.prettyDate }}</td>
+            <td>{{ props.item.date | date }}</td>
             <td>{{ props.item.description }}</td>
             <td>{{ props.item.note }}</td>
             <td>{{ props.item.accountName }}</td>
             <td>{{ props.item.in }}</td>
             <td>{{ props.item.out }}</td>
-            <td>{{ props.item.balance }}</td>
+            <td>{{ accountBalance(props.item) | currency }}</td>
           </tr>
         </template>
         <template slot="footer">
@@ -165,7 +165,7 @@ export default {
       }
       return null;
     },
-    transactionAccount(transaction) {
+    accountName(transaction) {
       let accountId;
       if (transaction.expense) {
         accountId = transaction.expense;
@@ -177,26 +177,26 @@ export default {
       return accountId
         ? this.$store.getters['project/account'](accountId).name
         : null;
-    },
-    addTransaction() {
-      this.$emit('add-transaction');
-    },
-    accountBalance(transaction) {
-      return this.$store.getters['project/accountBalance'](
-        this.account,
-        transaction.id
-      );
-    },
-    customFilter(value, search) {
-      if (!search) {
-        return true;
-      }
-      const valueString = value.toString().toLowerCase();
-      return (
-        valueString.includes(search) ||
-        valueString.replace(/^[a-zA-Z0-9]/g, '').includes(search)
-      );
     }
+  },
+  addTransaction() {
+    this.$emit('add-transaction');
+  },
+  accountBalance(transaction) {
+    return this.$store.getters['project/accountBalance'](
+      this.account,
+      transaction.id
+    );
+  },
+  customFilter(value, search) {
+    if (!search) {
+      return true;
+    }
+    const valueString = value.toString().toLowerCase();
+    return (
+      valueString.includes(search) ||
+      valueString.replace(/^[a-zA-Z0-9]/g, '').includes(search)
+    );
   }
 };
 </script>

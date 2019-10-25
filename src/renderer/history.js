@@ -54,7 +54,7 @@ const history = {
       if (
         process.env.NODE_ENV === 'production' &&
         !canClose &&
-        done.length > 0
+        done.length !== savedDoneLength
       ) {
         ipc.showCloseWarning(store.state.project);
         e.returnValue = false;
