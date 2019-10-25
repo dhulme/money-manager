@@ -1,4 +1,4 @@
-import ipc from './ipc';
+import { remote } from 'electron';
 
 const newMenuItemTemplate = {
   label: 'New',
@@ -34,6 +34,7 @@ const exportTransactionsMenuItemTemplate = {
   label: 'Transactions as CSV'
 };
 
+let menu;
 const menuTemplate = [
   {
     label: 'File',
@@ -66,7 +67,9 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 function refreshMenu() {
-  ipc.setApplicationMenu(menuTemplate);
+  if (menu) menu.destroy();
+  menu = remote.Menu.buildFromTemplate(menuTemplate);
+  remote.Menu.setApplicationMenu(menu);
 }
 
 export default {

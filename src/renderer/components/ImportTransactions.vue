@@ -2,11 +2,20 @@
   <VCard>
     <VCardTitle class="headline">Import transactions</VCardTitle>
     <VCardText>
-      <VDataTable :items="importedTransactions" :headers="headers">
+      <VDataTable :items="transactions" :headers="headers">
         <template slot-scope="props" slot="item">
           <tr>
             <td><VTextField v-model="props.item.date" /></td>
             <td><VTextField v-model="props.item.description" /></td>
+            <td>
+              <VAutocomplete
+                :items="accounts"
+                :rules="accountValidationRules"
+                v-model="props.item.account"
+                label="Account"
+                required
+              />
+            </td>
             <td>
               <VTextField
                 v-model="props.item.value"
@@ -16,6 +25,8 @@
           </tr>
         </template>
       </VDataTable>
+      <VBtn @click="completeImport" color="primary">OK</VBtn>
+      <VBtn @click="$emit('close')">Cancel</VBtn>
     </VCardText>
   </VCard>
 </template>
@@ -24,6 +35,9 @@
 import Vue from 'vue';
 
 export default {
+  props: {
+    account: Object
+  },
   data() {
     return {
       headers: [
@@ -36,10 +50,15 @@ export default {
           value: 'description'
         },
         {
+          text: 'Account',
+          value: 'account'
+        },
+        {
           text: 'Value',
           value: 'value'
         }
-      ]
+      ],
+      transactions: []
     };
   },
   computed: {
@@ -50,6 +69,21 @@ export default {
         description: item.description,
         value: item.value.toFixed(2)
       }));
+    },
+    accounts() {
+      return this.$store.getters['project/accountItems'].filter(
+        account => account.value !== this.account.id
+      );
+    }
+  },
+  watch: {
+    importedTransactions(value) {
+      this.transactions = value;
+    }
+  },
+  methods: {
+    completeImport() {
+      this.$store.dispatch('project/');
     }
   }
 };

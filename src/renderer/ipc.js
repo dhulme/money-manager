@@ -69,10 +69,6 @@ const ipc = {
 
   importTransactions(format) {
     ipc.send('importTransactions', format);
-  },
-
-  setApplicationMenu(menuTemplate) {
-    return ipc.invoke('setApplicationMenu', menuTemplate);
   }
 };
 

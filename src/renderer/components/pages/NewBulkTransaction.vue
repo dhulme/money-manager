@@ -59,7 +59,7 @@
 import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
 import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 
-import util from '../../util';
+import { getId } from '../../util';
 
 export default {
   components: {
@@ -76,7 +76,7 @@ export default {
       name,
       description,
       newTransaction: {
-        id: util.getId()
+        id: getId()
       },
       transactions,
       editedTransaction: {
@@ -106,7 +106,7 @@ export default {
     addTransaction() {
       this.transactions.push(this.newTransaction);
       this.newTransaction = {
-        id: util.getId()
+        id: getId()
       };
     },
     addBulkTransaction() {

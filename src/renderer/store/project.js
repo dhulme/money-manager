@@ -2,23 +2,7 @@ import Big from 'big.js';
 import Vue from 'vue';
 import moment from 'moment';
 
-import util from '../util';
-
-function required(param) {
-  throw new Error(`${param} is required`);
-}
-
-function requireObjectProperties(object, params) {
-  const errors = params.reduce((acc, param) => {
-    if (object[param] === undefined) {
-      return [...acc, param];
-    }
-    return acc;
-  }, []);
-  if (errors.length) {
-    required(errors.join(','));
-  }
-}
+import { requireObjectProperties, required, getFriendlyId } from '../util';
 
 function getAddTransactionParams(transaction) {
   requireObjectProperties(transaction, ['value', 'to', 'from']);
@@ -127,7 +111,7 @@ const project = {
       const existingIds = state.accounts.map(_ => _.id);
       const newAccount = {
         transactionIds: [],
-        id: util.getFriendlyId(name, existingIds),
+        id: getFriendlyId(name, existingIds),
         balance,
         type,
         category,
@@ -158,7 +142,7 @@ const project = {
       const newBulkTransaction = {
         name,
         description,
-        id: bulkTransaction.id || util.getFriendlyId(name, existingIds),
+        id: bulkTransaction.id || getFriendlyId(name, existingIds),
         transactionIds: [],
         lastModified: bulkTransaction.lastModified || moment()
       };
@@ -215,6 +199,14 @@ const project = {
     addDualTransaction({ commit }, { primary, secondary }) {
       commit('addTransaction', getAddTransactionParams(primary));
       commit('addTransaction', getAddTransactionParams(secondary));
+      commit('updateSummaryBalance');
+    },
+
+    addDualTransactions({ commit }, transactions) {
+      transactions.forEach(({ primary, secondary }) => {
+        commit('addTransaction', getAddTransactionParams(primary));
+        commit('addTransaction', getAddTransactionParams(secondary));
+      });
       commit('updateSummaryBalance');
     },
 
@@ -277,7 +269,7 @@ const project = {
       { description, name, transactions }
     ) {
       const existingIds = state.bulkTransactions.map(_ => _.id);
-      const id = util.getFriendlyId(name, existingIds);
+      const id = getFriendlyId(name, existingIds);
       commit('addBulkTransaction', {
         description,
         name,

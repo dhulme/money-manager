@@ -49,7 +49,7 @@
 <script>
 import moment from 'moment';
 
-import util from '../../util';
+import { getId } from '../../util';
 
 import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
 import BulkTransactionEdit from '../BulkTransactionEdit.vue';
@@ -86,7 +86,7 @@ export default {
         bulkTransaction: this.bulkTransaction,
         transactions: this.transactions.map(transaction => ({
           ...transaction,
-          id: util.getId(),
+          id: getId(),
           date: moment()
         }))
       });

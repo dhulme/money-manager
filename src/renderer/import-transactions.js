@@ -1,7 +1,7 @@
 import { parse } from 'papaparse';
 import moment from 'moment';
 
-import util from './util';
+import { capitalizeFirstLetter } from './util';
 import ipc from './ipc';
 import store from './store';
 
@@ -18,7 +18,7 @@ export const importTransactionsFormats = [
       }
       return data.map(row => ({
         date: moment(row.date),
-        description: util.capitalizeFirstLetter(row.description.toLowerCase()),
+        description: capitalizeFirstLetter(row.description.toLowerCase()),
         value: Number(row.amount)
       }));
     }

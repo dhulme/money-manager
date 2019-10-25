@@ -77,7 +77,7 @@
 <script>
 import moment from 'moment';
 
-import util from '../util';
+import { getId } from '../util';
 
 export default {
   props: {
@@ -172,7 +172,7 @@ export default {
             date: date.date()
           })
           .toDate(),
-        id: util.getId()
+        id: getId()
       };
 
       if (
@@ -221,7 +221,7 @@ export default {
               from: 'none',
               to: uiTransaction.account,
               expense: this.account.id,
-              id: util.getId()
+              id: getId()
             }
           });
         } else {
@@ -235,7 +235,7 @@ export default {
               to: 'none',
               from: uiTransaction.account,
               expense: this.account.id,
-              id: util.getId()
+              id: getId()
             }
           });
         }

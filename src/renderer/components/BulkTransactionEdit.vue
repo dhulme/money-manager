@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import util from '../util';
+import { getId } from '../util';
 
 export default {
   props: {
@@ -84,7 +84,7 @@ export default {
             bulkTransaction: this.bulkTransaction
           });
         } else {
-          this.newTransaction.id = util.getId();
+          this.newTransaction.id = getId();
           this.$store.dispatch('project/addBulkTransactionTransaction', {
             transaction: this.newTransaction,
             bulkTransaction: this.bulkTransaction
