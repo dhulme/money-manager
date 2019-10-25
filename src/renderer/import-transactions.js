@@ -1,6 +1,5 @@
 import { parse } from 'papaparse';
 import moment from 'moment';
-import Big from 'big.js';
 
 import util from './util';
 import ipc from './ipc';
@@ -20,7 +19,7 @@ export const importTransactionsFormats = [
       return data.map(row => ({
         date: moment(row.date),
         description: util.capitalizeFirstLetter(row.description.toLowerCase()),
-        value: new Big(row.amount)
+        value: Number(row.amount)
       }));
     }
   }
@@ -37,5 +36,6 @@ ipc.on('importTransactionsDone', (event, { data, format }) => {
   const transactions = importTransactionsFormats
     .find(_ => _.id === format)
     .toTransactions(data);
+  console.log('transactions', transactions);
   store.commit('setImportedTransactions', transactions);
 });

@@ -25,7 +25,7 @@
       <VTextField
         v-model="newTransaction.value"
         label="Amount"
-        prefix="£"
+        :prefix="$currencyPrefix"
         @keyup.enter="save"
       />
     </VCardText>

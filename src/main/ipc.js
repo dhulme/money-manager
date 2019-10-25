@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, Menu } from 'electron';
 const fs = require('fs-extra');
 
 import defaultProject from './default-project.json';
@@ -138,7 +138,6 @@ ipcMain.on('showCloseWarning', (event, data) => {
 });
 
 ipcMain.on('importTransactions', (event, format) => {
-  console.log('data', format);
   dialog.showOpenDialog(
     { filters: [{ name: 'CSV', extensions: ['csv'] }] },
     async ([csvPath = null] = []) => {
@@ -153,4 +152,9 @@ ipcMain.on('importTransactions', (event, format) => {
       });
     }
   );
+});
+
+ipcMain.handle('setApplicationMenu', async (event, menuTemplate) => {
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
 });

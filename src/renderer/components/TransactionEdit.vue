@@ -55,14 +55,14 @@
           v-model="newTransaction.valueIn"
           :rules="valueValidationRules"
           label="In"
-          prefix="£"
+          :prefix="$currencyPrefix"
           @keyup.enter="save"
         />
         <VTextField
           v-model="newTransaction.valueOut"
           :rules="valueValidationRules"
           label="Out"
-          prefix="£"
+          :prefix="$currencyPrefix"
           @keyup.enter="save"
         />
       </VForm>
@@ -147,7 +147,7 @@ export default {
     },
     date: {
       handler(date) {
-        this.prettyDate = moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+        this.prettyDate = moment(date, 'YYYY-MM-DD').format(this.$dateFormat);
       }
     }
   },

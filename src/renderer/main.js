@@ -17,6 +17,9 @@ import hotkey from './hotkey';
 
 require('vuetify/dist/vuetify.min.css');
 
+const currencyPrefix = '£';
+const dateFormat = 'DD/MM/YYYY';
+
 Vue.config.productionTip = false;
 
 Vue.use(VueI18n);
@@ -25,10 +28,10 @@ Vue.filter('currency', value => {
   if (value === undefined || value === null) {
     return '';
   }
-  return accounting.formatMoney(value, '£', 2, ',', '.');
+  return accounting.formatMoney(value, currencyPrefix, 2, ',', '.');
 });
 
-Vue.filter('date', value => (value ? moment(value).format('DD/MM/YYYY') : ''));
+Vue.filter('date', value => (value ? moment(value).format(dateFormat) : ''));
 
 Vue.directive('focus', {
   inserted(element) {
@@ -83,6 +86,8 @@ hotkey.init({
 });
 
 Vue.prototype.$ipc = ipc;
+Vue.prototype.$currencyPrefix = currencyPrefix;
+Vue.prototype.$dateFormat = dateFormat;
 
 Vue.config.keyCodes = {
   add: 65 // a

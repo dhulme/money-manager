@@ -17,6 +17,10 @@ const ipc = {
     return electron.ipcRenderer.on(channel, callback);
   },
 
+  invoke(channel, data) {
+    return electron.ipcRenderer.invoke(channel, data);
+  },
+
   setTitle(title = defaultTitle) {
     currentTitle = title;
     ipc.updateTitle();
@@ -65,6 +69,10 @@ const ipc = {
 
   importTransactions(format) {
     ipc.send('importTransactions', format);
+  },
+
+  setApplicationMenu(menuTemplate) {
+    return ipc.invoke('setApplicationMenu', menuTemplate);
   }
 };
 

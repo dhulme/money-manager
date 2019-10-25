@@ -12,7 +12,7 @@
             v-if="!account"
             v-model="newAccount.openingBalance"
             label="Opening balance"
-            prefix="£"
+            :prefix="$currencyPrefix"
           />
           <VSelect
             :items="importTransactionsFormatItems"

@@ -10,7 +10,11 @@
     <VCard class="mb-4">
       <VCardTitle>Add Transaction</VCardTitle>
       <VCardText>
-        <VTextField v-model="newTransaction.value" label="Amount" prefix="£" />
+        <VTextField
+          v-model="newTransaction.value"
+          label="Amount"
+          :prefix="$currencyPrefix"
+        />
         <VAutocomplete
           :items="projectItems"
           v-model="newTransaction.from"
