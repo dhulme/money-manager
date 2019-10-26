@@ -3,7 +3,7 @@
     <VCardTitle class="headline">Import transactions</VCardTitle>
     <VCardText>
       <VDataTable :items="transactions" :headers="headers">
-        <template slot-scope="props" slot="item">
+        <template v-slot:item="props">
           <tr>
             <td><VTextField v-model="props.item.date" /></td>
             <td><VTextField v-model="props.item.description" /></td>

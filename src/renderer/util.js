@@ -2,7 +2,7 @@ import cryptoRandomString from 'crypto-random-string';
 
 // The first call to this is slow for some reason,
 // so we do this upfront so first UI operation isn't slow.
-cryptoRandomString(10);
+getId();
 
 export function required(param) {
   throw new Error(`${param} is required`);

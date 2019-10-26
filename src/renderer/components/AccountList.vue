@@ -14,7 +14,7 @@
       :headers="headers"
       :items="accounts"
     >
-      <template slot-scope="props" slot="item">
+      <template v-slot:item="props">
         <tr @click="openAccount(props.item.id)">
           <td>{{ props.item.name }}</td>
           <td
@@ -25,9 +25,12 @@
           </td>
         </tr>
       </template>
-      <template slot="footer">
+      <template v-slot:body.append>
         <td />
-        <td :class="{ 'red--text': parseFloat(total) < 0 }" class="text-right">
+        <td
+          :class="{ 'red--text': parseFloat(total) < 0 }"
+          class="text-right font-weight-medium"
+        >
           {{ total | currency }}
         </td>
       </template>

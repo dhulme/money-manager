@@ -29,7 +29,7 @@
         sort-by="date"
         sort-desc
       >
-        <template slot-scope="props" slot="item">
+        <template v-slot:item="props">
           <tr
             :style="{ background: props.item.highlighted ? '#E3F2FD' : 'none' }"
             @click="$emit('highlight-transaction', props.item)"
@@ -43,7 +43,7 @@
             <td>{{ accountBalance(props.item) | currency }}</td>
           </tr>
         </template>
-        <template slot="footer">
+        <template v-slot:body.append>
           <tr>
             <td />
             <td />
@@ -51,7 +51,10 @@
             <td />
             <td />
             <td />
-            <td :class="{ 'red--text': parseFloat(account.balance) < 0 }">
+            <td
+              :class="{ 'red--text': parseFloat(account.balance) < 0 }"
+              class="font-weight-medium"
+            >
               {{ account.balance | currency }}
             </td>
           </tr>
@@ -177,26 +180,39 @@ export default {
       return accountId
         ? this.$store.getters['project/account'](accountId).name
         : null;
+    },
+    addTransaction() {
+      this.$emit('add-transaction');
+    },
+    accountBalance(transaction) {
+      return this.$store.getters['project/accountBalance'](
+        this.account,
+        transaction.id
+      );
+    },
+    customFilter(value, search) {
+      if (!search) {
+        return true;
+      }
+      const valueString = value.toString().toLowerCase();
+      return (
+        valueString.includes(search) ||
+        valueString.replace(/^[a-zA-Z0-9]/g, '').includes(search)
+      );
+    },
+    transactionAccount(transaction) {
+      let accountId;
+      if (transaction.expense) {
+        accountId = transaction.expense;
+      } else if (transaction.to === this.account.id) {
+        accountId = transaction.from;
+      } else {
+        accountId = transaction.to;
+      }
+      return accountId
+        ? this.$store.getters['project/account'](accountId).name
+        : null;
     }
-  },
-  addTransaction() {
-    this.$emit('add-transaction');
-  },
-  accountBalance(transaction) {
-    return this.$store.getters['project/accountBalance'](
-      this.account,
-      transaction.id
-    );
-  },
-  customFilter(value, search) {
-    if (!search) {
-      return true;
-    }
-    const valueString = value.toString().toLowerCase();
-    return (
-      valueString.includes(search) ||
-      valueString.replace(/^[a-zA-Z0-9]/g, '').includes(search)
-    );
   }
 };
 </script>

@@ -5,7 +5,7 @@
     :search="search"
     :footer-props="{ itemsPerPageOptions }"
   >
-    <template slot-scope="props" slot="item">
+    <template v-slot:item="props">
       <tr @click="$emit('transaction-click', props.item)">
         <td>{{ accountName(props.item.from) }}</td>
         <td>{{ accountName(props.item.to) }}</td>

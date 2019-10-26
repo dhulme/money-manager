@@ -109,7 +109,6 @@ export default {
       this.$store.dispatch('project/updateTransaction', transaction);
     },
     importTransactions() {
-      console.log('to send to ipc', this.account);
       this.$ipc.importTransactions(this.account.importTransactionsFormatId);
     }
   }

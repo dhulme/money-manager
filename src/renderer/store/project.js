@@ -31,9 +31,7 @@ const project = {
   mutations: {
     init(state, data) {
       const clonedData = JSON.parse(JSON.stringify(data));
-      console.log(clonedData);
       state.accounts = clonedData.accounts;
-      console.log('state.accounts', state.accounts);
       state.transactions = clonedData.transactions;
       state.summary = clonedData.summary;
       state.bulkTransactions = clonedData.bulkTransactions;

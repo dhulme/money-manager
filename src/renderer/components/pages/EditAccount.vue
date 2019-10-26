@@ -57,7 +57,6 @@ export default {
   },
   mounted() {
     this.newAccount = { ...this.account };
-    console.log(this.newAccount);
   },
   watch: {
     'newAccount.name'(name) {
