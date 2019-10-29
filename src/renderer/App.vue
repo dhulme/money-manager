@@ -14,6 +14,7 @@
       </VContent>
     </main>
     <TheSnackbar />
+    <TheDialogs />
   </VApp>
 </template>
 
@@ -22,11 +23,13 @@ import menu from './menu';
 
 import TheToolbar from './components/TheToolbar.vue';
 import TheSnackbar from './components/TheSnackbar.vue';
+import TheDialogs from './components/TheDialogs.vue';
 
 export default {
   components: {
     TheToolbar,
-    TheSnackbar
+    TheSnackbar,
+    TheDialogs
   },
   computed: {
     development() {
@@ -42,12 +45,13 @@ export default {
       redoClick: () => this.$history.redo(),
       saveAsClick: () => this.$history.saveAs(),
       exportSummaryClick: () => this.$history.exportSummary(),
-      exportTransactionsClick: () => this.$history.exportTransactions()
+      exportTransactionsClick: () => this.$history.exportTransactions(),
+      aboutClick: () => this.$store.commit('setDialog', 'about')
     });
   }
 };
 </script>
-  
+
 <style lang="scss" scoped>
 .app-content {
   margin: 20px auto;

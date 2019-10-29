@@ -33,6 +33,9 @@ const exportSummaryMenuItemTemplate = {
 const exportTransactionsMenuItemTemplate = {
   label: 'Transactions as CSV'
 };
+const aboutMenuItemTemplate = {
+  label: 'About'
+};
 
 let menu;
 const menuTemplate = [
@@ -52,6 +55,10 @@ const menuTemplate = [
   {
     label: 'Export',
     submenu: [exportSummaryMenuItemTemplate, exportTransactionsMenuItemTemplate]
+  },
+  {
+    label: 'Help',
+    submenu: [aboutMenuItemTemplate]
   }
 ];
 if (process.env.NODE_ENV !== 'production') {
@@ -81,7 +88,8 @@ export default {
     saveAsClick,
     newClick,
     exportSummaryClick,
-    exportTransactionsClick
+    exportTransactionsClick,
+    aboutClick
   }) {
     newMenuItemTemplate.click = newClick;
     openMenuItemTemplate.click = openClick;
@@ -91,6 +99,7 @@ export default {
     redoMenuItemTemplate.click = redoClick;
     exportSummaryMenuItemTemplate.click = exportSummaryClick;
     exportTransactionsMenuItemTemplate.click = exportTransactionsClick;
+    aboutMenuItemTemplate.click = aboutClick;
     refreshMenu();
   },
 

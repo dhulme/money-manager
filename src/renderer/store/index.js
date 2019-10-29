@@ -20,7 +20,8 @@ const store = new Vuex.Store({
       active: false
     },
     newBulkTransaction: initialNewBulkTransaction(),
-    importedTransactions: []
+    importedTransactions: [],
+    dialog: null
   },
   mutations: {
     setSummaryBalance(state, value) {
@@ -41,6 +42,9 @@ const store = new Vuex.Store({
     },
     setImportedTransactions(state, value) {
       state.importedTransactions = value;
+    },
+    setDialog(state, dialog) {
+      state.dialog = dialog;
     }
   },
   actions: {

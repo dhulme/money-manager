@@ -7,12 +7,16 @@ import menu from './menu';
 const actionNames = {
   addTransaction: 'Add transaction',
   addDualTransaction: 'Add transaction',
+  addDualTransactions: 'Add transactions',
+  updateTransaction: 'Update transaction',
   deleteAccount: 'Delete account',
   runBulkTransactionTransactions: 'Run bulk transactions',
   updateBulkTransactionTransaction: 'Update transaction',
+  deleteBulkTransactionTransaction: 'Delete bulk transaction',
   addBulkTransactionTransaction: 'Add transaction',
   addBulkTransaction: 'Add bulk transaction',
-  addAccount: 'Add account'
+  addAccount: 'Add account',
+  editAccount: 'Edit account'
 };
 const storePrefix = 'project/';
 

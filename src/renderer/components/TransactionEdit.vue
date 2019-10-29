@@ -115,8 +115,8 @@ export default {
       accountValidationRules: [
         value => !!value || 'Transaction account is required'
       ],
-      date: null,
-      prettyDate: null
+      date: moment().format('YYYY-MM-DD'),
+      prettyDate: moment().format(this.$dateFormat)
     };
   },
   computed: {
