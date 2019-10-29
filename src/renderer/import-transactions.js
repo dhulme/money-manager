@@ -62,5 +62,6 @@ ipc.on('importTransactionsDone', (event, { data, format }) => {
   const transactions = importTransactionsFormats
     .find(_ => _.id === format)
     .toTransactions(data);
+
   store.commit('setImportedTransactions', transactions);
 });

@@ -40,6 +40,11 @@
                 :prefix="$currencyPrefix"
               />
             </td>
+            <td class="pa-0 pt-3">
+              <VBtn icon @click="removeTransaction(props.index)"
+                ><VIcon>delete</VIcon></VBtn
+              >
+            </td>
           </tr>
         </template>
       </VDataTable>
@@ -72,8 +77,7 @@ export default {
         },
         {
           text: 'Account',
-          value: 'account',
-          width: 300
+          value: 'account'
         },
         {
           text: 'In/Out',
@@ -83,7 +87,11 @@ export default {
         {
           text: 'Value',
           value: 'value',
-          width: 170
+          width: 150
+        },
+        {
+          text: '',
+          value: 'actions'
         }
       ],
       transactions: [],
@@ -102,12 +110,24 @@ export default {
   computed: {
     importedTransactions() {
       const dateFilter = Vue.filter('date');
-      return this.$store.state.importedTransactions.map(item => ({
-        date: dateFilter(item.date),
-        description: item.description,
-        value: item.value.toFixed(2),
-        type: item.type
-      }));
+      const existingTransactions = this.$store.getters['project/transactions'](
+        this.account
+      );
+      function transactionExists(transaction) {
+        return !!existingTransactions.find(
+          existing =>
+            existing.description === transaction.description &&
+            Number(existing.value) === transaction.value
+        );
+      }
+      return this.$store.state.importedTransactions
+        .filter(item => !transactionExists(item))
+        .map(item => ({
+          date: dateFilter(item.date),
+          description: item.description,
+          value: item.value.toFixed(2),
+          type: item.type
+        }));
     },
     accounts() {
       return this.$store.getters['project/accountItems'].filter(
@@ -130,7 +150,7 @@ export default {
         this.transactions.map(uiTransaction => {
           const transaction = {
             description: uiTransaction.description,
-            note: uiTransaction.note,
+            note: 'Imported',
             date: moment(uiTransaction.date, this.$dateFormat),
             id: getId(),
             value: uiTransaction.value
@@ -139,6 +159,12 @@ export default {
           const transactionAccount = this.$store.getters['project/account'](
             uiTransaction.account
           );
+
+          // If no account given, skip this transaction
+          if (!transactionAccount) {
+            return;
+          }
+
           const inTransaction = uiTransaction.type === 'in';
           const isDualTransaction =
             transactionAccount.type !== this.account.type;
@@ -168,14 +194,17 @@ export default {
           };
         })
       );
+      this.$emit('close');
     },
     accountChange(index) {
       const nextAccountSelect = this.$refs['account' + (index + 1)];
-      // $refs.accounts[props.item.index + 1].focus()
       if (nextAccountSelect) {
         nextAccountSelect.focus();
         nextAccountSelect.activateMenu();
       }
+    },
+    removeTransaction(index) {
+      this.$store.state.importedTransactions.splice(index, 1);
     }
   }
 };

@@ -203,8 +203,10 @@ const project = {
     },
 
     addDualTransactions({ commit }, transactions) {
-      transactions.forEach(({ primary, secondary }) => {
-        commit('addTransaction', getAddTransactionParams(primary));
+      transactions.forEach(({ primary, secondary } = {}) => {
+        if (primary) {
+          commit('addTransaction', getAddTransactionParams(primary));
+        }
         if (secondary) {
           commit('addTransaction', getAddTransactionParams(secondary));
         }
