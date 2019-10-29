@@ -6,10 +6,13 @@ import ipc from './ipc';
 import store from './store';
 
 function handleErrors(errors) {
-  // TODO
-  if (errors.length) {
-    throw new Error(errors);
-  }
+  store.commit(
+    'setError',
+    'Failed to import transactions CSV' +
+      (errors && errors.length
+        ? `. Errors on rows: ${errors.map(error => error.row).join(', ')}`
+        : '')
+  );
 }
 
 export const importTransactionsFormats = [
@@ -21,16 +24,18 @@ export const importTransactionsFormats = [
         header: true,
         delimiter: ';'
       });
-      handleErrors(errors);
-      return data.map(row => {
-        const value = Number(row['Debit/Credit'].replace('£', ''));
-        return {
-          date: moment(row.Date),
-          description: capitalizeFirstLetter(row['Merchant/Description']),
-          value: Math.abs(value),
-          type: value < 0 ? 'out' : 'in'
-        };
-      });
+
+      return errors.length
+        ? handleErrors(errors)
+        : data.map(row => {
+            const value = Number(row['Debit/Credit'].replace('£', ''));
+            return {
+              date: moment(row.Date),
+              description: capitalizeFirstLetter(row['Merchant/Description']),
+              value: Math.abs(value),
+              type: value < 0 ? 'out' : 'in'
+            };
+          });
     }
   },
   {
@@ -40,13 +45,15 @@ export const importTransactionsFormats = [
       const { data, errors } = parse(csvData, {
         header: true
       });
-      handleErrors(errors);
-      return data.map(row => ({
-        date: moment(row.date),
-        description: capitalizeFirstLetter(row.description.toLowerCase()),
-        value: Number(row.amount),
-        type: row.debitCreditCode === 'Credit' ? 'in' : 'out'
-      }));
+
+      return errors.length
+        ? handleErrors(errors)
+        : data.map(row => ({
+            date: moment(row.date),
+            description: capitalizeFirstLetter(row.description.toLowerCase()),
+            value: Number(row.amount),
+            type: row.debitCreditCode === 'Credit' ? 'in' : 'out'
+          }));
     }
   }
 ];
@@ -59,9 +66,15 @@ export const importTransactionsFormatItems = importTransactionsFormats.map(
 );
 
 ipc.on('importTransactionsDone', (event, { data, format }) => {
-  const transactions = importTransactionsFormats
-    .find(_ => _.id === format)
-    .toTransactions(data);
-
-  store.commit('setImportedTransactions', transactions);
+  try {
+    const transactions = importTransactionsFormats
+      .find(_ => _.id === format)
+      .toTransactions(data);
+    if (transactions) {
+      store.commit('setImportedTransactions', transactions);
+    }
+  } catch (e) {
+    console.error(e);
+    handleErrors();
+  }
 });

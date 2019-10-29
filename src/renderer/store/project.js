@@ -124,7 +124,7 @@ const project = {
       requireObjectProperties(newAccount, [
         'name',
         'id',
-        'transactionImportFormatId'
+        'importTransactionsFormatId'
       ]);
       const account = state.accounts.find(_ => _.id === newAccount.id);
       state.accounts.splice(state.accounts.indexOf(account), 1, {

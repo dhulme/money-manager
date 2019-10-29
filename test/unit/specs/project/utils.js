@@ -9,7 +9,7 @@ export function getNewAccount(id = 'test') {
     category: 'test',
     transactionIds: [],
     deleted: false,
-    transactionImportFormatId: null
+    importTransactionsFormatId: null
   };
 }
 

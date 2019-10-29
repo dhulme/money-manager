@@ -1,44 +1,32 @@
 <template>
-  <VAppBar
-    class="primary"
-    dark
-    app
-    fixed
-  >
+  <VAppBar class="primary" dark app fixed>
     <ToolbarButton
       :child-route-names="['account', 'newAccount']"
       route-name="accounts"
-    >Accounts</ToolbarButton>
+      >Accounts</ToolbarButton
+    >
 
     <ToolbarButton
       :child-route-names="['bulkTransaction', 'newBulkTransaction']"
       route-name="bulkTransactions"
-    >Bulk Transactions</ToolbarButton>
+      >Bulk Transactions</ToolbarButton
+    >
 
-    <ToolbarButton
-      route-name="insights"
-    >Insights</ToolbarButton>
+    <ToolbarButton route-name="insights">Insights</ToolbarButton>
 
-    <VSpacer/>
-    <SummaryAlert/>
-
+    <VSpacer />
+    <TheAlerts />
   </VAppBar>
 </template>
 
 <script>
-  import SummaryAlert from '@/components/SummaryAlert';
-  import ToolbarButton from '@/components/ToolbarButton';
+import TheAlerts from '@/components/TheAlerts';
+import ToolbarButton from '@/components/ToolbarButton';
 
-  export default {
-    components: {
-      SummaryAlert,
-      ToolbarButton,
-    },
-    methods: {
-    },
-  };
+export default {
+  components: {
+    TheAlerts,
+    ToolbarButton
+  }
+};
 </script>
-
-<style lang="scss">
-
-</style>

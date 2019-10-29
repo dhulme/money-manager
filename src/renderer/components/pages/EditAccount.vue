@@ -34,7 +34,7 @@ export default {
       newAccount: {
         name: '',
         openingBalance: '0',
-        transactionImportFormatId: null
+        importTransactionsFormatId: null
       },
       importTransactionsFormatItems
     };
