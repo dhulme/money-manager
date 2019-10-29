@@ -4,13 +4,13 @@ Money Manager is a desktop application for managing your personal finances and a
 
 It uses [Electron](https://electron.atom.io/) as the application platform and [Vue.js](https://vuejs.org/) as the Front-End UI framework.
 
+💲🤑 Be in control of your finances with Money Manager! 🏧👛
+
 ## Installation
 
 Download the latest release [here](https://github.com/dhulme/money-manager/releases) and run the setup program.
 
 ## Features
-
-🤑💲 Be in control of your finances with Money Manager! 🏧👛
 
 💳 Keep track of transactions to and from your bank accounts and credit cards  
 💰 Assign money from your accounts to different budgets  
@@ -67,6 +67,8 @@ MIT
 
 ## Data Structure
 
+Each 'project' in Money Manager is stored in a single JSON file. Local backups of your project file are made automatically each month. The most recent project file will open automatically when you start Money Manager.
+
 ### Account
 
 ```javascript
@@ -101,7 +103,7 @@ MIT
 
 ```javascript
 {
-  balance: String;
+  balance: String
 }
 ```
 
@@ -130,7 +132,7 @@ MIT
 
 ## Settings
 
-Money Manager settings are stored in your Windows user profile folder. Settings structure shown below.
+Money Manager settings are stored in a JSON file your Windows user profile folder.
 
 ```javascript
 {

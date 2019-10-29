@@ -172,7 +172,8 @@ export default {
             date: date.date()
           })
           .toDate(),
-        id: getId()
+        id: getId(),
+        value: uiTransaction.valueIn || uiTransaction.valueOut
       };
 
       if (
@@ -199,43 +200,40 @@ export default {
 
       if (transactionAccount.type === this.account.type) {
         if (uiTransaction.valueIn) {
-          transaction.value = uiTransaction.valueIn;
           transaction.from = uiTransaction.account;
           transaction.to = this.account.id;
         } else {
-          transaction.value = uiTransaction.valueOut;
           transaction.from = this.account.id;
           transaction.to = uiTransaction.account;
         }
         this.$store.dispatch('project/addTransaction', transaction);
       } else {
         transaction.expense = uiTransaction.account;
+        const secondaryTransaction = {
+          ...transaction,
+          expense: this.account.id,
+          id: getId()
+        };
         if (uiTransaction.valueIn) {
-          transaction.value = uiTransaction.valueIn;
           transaction.from = 'none';
           transaction.to = this.account.id;
           this.$store.dispatch('project/addDualTransaction', {
             primary: transaction,
             secondary: {
-              ...transaction,
+              ...secondaryTransaction,
               from: 'none',
-              to: uiTransaction.account,
-              expense: this.account.id,
-              id: getId()
+              to: uiTransaction.account
             }
           });
         } else {
-          transaction.value = uiTransaction.valueOut;
           transaction.from = this.account.id;
           transaction.to = 'none';
           this.$store.dispatch('project/addDualTransaction', {
             primary: transaction,
             secondary: {
-              ...transaction,
+              ...secondaryTransaction,
               to: 'none',
-              from: uiTransaction.account,
-              expense: this.account.id,
-              id: getId()
+              from: uiTransaction.account
             }
           });
         }

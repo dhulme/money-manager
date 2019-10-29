@@ -70,21 +70,18 @@ ipcMain.on('projectOpenDefault', async event => {
   }
 });
 
-ipcMain.on('projectOpen', event => {
-  dialog.showOpenDialog(
-    {
-      filters
-    },
-    async ([projectPath = null] = []) => {
-      if (!projectPath) return;
+ipcMain.on('projectOpen', async event => {
+  const { filePaths, canceled } = await dialog.showOpenDialog({
+    filters
+  });
 
-      settings.setProjectPath(projectPath);
-      settings.save();
+  if (!filePaths || !filePaths[0] || canceled) return;
 
-      const data = await project.open(projectPath);
-      event.sender.send('projectOpened', data);
-    }
-  );
+  settings.setProjectPath(filePaths[0]);
+  settings.save();
+
+  const data = await project.open(filePaths[0]);
+  event.sender.send('projectOpened', data);
 });
 
 ipcMain.on('projectNew', event => {
@@ -137,21 +134,19 @@ ipcMain.on('showCloseWarning', (event, data) => {
   );
 });
 
-ipcMain.on('importTransactions', (event, format) => {
-  dialog.showOpenDialog(
-    { filters: [{ name: 'CSV', extensions: ['csv'] }] },
-    async ([csvPath = null] = []) => {
-      if (!csvPath) {
-        return;
-      }
+ipcMain.on('importTransactions', async (event, format) => {
+  const { filePaths, canceled } = await dialog.showOpenDialog({
+    filters: [{ name: 'CSV', extensions: ['csv'] }]
+  });
+  if (!filePaths.length || !filePaths[0] || canceled) {
+    return;
+  }
 
-      const data = await fs.readFile(csvPath);
-      event.sender.send('importTransactionsDone', {
-        data: data.toString(),
-        format
-      });
-    }
-  );
+  const data = await fs.readFile(filePaths[0]);
+  event.sender.send('importTransactionsDone', {
+    data: data.toString(),
+    format
+  });
 });
 
 ipcMain.handle('setApplicationMenu', async (event, menuTemplate) => {

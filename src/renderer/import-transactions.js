@@ -22,11 +22,15 @@ export const importTransactionsFormats = [
         delimiter: ';'
       });
       handleErrors(errors);
-      return data.map(row => ({
-        date: moment(row.Date),
-        description: capitalizeFirstLetter(row['Merchant/Description']),
-        value: Number(row['Debit/Credit'].replace('£', ''))
-      }));
+      return data.map(row => {
+        const value = Number(row['Debit/Credit'].replace('£', ''));
+        return {
+          date: moment(row.Date),
+          description: capitalizeFirstLetter(row['Merchant/Description']),
+          value: Math.abs(value),
+          type: value < 0 ? 'out' : 'in'
+        };
+      });
     }
   },
   {
@@ -40,7 +44,8 @@ export const importTransactionsFormats = [
       return data.map(row => ({
         date: moment(row.date),
         description: capitalizeFirstLetter(row.description.toLowerCase()),
-        value: Number(row.amount)
+        value: Number(row.amount),
+        type: row.debitCreditCode === 'Credit' ? 'in' : 'out'
       }));
     }
   }

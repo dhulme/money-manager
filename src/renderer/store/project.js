@@ -196,14 +196,18 @@ const project = {
 
     addDualTransaction({ commit }, { primary, secondary }) {
       commit('addTransaction', getAddTransactionParams(primary));
-      commit('addTransaction', getAddTransactionParams(secondary));
+      if (secondary) {
+        commit('addTransaction', getAddTransactionParams(secondary));
+      }
       commit('updateSummaryBalance');
     },
 
     addDualTransactions({ commit }, transactions) {
       transactions.forEach(({ primary, secondary }) => {
         commit('addTransaction', getAddTransactionParams(primary));
-        commit('addTransaction', getAddTransactionParams(secondary));
+        if (secondary) {
+          commit('addTransaction', getAddTransactionParams(secondary));
+        }
       });
       commit('updateSummaryBalance');
     },
