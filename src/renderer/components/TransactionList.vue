@@ -194,6 +194,9 @@ export default {
       if (!search) {
         return true;
       }
+      if (!value) {
+        return false;
+      }
       const valueString = value.toString().toLowerCase();
       return (
         valueString.includes(search) ||

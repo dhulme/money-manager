@@ -137,6 +137,10 @@ export default {
         ...transaction
       };
       this.date = moment().format('YYYY-MM-DD');
+      // Required because of a weird form date resetting bug in Vuetify
+      this.$nextTick(() => {
+        this.prettyDate = moment().format('DD/MM/YYYY');
+      });
       if (transaction.from === this.account.id) {
         this.newTransaction.valueOut = transaction.value;
         this.newTransaction.account = transaction.to;
