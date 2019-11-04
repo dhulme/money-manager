@@ -10,24 +10,36 @@
     <VCard class="mb-4">
       <VCardTitle>Add Transaction</VCardTitle>
       <VCardText>
-        <VTextField
-          v-model="newTransaction.value"
-          label="Amount"
-          :prefix="$currencyPrefix"
-        />
-        <VAutocomplete
-          :items="projectItems"
-          v-model="newTransaction.from"
-          label="From"
-        />
+        <VForm
+          ref="newTransactionForm"
+          lazy-validation
+          v-model="newTransactionFormValid"
+        >
+          <VTextField
+            v-model="newTransaction.value"
+            label="Amount"
+            :prefix="$currencyPrefix"
+            required
+            :rules="newTransactionValueValidationRules"
+          />
+          <VAutocomplete
+            :items="projectItems"
+            v-model="newTransaction.from"
+            label="From"
+            required
+            :rules="newTransactionValueFromRules"
+          />
 
-        <VAutocomplete
-          :items="projectItems"
-          v-model="newTransaction.to"
-          label="To"
-        />
+          <VAutocomplete
+            :items="projectItems"
+            v-model="newTransaction.to"
+            label="To"
+            required
+            :rules="newTransactionValueToRules"
+          />
 
-        <VTextField v-model="newTransaction.note" placeholder="Note" />
+          <VTextField v-model="newTransaction.note" placeholder="Note" />
+        </VForm>
       </VCardText>
       <VCardActions>
         <VBtn text color="primary" @click="addTransaction">Add</VBtn>
@@ -86,7 +98,16 @@ export default {
         value: 0,
         note: ''
       },
-      dialogVisible: false
+      dialogVisible: false,
+      newTransactionFormValid: true,
+      newTransactionValueValidationRules: [
+        value => !!value || 'Value is required',
+        value => !Number.isNaN(Number(value)) || 'Value must be a number'
+      ],
+      newTransactionValueFromRules: [
+        value => !!value || 'From account is required'
+      ],
+      newTransactionValueToRules: [value => !!value || 'To account is required']
     };
   },
   computed: {
@@ -104,10 +125,13 @@ export default {
   },
   methods: {
     addTransaction() {
-      this.transactions.push(this.newTransaction);
-      this.newTransaction = {
-        id: getId()
-      };
+      if (this.$refs.newTransactionForm.validate()) {
+        this.transactions.push(this.newTransaction);
+        this.newTransaction = {
+          id: getId()
+        };
+        this.$refs.newTransactionForm.reset();
+      }
     },
     addBulkTransaction() {
       this.$store.dispatch('project/addBulkTransaction', {

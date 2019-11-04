@@ -30,7 +30,7 @@
       />
       <VCardActions>
         <VBtn text color="primary" @click="process">Run</VBtn>
-        <VBtn text @click="duplicate">Duplicate</VBtn>
+        <VBtn text @click="saveAs">Save as</VBtn>
       </VCardActions>
     </VCard>
 
@@ -121,7 +121,7 @@ export default {
         });
       }
     },
-    duplicate() {
+    saveAs() {
       this.$store.commit('setNewBulkTransaction', {
         ...this.bulkTransaction,
         transactions: this.transactions

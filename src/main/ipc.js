@@ -13,28 +13,20 @@ const filters = [
 ];
 
 async function saveAs(data) {
-  return new Promise(resolve => {
-    dialog.showSaveDialog(
-      {
-        filters
-      },
-      async path => {
-        if (!path) {
-          return;
-        }
+  const { canceled, filePath } = await dialog.showSaveDialog({ filters });
+  if (canceled || !filePath) {
+    return;
+  }
+  let path = filePath;
 
-        if (!path.endsWith('.json')) {
-          path += '.json';
-        }
+  if (!path.endsWith('.json')) {
+    path += '.json';
+  }
 
-        settings.setProjectPath(path);
-        settings.save();
+  settings.setProjectPath(path);
+  settings.save();
 
-        await project.save(path, data);
-        resolve();
-      }
-    );
-  });
+  await project.save(path, data);
 }
 
 async function save(data) {
@@ -90,48 +82,39 @@ ipcMain.on('projectNew', event => {
   event.sender.send('projectOpened', defaultProject);
 });
 
-ipcMain.on('exportCsv', (event, { type, data }) => {
-  dialog.showSaveDialog(
-    {
-      filters: [
-        {
-          name: 'CSV',
-          extensions: ['csv']
-        }
-      ],
-      title: `Export ${type} CSV`
-    },
-    path => {
-      if (!path) {
-        return;
+ipcMain.on('exportCsv', async (event, { type, data }) => {
+  const { cancelled, filePath } = await dialog.showSaveDialog({
+    filters: [
+      {
+        name: 'CSV',
+        extensions: ['csv']
       }
+    ],
+    title: `Export ${type} CSV`
+  });
+  if (cancelled || !filePath) {
+    return;
+  }
+  let path = filePath;
 
-      if (!path.endsWith('.csv')) {
-        path += '.csv';
-      }
+  if (!path.endsWith('.csv')) {
+    path += '.csv';
+  }
 
-      project.exportCsv(path, data);
-    }
-  );
+  project.exportCsv(path, data);
 });
 
-ipcMain.on('showCloseWarning', (event, data) => {
-  dialog.showMessageBox(
-    {
-      type: 'warning',
-      title: 'Money Manager',
-      buttons: ['Save', "Don't save"],
-      message: 'Do you want to save changes to your project?'
-    },
-    async response => {
-      if (response === 0) {
-        await save(data);
-        event.sender.send('closeConfirmed');
-      } else {
-        event.sender.send('closeConfirmed');
-      }
-    }
-  );
+ipcMain.on('showCloseWarning', async (event, data) => {
+  const { response } = await dialog.showMessageBox({
+    type: 'warning',
+    title: 'Money Manager',
+    buttons: ['Save', "Don't save"],
+    message: 'Do you want to save changes to your project?'
+  });
+  if (response === 0) {
+    await save(data);
+  }
+  event.sender.send('closeConfirmed');
 });
 
 ipcMain.on('importTransactions', async (event, format) => {

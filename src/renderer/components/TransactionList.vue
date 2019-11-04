@@ -200,7 +200,7 @@ export default {
       const valueString = value.toString().toLowerCase();
       return (
         valueString.includes(search) ||
-        valueString.replace(/^[a-zA-Z0-9]/g, '').includes(search)
+        valueString.replace(/[^a-zA-Z0-9.]/g, '').includes(search)
       );
     },
     transactionAccount(transaction) {

@@ -121,11 +121,7 @@ const project = {
     },
 
     editAccount(state, newAccount = required('account')) {
-      requireObjectProperties(newAccount, [
-        'name',
-        'id',
-        'importTransactionsFormatId'
-      ]);
+      requireObjectProperties(newAccount, ['name', 'id']);
       const account = state.accounts.find(_ => _.id === newAccount.id);
       state.accounts.splice(state.accounts.indexOf(account), 1, {
         ...account,
@@ -232,7 +228,8 @@ const project = {
           'addTransaction',
           getAddTransactionParams({
             ...transaction,
-            note: `Bulk (${bulkTransaction.note})`
+            description: bulkTransaction.description,
+            note: transaction.note ? `Bulk (${transaction.note})` : 'Bulk'
           })
         );
       });
@@ -356,8 +353,8 @@ const project = {
     bulkTransactions(state) {
       return state.bulkTransactions.sort(
         (a, b) =>
-          new Date(b.lastModified).valueOf() -
-          new Date(a.lastModified).valueOf()
+          new Date(b.lastModified || 0).valueOf() -
+          new Date(a.lastModified || 0).valueOf()
       );
     },
     bulkTransaction(state) {

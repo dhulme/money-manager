@@ -9,7 +9,6 @@
           ref="dateMenu"
           v-model="dateMenu"
           :close-on-content-click="false"
-          :nudge-right="40"
           transition="scale-transition"
           offset-y
           min-width="290px"

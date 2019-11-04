@@ -25,7 +25,7 @@ const settings = {
   },
 
   save() {
-    return fs.writeJsonSync(settingsPath, data);
+    return fs.writeJson(settingsPath, data);
   },
 
   getProjectPath() {
