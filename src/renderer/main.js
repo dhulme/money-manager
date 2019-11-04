@@ -17,21 +17,9 @@ import hotkey from './hotkey';
 
 require('vuetify/dist/vuetify.min.css');
 
-const currencyPrefix = '£';
-const dateFormat = 'DD/MM/YYYY';
-
 Vue.config.productionTip = false;
 
 Vue.use(VueI18n);
-
-Vue.filter('currency', value => {
-  if (value === undefined || value === null) {
-    return '';
-  }
-  return accounting.formatMoney(value, currencyPrefix, 2, ',', '.');
-});
-
-Vue.filter('date', value => (value ? moment(value).format(dateFormat) : ''));
 
 Vue.directive('focus', {
   inserted(element) {
@@ -82,20 +70,43 @@ hotkey.init({
     name: 'y',
     code: 89,
     ctrl: true
+  },
+  settings: {
+    name: ',',
+    code: 188,
+    ctrl: true
+  },
+  quit: {
+    name: 'q',
+    code: 81,
+    ctrl: true
   }
 });
 
 Vue.prototype.$ipc = ipc;
-Vue.prototype.$currencyPrefix = currencyPrefix;
-Vue.prototype.$dateFormat = dateFormat;
-
-Vue.config.keyCodes = {
-  add: 65 // a
-};
 
 Vue.use(history, {
   store,
-  ready() {
+  async ready() {
+    const settings = await ipc.getSettings();
+    console.log('sett', settings);
+    const currencyPrefix = settings.currencyPrefix;
+    const dateFormat = settings.dateFormat;
+
+    Vue.prototype.$currencyPrefix = currencyPrefix;
+    Vue.prototype.$dateFormat = dateFormat;
+
+    Vue.filter('currency', value => {
+      if (value === undefined || value === null) {
+        return '';
+      }
+      return accounting.formatMoney(value, currencyPrefix, 2, ',', '.');
+    });
+
+    Vue.filter('date', value =>
+      value ? moment(value).format(dateFormat) : ''
+    );
+
     new Vue({
       router,
       components: {

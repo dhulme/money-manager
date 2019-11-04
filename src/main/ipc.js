@@ -136,3 +136,11 @@ ipcMain.handle('setApplicationMenu', async (event, menuTemplate) => {
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 });
+
+ipcMain.handle('getSettings', () => {
+  return settings.get();
+});
+
+ipcMain.handle('saveSettings', (event, data) => {
+  return settings.save(data);
+});

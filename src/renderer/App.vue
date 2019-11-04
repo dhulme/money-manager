@@ -6,6 +6,7 @@
     v-hotkey.undo="$history.undo"
     v-hotkey.redo="$history.redo"
     v-hotkey.new="$history.new"
+    v-hotkey.quit="quit"
   >
     <TheToolbar />
     <main>
@@ -46,8 +47,14 @@ export default {
       saveAsClick: () => this.$history.saveAs(),
       exportSummaryClick: () => this.$history.exportSummary(),
       exportTransactionsClick: () => this.$history.exportTransactions(),
-      aboutClick: () => this.$store.commit('setDialog', 'about')
+      aboutClick: () => this.$store.commit('setDialog', 'about'),
+      settingsClick: () => this.$store.commit('setDialog', 'settings')
     });
+  },
+  methods: {
+    quit() {
+      window.close();
+    }
   }
 };
 </script>

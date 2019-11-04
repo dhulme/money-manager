@@ -29,8 +29,8 @@ export default {
       get() {
         return this.$store.state.dialog === 'about';
       },
-      set() {
-        return this.$store.commit('setDialog', 'about');
+      set(value) {
+        return this.$store.commit('setDialog', value ? 'about' : null);
       }
     }
   }

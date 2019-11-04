@@ -27,6 +27,10 @@ const redoMenuItemTemplate = {
   accelerator: 'CmdOrCtrl+Y',
   enabled: false
 };
+const settingsMenuItemTemplate = {
+  label: 'Preferences',
+  accelerator: 'CmdOrCtrl+,'
+};
 const exportSummaryMenuItemTemplate = {
   label: 'Summary as CSV'
 };
@@ -45,12 +49,22 @@ const menuTemplate = [
       newMenuItemTemplate,
       openMenuItemTemplate,
       saveMenuItemTemplate,
-      saveAsMenuItemTemplate
+      saveAsMenuItemTemplate,
+      {
+        label: 'Exit',
+        role: 'quit',
+        accelerator: 'CmdOrCtrl+Q'
+      }
     ]
   },
   {
     label: 'Edit',
-    submenu: [undoMenuItemTemplate, redoMenuItemTemplate]
+    submenu: [
+      undoMenuItemTemplate,
+      redoMenuItemTemplate,
+      { type: 'separator' },
+      settingsMenuItemTemplate
+    ]
   },
   {
     label: 'Export',
@@ -89,7 +103,8 @@ export default {
     newClick,
     exportSummaryClick,
     exportTransactionsClick,
-    aboutClick
+    aboutClick,
+    settingsClick
   }) {
     newMenuItemTemplate.click = newClick;
     openMenuItemTemplate.click = openClick;
@@ -100,6 +115,7 @@ export default {
     exportSummaryMenuItemTemplate.click = exportSummaryClick;
     exportTransactionsMenuItemTemplate.click = exportTransactionsClick;
     aboutMenuItemTemplate.click = aboutClick;
+    settingsMenuItemTemplate.click = settingsClick;
     refreshMenu();
   },
 

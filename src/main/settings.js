@@ -8,7 +8,9 @@ const settingsPath = path.join(userDataPath, 'settings.json');
 
 const defaultSettings = {
   projectPath: null,
-  lastBackupDates: {}
+  lastBackupDates: {},
+  currencyPrefix: '£',
+  dateFormat: 'DD/MM/YYYY'
 };
 
 let data;
@@ -43,6 +45,14 @@ const settings = {
   getLastBackupDate(projectPath) {
     const date = data.lastBackupDates[projectPath];
     return date ? moment(date) : null;
+  },
+
+  get() {
+    return data;
+  },
+
+  set(newData) {
+    data = newData;
   }
 };
 

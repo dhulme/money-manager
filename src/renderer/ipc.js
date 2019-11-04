@@ -69,6 +69,14 @@ const ipc = {
 
   importTransactions(format) {
     ipc.send('importTransactions', format);
+  },
+
+  getSettings() {
+    return ipc.invoke('getSettings');
+  },
+
+  saveSettings(data) {
+    return ipc.invoke('saveSettings', data);
   }
 };
 
