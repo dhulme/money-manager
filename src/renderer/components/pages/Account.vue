@@ -5,7 +5,12 @@
       <VCardActions>
         <VBtn text color="error" @click="deleteAccount">Delete</VBtn>
         <VBtn text @click="goToEditAccount">Edit</VBtn>
-        <VBtn text @click="importTransactions">Import</VBtn>
+        <VBtn
+          v-if="account.importTransactionsFormatId"
+          text
+          @click="importTransactions"
+          >Import</VBtn
+        >
       </VCardActions>
     </VCard>
 

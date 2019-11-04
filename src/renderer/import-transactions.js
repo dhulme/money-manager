@@ -20,17 +20,23 @@ export const importTransactionsFormats = [
     id: 'midata',
     name: 'midata',
     toTransactions(csvData) {
-      const { data, errors } = parse(csvData, {
+      let { data, errors } = parse(csvData, {
         header: true,
-        delimiter: ';'
+        delimiter: ';',
+        skipEmptyLines: true
       });
+
+      // Ignore summary row
+      if (errors.length === 1 && errors[0].code === 'TooFewFields') {
+        errors = [];
+      }
 
       return errors.length
         ? handleErrors(errors)
         : data.map(row => {
-            const value = Number(row['Debit/Credit'].replace('£', ''));
+            const value = Number(row['Debit/Credit'].replace(/[^0-9.]/g, ''));
             return {
-              date: moment(row.Date),
+              date: moment(row.Date, 'DD/MM/YYYY'),
               description: capitalizeFirstLetter(row['Merchant/Description']),
               value: Math.abs(value),
               type: value < 0 ? 'out' : 'in'
