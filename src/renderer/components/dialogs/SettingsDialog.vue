@@ -3,12 +3,23 @@
     <VCard>
       <VCardTitle>Preferences</VCardTitle>
       <VCardText>
-        <VForm>
+        <VForm ref="form" v-model="valid" lazy-validation>
+          <p>
+            Note: These changes will only be visible when the app is restarted.
+          </p>
           <VTextField
             label="Currency format"
             v-model="settings.currencyPrefix"
+            required
+            :rules="currencyPrefixRules"
           />
-          <VTextField label="Date format" v-model="settings.dateFormat" />
+          <VTextField
+            label="Date format"
+            v-model="settings.dateFormat"
+            required
+            :rules="dateFormatRules"
+          />
+          <VLabel>Example date: {{ exampleDate }}</VLabel>
         </VForm>
       </VCardText>
       <VCardActions>
@@ -20,10 +31,15 @@
 </template>
 
 <script>
+import moment from 'moment';
+
 export default {
   data() {
     return {
-      settings: {}
+      settings: {},
+      currencyPrefixRules: [value => !!value || 'Currency format is required'],
+      dateFormatRules: [value => !!value || 'Date format is required'],
+      valid: true
     };
   },
   async created() {
@@ -37,12 +53,19 @@ export default {
       set(value) {
         return this.$store.commit('setDialog', value ? 'settings' : null);
       }
+    },
+    exampleDate() {
+      return (
+        this.settings.dateFormat && moment().format(this.settings.dateFormat)
+      );
     }
   },
   methods: {
     save() {
-      this.$ipc.saveSettings(this.settings);
-      this.dialog = false;
+      if (this.$refs.form.validate()) {
+        this.$ipc.saveSettings(this.settings);
+        this.dialog = false;
+      }
     }
   }
 };

@@ -21,7 +21,7 @@ Download the latest release [here](https://github.com/dhulme/money-manager/relea
 💾 All your data is stored locally and never sent over the internet  
 🕒 Monthly backups made of your data  
 🏦 Import transactions from your bank statements (a number of common CSV formats supported)  
-
+🌍 Change the currency and date format to match your region  
 
 ## Getting Started
 
@@ -137,6 +137,8 @@ Money Manager settings are stored in a JSON file your Windows user profile folde
 ```javascript
 {
 	projectPath: String,
-	lastBackupDates: Object // one key per project
+	lastBackupDates: Object, // one key per project
+	currencyPrefix: String,
+	dateFormat: String
 }
 ```

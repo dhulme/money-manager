@@ -65,7 +65,7 @@ export default {
               title([point], config) {
                 const datum =
                   config.datasets[point.datasetIndex].data[point.index];
-                return moment(datum.x).format('Do MMMM YYYY');
+                return moment(datum.x).format(this.$dateFormat);
               },
               label(point) {
                 return this.$currencyPrefix + point.yLabel;
