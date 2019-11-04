@@ -23,9 +23,11 @@ export default {
           );
           if (transaction.date) {
             return {
-              y: this.$store.getters['project/accountBalance'](
-                this.account,
-                transactionId
+              y: Number(
+                this.$store.getters['project/accountBalance'](
+                  this.account,
+                  transactionId
+                )
               ),
               x: new Date(transaction.date)
             };
@@ -43,6 +45,7 @@ export default {
   },
   methods: {
     render() {
+      const currencyPrefix = this.$currencyPrefix;
       this.renderChart(
         {
           datasets: [
@@ -85,7 +88,7 @@ export default {
               {
                 ticks: {
                   callback(value) {
-                    return this.$currencyPrefix + value;
+                    return currencyPrefix + value;
                   }
                 }
               }

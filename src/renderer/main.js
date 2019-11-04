@@ -88,10 +88,7 @@ Vue.prototype.$ipc = ipc;
 Vue.use(history, {
   store,
   async ready() {
-    const settings = await ipc.getSettings();
-    console.log('sett', settings);
-    const currencyPrefix = settings.currencyPrefix;
-    const dateFormat = settings.dateFormat;
+    const { currencyPrefix, dateFormat } = await ipc.getSettings();
 
     Vue.prototype.$currencyPrefix = currencyPrefix;
     Vue.prototype.$dateFormat = dateFormat;

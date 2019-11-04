@@ -142,5 +142,6 @@ ipcMain.handle('getSettings', () => {
 });
 
 ipcMain.handle('saveSettings', (event, data) => {
-  return settings.save(data);
+  settings.set(data);
+  return settings.save();
 });

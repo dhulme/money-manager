@@ -12,8 +12,6 @@ function initialNewBulkTransaction() {
   };
 }
 
-console.log('loaded', Vue.$settings);
-
 const store = new Vuex.Store({
   state: {
     error: '',
