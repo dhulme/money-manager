@@ -49,9 +49,11 @@
           </tr>
         </template>
       </VDataTable>
-      <VBtn @click="completeImport" color="primary" class="mr-2">OK</VBtn>
-      <VBtn @click="$emit('close')">Cancel</VBtn>
     </VCardText>
+    <VCardActions>
+      <VBtn text @click="completeImport" color="primary">OK</VBtn>
+      <VBtn text @click="$emit('close')">Cancel</VBtn>
+    </VCardActions>
   </VCard>
 </template>
 
@@ -119,7 +121,7 @@ export default {
           existing =>
             existing.description === transaction.description &&
             Number(existing.value) === transaction.value &&
-            moment(existing.date).isSame(transaction.date)
+            moment(existing.date).isSame(transaction.date, 'day')
         );
       }
       return this.$store.state.importedTransactions
@@ -147,9 +149,8 @@ export default {
   },
   methods: {
     completeImport() {
-      this.$store.dispatch(
-        'project/addDualTransactions',
-        this.transactions.map(uiTransaction => {
+      const transactions = this.transactions
+        .map(uiTransaction => {
           const transaction = {
             description: uiTransaction.description,
             note: 'Imported',
@@ -195,8 +196,13 @@ export default {
             })
           };
         })
-      );
+        .filter(transaction => !!transaction);
+      this.$store.dispatch('project/addDualTransactions', transactions);
       this.$emit('close');
+      this.$store.dispatch(
+        'openSnackbar',
+        `${transactions.length || 'No'} transactions imported`
+      );
     },
     accountChange(index) {
       const nextAccountSelect = this.$refs['account' + (index + 1)];
@@ -213,7 +219,6 @@ export default {
 </script>
 
 <style lang="scss">
-/* .theme--light.v-data-table tbody tr:not(:last-child) td:last-child, .theme--light.v-data-table tbody tr:not(:last-child) td:not(.v-data-table__mobile-row) { */
 .import-transactions-table td {
   border-bottom: none !important;
 }
