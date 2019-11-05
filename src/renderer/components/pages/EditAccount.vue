@@ -88,7 +88,12 @@ export default {
       }
 
       this.resetForm();
-      this.goToAccounts();
+
+      if (this.accountId) {
+        this.goToAccount(this.account);
+      } else {
+        this.goToAccounts();
+      }
     },
     resetForm() {
       this.name = '';

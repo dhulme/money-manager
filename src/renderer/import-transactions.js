@@ -29,15 +29,18 @@ export const importTransactionsFormats = [
       // Ignore summary row
       if (errors.length === 1 && errors[0].code === 'TooFewFields') {
         errors = [];
+        data.pop();
       }
 
       return errors.length
         ? handleErrors(errors)
         : data.map(row => {
             const value = Number(row['Debit/Credit'].replace(/[^0-9.]/g, ''));
+            const description =
+              row['Merchant/Description'].replace(/\*/g, '').trim() || row.Type;
             return {
               date: moment(row.Date, 'DD/MM/YYYY'),
-              description: capitalizeFirstLetter(row['Merchant/Description']),
+              description: capitalizeFirstLetter(description.toLowerCase()),
               value: Math.abs(value),
               type: value < 0 ? 'out' : 'in'
             };

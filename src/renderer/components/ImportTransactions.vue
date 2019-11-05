@@ -8,6 +8,7 @@
         :items="transactions"
         :headers="headers"
         class="import-transactions-table"
+        :footer-props="{ showFirstLastPage: true }"
       >
         <template v-slot:item="props">
           <tr>
@@ -197,6 +198,7 @@ export default {
           };
         })
         .filter(transaction => !!transaction);
+
       this.$store.dispatch('project/addDualTransactions', transactions);
       this.$emit('close');
       this.$store.dispatch(
