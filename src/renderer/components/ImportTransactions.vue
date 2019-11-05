@@ -2,6 +2,7 @@
   <VCard>
     <VCardTitle class="headline">Import transactions</VCardTitle>
     <VCardText>
+      <p>Only transactions with an account selected will be imported</p>
       <VDataTable
         dense
         :items="transactions"
@@ -117,7 +118,8 @@ export default {
         return !!existingTransactions.find(
           existing =>
             existing.description === transaction.description &&
-            Number(existing.value) === transaction.value
+            Number(existing.value) === transaction.value &&
+            moment(existing.date).isSame(transaction.date)
         );
       }
       return this.$store.state.importedTransactions
