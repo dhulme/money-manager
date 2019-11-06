@@ -21,7 +21,7 @@
       </VCardTitle>
       <VDataTable
         :headers="headers"
-        :items="prettyTransactions"
+        :items="transactions"
         :search="search"
         :custom-filter="customFilter"
         must-sort
@@ -38,8 +38,8 @@
             <td>{{ props.item.description }}</td>
             <td>{{ props.item.note }}</td>
             <td>{{ props.item.accountName }}</td>
-            <td>{{ props.item.in }}</td>
-            <td>{{ props.item.out }}</td>
+            <td>{{ transactionIn(props.item) | currency }}</td>
+            <td>{{ transactionOut(props.item) | currency }}</td>
             <td>{{ accountBalance(props.item) | currency }}</td>
           </tr>
         </template>
@@ -66,7 +66,7 @@
 
 <script>
 import moment from 'moment';
-import Vue from 'vue';
+import accounting from 'accounting';
 
 const defaultTransaction = {
   date: moment(),
@@ -117,17 +117,16 @@ export default {
         },
         {
           text: this.$t('transactions.in'),
-          value: 'in',
+          value: 'value',
           align: 'left'
         },
         {
           text: this.$t('transactions.out'),
-          value: 'out',
+          value: 'value',
           align: 'left'
         },
         {
           text: 'Balance',
-          value: 'balance',
           align: 'left'
         }
       ],
@@ -138,16 +137,16 @@ export default {
   },
   computed: {
     prettyTransactions() {
-      const dateFilter = Vue.filter('date');
-      const currencyFilter = Vue.filter('currency');
       return this.transactions.map(transaction => ({
         ...transaction,
-        accountName: this.transactionAccount(transaction),
-        prettyDate: dateFilter(transaction.date),
-        in: currencyFilter(this.transactionIn(transaction)),
-        out: currencyFilter(this.transactionOut(transaction)),
-        balance: currencyFilter(this.accountBalance(transaction))
+        accountName: this.transactionAccountName(transaction)
       }));
+    },
+    searchFormatted() {
+      return {
+        currency: accounting.unformat(this.search),
+        date: moment(this.search, this.$dateFormat).format('YYYY-MM-DD')
+      };
     }
   },
   methods: {
@@ -168,7 +167,7 @@ export default {
       }
       return null;
     },
-    accountName(transaction) {
+    transactionAccountName(transaction) {
       let accountId;
       if (transaction.expense) {
         accountId = transaction.expense;
@@ -190,31 +189,21 @@ export default {
         transaction.id
       );
     },
-    customFilter(value, search) {
-      if (!search) {
-        return true;
-      }
-      if (!value) {
-        return false;
-      }
-      const valueString = value.toString().toLowerCase();
-      return (
-        valueString.includes(search) ||
-        valueString.replace(/[^a-zA-Z0-9.]/g, '').includes(search)
-      );
-    },
-    transactionAccount(transaction) {
-      let accountId;
-      if (transaction.expense) {
-        accountId = transaction.expense;
-      } else if (transaction.to === this.account.id) {
-        accountId = transaction.from;
-      } else {
-        accountId = transaction.to;
-      }
-      return accountId
-        ? this.$store.getters['project/account'](accountId).name
-        : null;
+    customFilter(rawValue, rawSearch) {
+      if (!rawSearch) return true;
+      if (!rawValue) return false;
+
+      const value = rawValue.toString();
+
+      // Simple search first
+      if (value.toLowerCase().includes(rawSearch.toLowerCase())) return true;
+
+      // Then do currency and date
+      const { currency, date } = this.searchFormatted;
+      if (currency && value.includes(currency.toString())) return true;
+      if (date && value.includes(date)) return true;
+
+      return false;
     }
   }
 };
