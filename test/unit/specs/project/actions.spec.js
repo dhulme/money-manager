@@ -90,7 +90,7 @@ describe('actions', () => {
       });
       dispatch('runBulkTransactionTransactions', {
         bulkTransaction: {
-          description: 'test'
+          name: 'test'
         },
         transactions: [transaction]
       });
