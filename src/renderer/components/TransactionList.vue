@@ -21,7 +21,7 @@
       </VCardTitle>
       <VDataTable
         :headers="headers"
-        :items="transactions"
+        :items="prettyTransactions"
         :search="search"
         :custom-filter="customFilter"
         must-sort
