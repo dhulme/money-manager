@@ -115,7 +115,7 @@ export default {
       this.transactions.splice(index, 1);
     },
     goToBulkTransactionsIfDialogClosed() {
-      if (!this.dialogVisible) {
+      if (!this.$store.state.dialog && !this.dialogVisible) {
         this.$router.push({
           name: 'bulkTransactions'
         });

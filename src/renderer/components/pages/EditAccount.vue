@@ -7,7 +7,7 @@
       <VCardText>
         <VForm @submit="save">
           <VTextField v-model="accountCategory" label="Category" disabled />
-          <VTextField v-focus v-model="newAccount.name" label="Name" />
+          <VTextField autofocus v-model="newAccount.name" label="Name" />
           <VTextField
             v-if="!account"
             v-model="newAccount.openingBalance"
@@ -100,13 +100,15 @@ export default {
       this.openingBalance = '';
     },
     goToAccount(account) {
-      this.$router.push({
-        name: 'account',
-        params: {
-          accountId: account.id,
-          accountCategory: account.category
-        }
-      });
+      if (!this.$store.state.dialog) {
+        this.$router.push({
+          name: 'account',
+          params: {
+            accountId: account.id,
+            accountCategory: account.category
+          }
+        });
+      }
     },
     goToAccounts() {
       this.$router.push({

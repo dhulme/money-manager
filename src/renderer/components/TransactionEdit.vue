@@ -1,5 +1,5 @@
 <template>
-  <VCard v-hotkey.close="close">
+  <VCard>
     <VCardTitle class="headline"
       >{{ isNewTransaction ? 'Add' : 'Edit' }} Transaction</VCardTitle
     >
@@ -131,14 +131,13 @@ export default {
   watch: {
     transaction(transaction) {
       this.$refs.form.reset();
-      this.$refs.description.focus();
       this.newTransaction = {
         ...transaction
       };
       this.date = moment().format('YYYY-MM-DD');
-      // Required because of a weird form date resetting bug in Vuetify
       this.$nextTick(() => {
         this.prettyDate = moment().format('DD/MM/YYYY');
+        this.$refs.description.focus();
       });
       if (transaction.from === this.account.id) {
         this.newTransaction.valueOut = transaction.value;

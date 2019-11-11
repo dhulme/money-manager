@@ -1,5 +1,5 @@
 <template>
-  <VDialog v-model="dialog" max-width="400">
+  <VDialog v-model="dialog" max-width="400" persistent no-click-animation>
     <VCard>
       <VCardTitle>About</VCardTitle>
       <VCardText class="text-center">

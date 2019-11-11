@@ -24,10 +24,7 @@
         :items="prettyTransactions"
         :search="search"
         :custom-filter="customFilter"
-        must-sort
         :footer-props="footerProps"
-        sort-by="date"
-        sort-desc
       >
         <template v-slot:item="props">
           <tr
@@ -137,7 +134,7 @@ export default {
   },
   computed: {
     prettyTransactions() {
-      return this.transactions.map(transaction => ({
+      return [...this.transactions].reverse().map(transaction => ({
         ...transaction,
         accountName: this.transactionAccountName(transaction)
       }));

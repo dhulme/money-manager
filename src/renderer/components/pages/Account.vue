@@ -1,5 +1,5 @@
 <template>
-  <div v-hotkey.close="goToAccountsIfDialogClosed">
+  <div v-hotkey.close="closeDialog">
     <VCard class="mb-4">
       <VCardTitle class="headline">{{ account.name }}</VCardTitle>
       <VCardActions>
@@ -21,7 +21,13 @@
       @add-transaction="addTransaction"
     />
 
-    <VDialog v-model="editTransactionDialogVisible" max-width="500px">
+    <VDialog
+      v-model="editTransactionDialogVisible"
+      max-width="500px"
+      persistent
+      no-click-animation
+      eager
+    >
       <TransactionEdit
         :transaction="transaction"
         :account="account"
@@ -30,7 +36,11 @@
       />
     </VDialog>
 
-    <VDialog v-model="importTransactionsDialogVisible">
+    <VDialog
+      v-model="importTransactionsDialogVisible"
+      persistent
+      no-click-animation
+    >
       <ImportTransactions
         :account="account"
         @close="importTransactionsDialogVisible = false"
@@ -54,7 +64,8 @@ export default {
     return {
       editTransactionDialogVisible: false,
       importTransactionsDialogVisible: false,
-      transaction: {}
+      transaction: {},
+      importTransactionsActive: false
     };
   },
   computed: {
@@ -92,8 +103,16 @@ export default {
       this.transaction = {};
       this.editTransactionDialogVisible = true;
     },
-    goToAccountsIfDialogClosed() {
-      if (!this.editTransactionDialogVisible) {
+    closeDialog() {
+      if (
+        this.$store.state.dialog ||
+        this.editTransactionDialogVisible ||
+        this.importTransactionsDialogVisible ||
+        this.importTransactionsActive
+      ) {
+        this.editTransactionDialogVisible = false;
+        this.importTransactionsDialogVisible = false;
+      } else {
         this.$router.push({
           name: 'accounts'
         });
@@ -113,8 +132,12 @@ export default {
       transaction.highlighted = !transaction.highlighted;
       this.$store.dispatch('project/updateTransaction', transaction);
     },
-    importTransactions() {
-      this.$ipc.importTransactions(this.account.importTransactionsFormatId);
+    async importTransactions() {
+      this.importTransactionsActive = true;
+      await this.$ipc.importTransactions(
+        this.account.importTransactionsFormatId
+      );
+      this.importTransactionsActive = false;
     }
   }
 };

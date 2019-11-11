@@ -1,5 +1,5 @@
 <template>
-  <div v-hotkey.settings="openSettingsDialog">
+  <div v-hotkey.settings="openSettingsDialog" v-hotkey.close="close">
     <AboutDialog />
     <SettingsDialog />
   </div>
@@ -17,6 +17,9 @@ export default {
   methods: {
     openSettingsDialog() {
       this.$store.commit('setDialog', 'settings');
+    },
+    close() {
+      this.$store.commit('setDialog', null);
     }
   }
 };
