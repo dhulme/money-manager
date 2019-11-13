@@ -100,6 +100,11 @@ export default {
         }
       });
     }
+  },
+  watch: {
+    accounts(accounts) {
+      this.$emit('accounts', accounts);
+    }
   }
 };
 </script>

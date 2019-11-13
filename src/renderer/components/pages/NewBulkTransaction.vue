@@ -145,9 +145,11 @@ export default {
       });
     },
     goToBulkTransactions() {
-      this.$router.push({
-        name: 'bulkTransactions'
-      });
+      if (!this.$store.state.dialog) {
+        this.$router.push({
+          name: 'bulkTransactions'
+        });
+      }
     },
     editTransaction(transaction) {
       this.editedTransaction = transaction;

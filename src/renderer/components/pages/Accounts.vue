@@ -1,7 +1,7 @@
 <template>
   <div>
     <VTextField
-      v-focus
+      autofocus
       v-model="search"
       class="mb-4"
       append-icon="search"
@@ -16,6 +16,7 @@
       account-category="Assets"
       account-type="asset"
       hide-on-empty
+      @accounts="searched.assets = $event"
     />
 
     <AccountList
@@ -23,6 +24,7 @@
       account-category="Liabilities"
       account-type="asset"
       hide-on-empty
+      @accounts="searched.liabilities = $event"
     />
 
     <AccountList
@@ -30,6 +32,7 @@
       account-category="Budgets"
       account-type="budget"
       hide-on-empty
+      @accounts="searched.budgets = $event"
     />
   </div>
 </template>
@@ -45,9 +48,9 @@ export default {
     return {
       search: '',
       searched: {
-        assets: null,
-        liabilities: null,
-        budgets: null
+        assets: [],
+        liabilities: [],
+        budgets: []
       }
     };
   },

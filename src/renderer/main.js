@@ -21,14 +21,6 @@ Vue.config.productionTip = false;
 
 Vue.use(VueI18n);
 
-Vue.directive('focus', {
-  inserted(element) {
-    const inputElement =
-      element.tagName === 'DIV' ? element.querySelector('input') : element;
-    inputElement.focus();
-  }
-});
-
 hotkey.init({
   add: {
     name: 'n',

@@ -95,7 +95,9 @@ export default {
       this.$emit('saved', this.newTransaction);
     },
     close() {
-      this.$emit('close');
+      if (!this.$store.state.dialog) {
+        this.$emit('close');
+      }
     },
     _delete() {
       if (this.bulkTransaction) {

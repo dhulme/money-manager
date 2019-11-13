@@ -68,7 +68,7 @@ const ipc = {
   },
 
   importTransactions(format) {
-    ipc.send('importTransactions', format);
+    return ipc.invoke('importTransactions', format);
   },
 
   getSettings() {
