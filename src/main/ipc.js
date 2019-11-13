@@ -13,7 +13,10 @@ const filters = [
 ];
 
 async function saveAs(data) {
-  const { canceled, filePath } = await dialog.showSaveDialog({ filters });
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    filters,
+    defaultPath: settings.getProjectPath()
+  });
   if (canceled || !filePath) {
     return;
   }

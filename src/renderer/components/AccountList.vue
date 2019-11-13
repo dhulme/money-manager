@@ -13,6 +13,7 @@
       ref="dataTable"
       :headers="headers"
       :items="accounts"
+      :items-per-page="20"
     >
       <template v-slot:item="props">
         <tr @click="openAccount(props.item.id)">
