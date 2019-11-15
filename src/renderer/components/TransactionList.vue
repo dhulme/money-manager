@@ -29,7 +29,7 @@
         <template v-slot:item="props">
           <tr
             :style="{ background: props.item.highlighted ? '#E3F2FD' : 'none' }"
-            @click="$emit('highlight-transaction', props.item)"
+            @click="$emit('edit-transaction', props.item)"
           >
             <td>{{ props.item.date | date }}</td>
             <td>{{ props.item.description }}</td>

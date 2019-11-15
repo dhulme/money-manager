@@ -113,6 +113,62 @@ describe('mutations', () => {
     });
   });
 
+  describe('updateTransaction', () => {
+    it('should check transaction exist', () => {
+      const transaction = getNewTransaction();
+      expect(() => {
+        commit('updateTransaction', transaction);
+      }).toThrowError('Cannot find transaction');
+    });
+
+    it('should update a transaction', () => {
+      const transaction = getNewTransaction();
+      const fromAccount = getNewAccount('from');
+      const toAccount = getNewAccount('to');
+      init({
+        accounts: [fromAccount, toAccount],
+        transactions: {
+          [transaction.id]: transaction
+        }
+      });
+      const updatedTransaction = {
+        ...transaction,
+        description: 'updated'
+      };
+      commit('updateTransaction', updatedTransaction);
+      expect(state.transactions[transaction.id]).toMatchObject(
+        updatedTransaction
+      );
+    });
+
+    it('should update the account balances', () => {
+      const transaction = getNewTransaction();
+      const fromAccount = getNewAccount('from');
+      const toAccount = getNewAccount('to');
+      init({
+        accounts: [fromAccount, toAccount],
+        transactions: {
+          [transaction.id]: transaction
+        }
+      });
+      const offset = 500;
+      fromAccount.balance = offset - transaction.value;
+      toAccount.balance = offset + transaction.value;
+
+      const newValue = 20;
+      const updatedTransaction = {
+        ...transaction,
+        value: newValue
+      };
+
+      commit('updateTransaction', updatedTransaction);
+      expect(fromAccount.balance.toString()).toBe(
+        (offset - newValue).toString()
+      );
+      expect(toAccount.balance.toString()).toBe((offset + newValue).toString());
+    });
+  });
+
   describe('updateSummaryBalance', () => {
     it('should sum accounts', () => {
       init({

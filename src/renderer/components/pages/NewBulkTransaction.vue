@@ -130,7 +130,7 @@ export default {
         this.newTransaction = {
           id: getId()
         };
-        this.$refs.newTransactionForm.reset();
+        this.$refs.newTransactionForm.resetValidation();
       }
     },
     addBulkTransaction() {

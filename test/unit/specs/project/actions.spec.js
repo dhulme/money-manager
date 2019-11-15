@@ -67,6 +67,36 @@ describe('actions', () => {
     });
   });
 
+  describe('updateDualTransaction', () => {
+    it('should update both transactions', () => {
+      const primary = getNewTransaction('test1');
+      const secondary = getNewTransaction('test2');
+      const fromAccount = getNewAccount('from');
+      const toAccount = getNewAccount('to');
+      init({
+        accounts: [fromAccount, toAccount],
+        transactions: {
+          [primary.id]: primary,
+          [secondary.id]: secondary
+        }
+      });
+      const updatedPrimary = {
+        ...primary,
+        description: 'updated'
+      };
+      const updatedSecondary = {
+        ...secondary,
+        description: 'updated'
+      };
+      dispatch('updateDualTransaction', {
+        primary: updatedPrimary,
+        secondary: updatedSecondary
+      });
+      expect(state.transactions[primary.id]).toMatchObject(updatedPrimary);
+      expect(state.transactions[secondary.id]).toMatchObject(updatedSecondary);
+    });
+  });
+
   describe('deleteAccount', () => {
     it('should delete an account', () => {
       const account = getNewAccount();

@@ -67,6 +67,32 @@ const project = {
     },
 
     updateTransaction(state, transaction) {
+      requireObjectProperties(transaction, ['id', 'value', 'from', 'to']);
+      const currentTransaction = state.transactions[transaction.id];
+      if (!currentTransaction) {
+        throw new Error(`Cannot find transaction with ID ${transaction.id}`);
+      }
+
+      const balanceDifference = new Big(transaction.value).minus(
+        currentTransaction.value
+      );
+
+      const fromAccount = state.accounts.find(_ => _.id === transaction.from);
+      if (!fromAccount) {
+        throw new Error(
+          `Cannot find 'from' account called ${transaction.from}`
+        );
+      }
+      fromAccount.balance = new Big(fromAccount.balance).minus(
+        balanceDifference
+      );
+
+      const toAccount = state.accounts.find(_ => _.id === transaction.to);
+      if (!toAccount) {
+        throw new Error(`Cannot find 'to' account called ${transaction.to}`);
+      }
+      toAccount.balance = new Big(toAccount.balance).add(balanceDifference);
+
       state.transactions[transaction.id] = {
         ...transaction
       };
@@ -212,6 +238,13 @@ const project = {
 
     updateTransaction({ commit }, transaction) {
       commit('updateTransaction', transaction);
+    },
+
+    updateDualTransaction({ commit }, { primary, secondary }) {
+      console.log('primary', primary);
+      console.log('secondary', secondary);
+      commit('updateTransaction', primary);
+      commit('updateTransaction', secondary);
     },
 
     deleteAccount({ commit }, accountId) {

@@ -79,8 +79,8 @@ Each 'project' in Money Manager is stored in a single JSON file. Local backups o
   name: String,
   transactionIds: [String...],
   type: String // one of 'asset', 'budget' or 'none',
-	deleted: Boolean,
-	importTransactionsFormatId: String
+  deleted: Boolean,
+  importTransactionsFormatId: String
 }
 ```
 
@@ -90,12 +90,13 @@ Each 'project' in Money Manager is stored in a single JSON file. Local backups o
 {
   date: String,
   description: String,
-  expense: String, // account ID
+  expense: String, // account ID for nicer visual display of dual transactions
   from: String, // account ID
   to: String, // account ID
   note: String,
   value: String,
-  highlighted: Boolean
+  highlighted: Boolean,
+  linkedTransaction?: String // for dual transactions, so they can be edited as one
 }
 ```
 
@@ -114,8 +115,8 @@ Each 'project' in Money Manager is stored in a single JSON file. Local backups o
   description: String,
   id: String, // human readable
   name: String,
-	transactionIds: [String...],
-	lastModified: Date
+  transactionIds: [String...],
+  lastModified: Date
 }
 ```
 
@@ -136,9 +137,9 @@ Money Manager settings are stored in a JSON file your Windows user profile folde
 
 ```javascript
 {
-	projectPath: String,
-	lastBackupDates: Object, // one key per project
-	currencyPrefix: String,
-	dateFormat: String
+  projectPath: String,
+  lastBackupDates: Object, // one key per project
+  currencyPrefix: String,
+  dateFormat: String
 }
 ```
