@@ -120,9 +120,9 @@ ipcMain.on('showCloseWarning', async (event, data) => {
   event.sender.send('closeConfirmed');
 });
 
-ipcMain.handle('importTransactions', async (event, format) => {
+ipcMain.handle('importTransactions', async (event, { extensions, format }) => {
   const { filePaths, canceled } = await dialog.showOpenDialog({
-    filters: [{ name: 'CSV', extensions: ['csv'] }]
+    filters: [{ name: 'Transaction files', extensions }]
   });
   if (!filePaths.length || !filePaths[0] || canceled) {
     return;
