@@ -2,7 +2,7 @@ import Big from 'big.js';
 import Vue from 'vue';
 import moment from 'moment';
 
-import { requireObjectProperties, required, getFriendlyId } from '../util';
+import { requireObjectProperties, required, getFriendlyId } from '../../util';
 
 function getAddTransactionParams(transaction) {
   requireObjectProperties(transaction, ['value', 'to', 'from']);
