@@ -26,7 +26,6 @@
       max-width="500px"
       persistent
       no-click-animation
-      eager
     >
       <TransactionEdit
         :transaction="transaction"

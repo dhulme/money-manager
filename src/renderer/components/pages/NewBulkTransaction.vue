@@ -100,14 +100,22 @@ export default {
       },
       dialogVisible: false,
       newTransactionFormValid: true,
+      newTransactionFormClean: true,
       newTransactionValueValidationRules: [
-        value => !!value || 'Value is required',
-        value => !Number.isNaN(Number(value)) || 'Value must be a number'
+        value => this.newTransactionFormClean || !!value || 'Value is required',
+        value =>
+          this.newTransactionFormClean ||
+          !Number.isNaN(Number(value)) ||
+          'Value must be a number'
       ],
       newTransactionValueFromRules: [
-        value => !!value || 'From account is required'
+        value =>
+          this.newTransactionFormClean || !!value || 'From account is required'
       ],
-      newTransactionValueToRules: [value => !!value || 'To account is required']
+      newTransactionValueToRules: [
+        value =>
+          this.newTransactionFormClean || !!value || 'To account is required'
+      ]
     };
   },
   computed: {
@@ -125,7 +133,9 @@ export default {
   },
   methods: {
     addTransaction() {
+      this.newTransactionFormClean = false;
       if (this.$refs.newTransactionForm.validate()) {
+        this.newTransactionFormClean = true;
         this.transactions.push(this.newTransaction);
         this.newTransaction = {
           id: getId()

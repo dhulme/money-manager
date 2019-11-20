@@ -101,9 +101,13 @@ export default {
     return {
       newTransaction: {},
       dateMenu: false,
-      valid: false,
+      valid: true,
+      formClean: true,
       valueValidationRules: [
         () => {
+          if (this.formClean) {
+            return true;
+          }
           const value =
             this.newTransaction.valueIn || this.newTransaction.valueOut;
           if (value === undefined) {
@@ -115,12 +119,15 @@ export default {
           return true;
         }
       ],
-      dateValidationRules: [value => !!value || 'Transaction date is required'],
+      dateValidationRules: [
+        value => this.formClean || !!value || 'Transaction date is required'
+      ],
       descriptionValidationRules: [
-        value => !!value || 'Transaction description is required'
+        value =>
+          this.formClean || !!value || 'Transaction description is required'
       ],
       accountValidationRules: [
-        value => !!value || 'Transaction account is required'
+        value => this.formClean || !!value || 'Transaction account is required'
       ],
       date: moment().format('YYYY-MM-DD'),
       prettyDate: moment().format(this.$dateFormat)
@@ -140,24 +147,30 @@ export default {
     }
   },
   watch: {
-    transaction(transaction) {
-      this.$refs.form.resetValidation();
-      this.date = moment().format('YYYY-MM-DD');
-      this.$nextTick(() => {
-        this.prettyDate = moment().format('DD/MM/YYYY');
-        this.$refs.description.focus();
-      });
-      const isFromTransaction = transaction.from === this.account.id;
-      this.newTransaction = {
-        ...transaction,
-        account: transaction.linkedTransaction
-          ? transaction.expense
-          : isFromTransaction
-          ? transaction.to
-          : transaction.from,
-        ...(isFromTransaction && { valueOut: transaction.value }),
-        ...(!isFromTransaction && { valueIn: transaction.value })
-      };
+    transaction: {
+      immediate: true,
+      handler(transaction) {
+        if (this.$refs.form) {
+          this.$refs.form.resetValidation();
+          this.formClean = true;
+        }
+        this.date = moment(transaction.date).format('YYYY-MM-DD');
+        this.$nextTick(() => {
+          this.prettyDate = moment(transaction.date).format(this.$dateFormat);
+          this.$refs.description.focus();
+        });
+        const isFromTransaction = transaction.from === this.account.id;
+        this.newTransaction = {
+          ...transaction,
+          account: transaction.linkedTransaction
+            ? transaction.expense
+            : isFromTransaction
+            ? transaction.to
+            : transaction.from,
+          ...(isFromTransaction && { valueOut: transaction.value }),
+          ...(!isFromTransaction && { valueIn: transaction.value })
+        };
+      }
     },
     date: {
       handler(date) {
@@ -167,6 +180,7 @@ export default {
   },
   methods: {
     save() {
+      this.formClean = false;
       if (!this.$refs.form.validate()) {
         return;
       }
