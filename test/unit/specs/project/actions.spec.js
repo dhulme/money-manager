@@ -45,6 +45,21 @@ describe('actions', () => {
     });
   });
 
+  describe('addDualTransactions', () => {
+    it('should add an array of dual transactions', () => {
+      const primary = getNewTransaction();
+      const secondary = getNewTransaction('test2');
+      const fromAccount = getNewAccount('from');
+      const toAccount = getNewAccount('to');
+      init({
+        accounts: [fromAccount, toAccount]
+      });
+      dispatch('addDualTransactions', [{ primary, secondary }]);
+      expect(state.transactions[primary.id]).toMatchObject(primary);
+      expect(state.transactions[secondary.id]).toMatchObject(secondary);
+    });
+  });
+
   describe('updateTransaction', () => {
     it('should update a transaction', () => {
       const transaction = getNewTransaction();
