@@ -1,9 +1,10 @@
 <script>
-import { Line } from 'vue-chartjs';
+import { Bar } from 'vue-chartjs';
 import moment from 'moment';
+import Big from 'big.js';
 
 export default {
-  extends: Line,
+  extends: Bar,
   props: {
     account: {
       type: Object,
@@ -16,25 +17,20 @@ export default {
         return null;
       }
 
-      return this.account.transactionIds
-        .map(transactionId => {
+      return this.account.transactionIds.reduce(
+        (monthlyTotals, transactionId) => {
           const transaction = this.$store.getters['project/transaction'](
             transactionId
           );
-          if (transaction.date) {
-            return {
-              y: Number(
-                this.$store.getters['project/accountBalance'](
-                  this.account,
-                  transactionId
-                )
-              ),
-              x: new Date(transaction.date)
-            };
+          if (transaction.date && transaction.from === this.account.id) {
+            const dateKey = transaction.date.substring(0, 7);
+            const total = monthlyTotals[dateKey] || new Big(0);
+            monthlyTotals[dateKey] = total.plus(transaction.value);
           }
-          return null;
-        })
-        .filter(_ => Boolean(_));
+          return monthlyTotals;
+        },
+        {}
+      );
     }
   },
   watch: {
@@ -47,12 +43,14 @@ export default {
     render() {
       this.renderChart(
         {
+          labels: Object.keys(this.data).map(_ =>
+            moment(_, 'YYYY-MM').toDate()
+          ),
           datasets: [
             {
-              data: this.data,
-              backgroundColor: 'transparent',
-              borderColor: '#1976d2',
-              steppedLine: true
+              data: Object.values(this.data).map(_ => Number(_)),
+              backgroundColor: '#1976d2',
+              borderColor: '#1976d2'
             }
           ]
         },
@@ -80,6 +78,9 @@ export default {
                 type: 'time',
                 scaleLabel: {
                   labelString: 'Time'
+                },
+                time: {
+                  unit: 'month'
                 }
               }
             ],

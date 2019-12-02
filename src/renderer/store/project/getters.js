@@ -1,30 +1,41 @@
 import Big from 'big.js';
 
+function sortByName(a, b) {
+  if (a.name > b.name) {
+    return 1;
+  }
+  if (a.name < b.name) {
+    return -1;
+  }
+  return 0;
+}
+
 export default {
+  accountCategories(state) {
+    return state.accountCategories;
+  },
+  accountCategoryItems(state) {
+    return state.accountCategories
+      .sort(sortByName)
+      .map(category => ({ text: category.name, value: category.id }));
+  },
   accounts(state) {
     return state.accounts;
   },
   accountItems(state) {
-    return state.accounts
-      .sort((a, b) => {
-        if (a.name > b.name) {
-          return 1;
-        }
-        if (a.name < b.name) {
-          return -1;
-        }
-        return 0;
-      })
-      .map(account => ({
-        text: account.name,
-        value: account.id
-      }));
+    return state.accounts.sort(sortByName).map(account => ({
+      text: account.name,
+      value: account.id
+    }));
   },
   accountsByCategory(state) {
     return category =>
       state.accounts.filter(
         account => account.category === category && !account.deleted
       );
+  },
+  accountsByType(state) {
+    return type => state.accounts.filter(account => account.type === type);
   },
   account(state) {
     return id => state.accounts.find(account => account.id === id);

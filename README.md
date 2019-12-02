@@ -74,7 +74,7 @@ Each 'project' in Money Manager is stored in a single JSON file. Local backups o
 ```javascript
 {
   balance: String,
-  category: String,
+  category: String, // account category ID
   id: String, // human readable
   name: String,
   transactionIds: [String...],

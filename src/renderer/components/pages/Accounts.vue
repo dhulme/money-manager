@@ -12,27 +12,13 @@
     />
 
     <AccountList
+      v-for="category in $store.getters['project/accountCategories']"
       :search="search"
-      account-category="Assets"
-      account-type="asset"
+      :account-category="category.name"
+      :account-type="category.type"
       hide-on-empty
-      @accounts="searched.assets = $event"
-    />
-
-    <AccountList
-      :search="search"
-      account-category="Liabilities"
-      account-type="asset"
-      hide-on-empty
-      @accounts="searched.liabilities = $event"
-    />
-
-    <AccountList
-      :search="search"
-      account-category="Budgets"
-      account-type="budget"
-      hide-on-empty
-      @accounts="searched.budgets = $event"
+      @accounts="searched[category.id] = $event"
+      :key="category.id"
     />
   </div>
 </template>
