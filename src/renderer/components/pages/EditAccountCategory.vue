@@ -40,8 +40,9 @@ export default {
         id: null
       },
       valid: true,
-      nameRules: [value => !!value || 'Name is required'],
-      typeRules: [value => !!value || 'Type is required']
+      formClean: true,
+      nameRules: [value => this.formClean || !!value || 'Name is required'],
+      typeRules: [value => this.formClean || !!value || 'Type is required']
     };
   },
   computed: {
@@ -60,6 +61,7 @@ export default {
   },
   methods: {
     save() {
+      this.formClean = false;
       if (this.$refs.form.validate()) {
         this.$store.dispatch('project/addAccountCategory', {
           name: this.category.name,

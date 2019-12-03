@@ -51,8 +51,11 @@ export default {
       },
       importTransactionsFormatItems,
       valid: true,
-      nameRules: [value => !!value || 'Name is required'],
-      openingBalanceRules: [value => !!value || 'Opening balance is required']
+      formClean: true,
+      nameRules: [value => this.formClean || !!value || 'Name is required'],
+      openingBalanceRules: [
+        value => this.formClean || !!value || 'Opening balance is required'
+      ]
     };
   },
   computed: {
@@ -84,6 +87,7 @@ export default {
   },
   methods: {
     save() {
+      this.formClean = false;
       if (!this.$refs.form.validate()) {
         return;
       }
