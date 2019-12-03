@@ -48,7 +48,11 @@ export default {
       exportSummaryClick: () => this.$history.exportSummary(),
       exportTransactionsClick: () => this.$history.exportTransactions(),
       aboutClick: () => this.$store.commit('setDialog', 'about'),
-      settingsClick: () => this.$store.commit('setDialog', 'settings')
+      settingsClick: () => this.$store.commit('setDialog', 'settings'),
+      accountCategoriesClick: () =>
+        this.$router.push({
+          name: 'newAccountCategory'
+        })
     });
   },
   methods: {
@@ -72,4 +76,8 @@ export default {
 
 <style lang="scss">
 @import './_fonts.scss';
+
+.required label::after {
+  content: '*';
+}
 </style>

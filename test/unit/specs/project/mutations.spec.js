@@ -4,7 +4,8 @@ import {
   getInit,
   getNewTransaction,
   getNewAccount,
-  getNewBulkTransaction
+  getNewBulkTransaction,
+  getNewAccountCategory
 } from './utils';
 
 describe('mutations', () => {
@@ -256,6 +257,30 @@ describe('mutations', () => {
       };
       commit('editAccount', editedAccount);
       expect(state.accounts).toContainEqual(editedAccount);
+    });
+  });
+
+  describe('addAccountCategory', () => {
+    beforeEach(init);
+
+    it('should check new account category fields', () => {
+      expect(() => {
+        commit('addAccountCategory', {});
+      }).toThrowError('required');
+    });
+
+    it('should add an account category', () => {
+      const category = getNewAccountCategory();
+      commit('addAccountCategory', category);
+      expect(state.accountCategories).toContainEqual(category);
+    });
+
+    it('should not allow duplicate IDs', () => {
+      const category = getNewAccountCategory();
+      commit('addAccountCategory', category);
+      expect(() => {
+        commit('addAccountCategory', category);
+      }).toThrowError('Duplicate');
     });
   });
 

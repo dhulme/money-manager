@@ -7,6 +7,7 @@ import NewBulkTransaction from '@/components/pages/NewBulkTransaction';
 import BulkTransactions from '@/components/pages/BulkTransactions';
 import BulkTransaction from '@/components/pages/BulkTransaction';
 import Insights from '@/components/pages/Insights';
+import EditAccountCategory from '@/components/pages/EditAccountCategory';
 
 Vue.use(Router);
 
@@ -31,6 +32,11 @@ export default new Router({
       path: '/bulk-transactions/:bulkTransactionId',
       name: 'bulkTransaction',
       component: BulkTransaction
+    },
+    {
+      path: '/newAccountCategory',
+      name: 'newAccountCategory',
+      component: EditAccountCategory
     },
     {
       path: '/:accountType/:accountCategory/new',

@@ -2,30 +2,30 @@
   <VDialog v-model="dialog" max-width="600" persistent no-click-animation>
     <VCard>
       <VCardTitle>Preferences</VCardTitle>
-      <VCardText>
-        <VForm ref="form" v-model="valid" lazy-validation>
+      <VForm ref="form" v-model="valid" lazy-validation @submit.prevent="save">
+        <VCardText>
           <p>
             Note: These changes will only be visible when the app is restarted.
           </p>
           <VTextField
             label="Currency format"
             v-model="settings.currencyPrefix"
-            required
+            class="required"
             :rules="currencyPrefixRules"
           />
           <VTextField
             label="Date format"
             v-model="settings.dateFormat"
-            required
+            class="required"
             :rules="dateFormatRules"
           />
           <VLabel>Example date: {{ exampleDate }}</VLabel>
-        </VForm>
-      </VCardText>
-      <VCardActions>
-        <VBtn text color="primary" @click="save">Ok</VBtn>
-        <VBtn text @click="dialog = false">Cancel</VBtn>
-      </VCardActions>
+        </VCardText>
+        <VCardActions>
+          <VBtn type="submit" text color="primary">Ok</VBtn>
+          <VBtn text @click="dialog = false">Cancel</VBtn>
+        </VCardActions>
+      </VForm>
     </VCard>
   </VDialog>
 </template>

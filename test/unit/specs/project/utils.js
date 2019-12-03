@@ -34,6 +34,7 @@ export function getNewBulkTransaction(id = 'test') {
 
 export const getInit = state => ({
   accounts = [],
+  accountCategories = [],
   transactions = {},
   summary = {
     balance: 0
@@ -42,8 +43,17 @@ export const getInit = state => ({
   bulkTransactionTransactions = {}
 } = {}) => {
   state.accounts = accounts;
+  state.accountCategories = accountCategories;
   state.transactions = transactions;
   state.summary = summary;
   state.bulkTransactions = bulkTransactions;
   state.bulkTransactionTransactions = bulkTransactionTransactions;
 };
+
+export function getNewAccountCategory(id = 'test') {
+  return {
+    name: 'test',
+    id,
+    type: 'asset'
+  };
+}

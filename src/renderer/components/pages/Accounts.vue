@@ -16,7 +16,7 @@
       :search="search"
       :account-category="category.name"
       :account-type="category.type"
-      hide-on-empty
+      :hide-on-empty="!!search"
       @accounts="searched[category.id] = $event"
       :key="category.id"
     />

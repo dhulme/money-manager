@@ -1,7 +1,12 @@
 <template>
   <VAppBar class="primary" dark app fixed>
     <ToolbarButton
-      :child-route-names="['account', 'newAccount']"
+      :child-route-names="[
+        'account',
+        'newAccount',
+        'editAccount',
+        'newAccountCategory'
+      ]"
       route-name="accounts"
       >Accounts</ToolbarButton
     >

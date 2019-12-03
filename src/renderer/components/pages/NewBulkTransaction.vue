@@ -19,14 +19,14 @@
             v-model="newTransaction.value"
             label="Amount"
             :prefix="$currencyPrefix"
-            required
+            class="required"
             :rules="newTransactionValueValidationRules"
           />
           <VAutocomplete
             :items="projectItems"
             v-model="newTransaction.from"
             label="From"
-            required
+            class="required"
             :rules="newTransactionValueFromRules"
           />
 
@@ -34,7 +34,7 @@
             :items="projectItems"
             v-model="newTransaction.to"
             label="To"
-            required
+            class="required"
             :rules="newTransactionValueToRules"
           />
 

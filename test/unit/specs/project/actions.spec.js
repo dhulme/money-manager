@@ -4,7 +4,8 @@ import {
   getInit,
   getNewTransaction,
   getNewAccount,
-  getNewBulkTransaction
+  getNewBulkTransaction,
+  getNewAccountCategory
 } from './utils';
 
 describe('actions', () => {
@@ -236,6 +237,14 @@ describe('actions', () => {
       };
       dispatch('editAccount', editedAccount);
       expect(state.accounts).toContainEqual(editedAccount);
+    });
+  });
+
+  describe('addAccountCategory', () => {
+    it('should an account category', () => {
+      const category = getNewAccountCategory();
+      dispatch('addAccountCategory', category);
+      expect(state.accountCategories).toContainEqual(category);
     });
   });
 });

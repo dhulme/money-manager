@@ -31,6 +31,9 @@ const settingsMenuItemTemplate = {
   label: 'Preferences',
   accelerator: 'CmdOrCtrl+,'
 };
+const accountCategoriesMenuItemTemplate = {
+  label: 'Add account category'
+};
 const exportSummaryMenuItemTemplate = {
   label: 'Summary as CSV'
 };
@@ -63,7 +66,8 @@ const menuTemplate = [
       undoMenuItemTemplate,
       redoMenuItemTemplate,
       { type: 'separator' },
-      settingsMenuItemTemplate
+      settingsMenuItemTemplate,
+      accountCategoriesMenuItemTemplate
     ]
   },
   {
@@ -104,7 +108,8 @@ export default {
     exportSummaryClick,
     exportTransactionsClick,
     aboutClick,
-    settingsClick
+    settingsClick,
+    accountCategoriesClick
   }) {
     newMenuItemTemplate.click = newClick;
     openMenuItemTemplate.click = openClick;
@@ -116,6 +121,7 @@ export default {
     exportTransactionsMenuItemTemplate.click = exportTransactionsClick;
     aboutMenuItemTemplate.click = aboutClick;
     settingsMenuItemTemplate.click = settingsClick;
+    accountCategoriesMenuItemTemplate.click = accountCategoriesClick;
     refreshMenu();
   },
 

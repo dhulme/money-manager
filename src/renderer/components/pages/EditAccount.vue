@@ -5,21 +5,34 @@
         <div class="headline">{{ accountId ? 'Edit' : 'Add' }} Account</div>
       </VCardTitle>
       <VCardText>
-        <VForm @submit="save">
+        <VForm
+          ref="form"
+          v-model="valid"
+          lazy-validation
+          @submit.prevent="save"
+        >
           <VTextField v-model="accountCategory" label="Category" disabled />
-          <VTextField autofocus v-model="newAccount.name" label="Name" />
+          <VTextField
+            autofocus
+            v-model="newAccount.name"
+            label="Name"
+            :rules="nameRules"
+            class="required"
+          />
           <VTextField
             v-if="!account"
             v-model="newAccount.openingBalance"
             label="Opening balance"
             :prefix="$currencyPrefix"
+            :rules="openingBalanceRules"
+            class="required"
           />
           <VSelect
             :items="importTransactionsFormatItems"
             label="Transaction import format"
             v-model="newAccount.importTransactionsFormatId"
           />
-          <VBtn type="submit" color="primary">OK</VBtn>
+          <VBtn type="submit" text color="primary">OK</VBtn>
         </VForm>
       </VCardText>
     </VCard>
@@ -36,7 +49,10 @@ export default {
         openingBalance: '0',
         importTransactionsFormatId: null
       },
-      importTransactionsFormatItems
+      importTransactionsFormatItems,
+      valid: true,
+      nameRules: [value => !!value || 'Name is required'],
+      openingBalanceRules: [value => !!value || 'Opening balance is required']
     };
   },
   computed: {
@@ -67,8 +83,10 @@ export default {
     this.$ipc.setTitle();
   },
   methods: {
-    save(event) {
-      event.preventDefault();
+    save() {
+      if (!this.$refs.form.validate()) {
+        return;
+      }
 
       if (this.accountId) {
         this.$store.dispatch('project/editAccount', {

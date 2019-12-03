@@ -131,5 +131,9 @@ export default {
 
   editAccount({ commit }, { id, name, importTransactionsFormatId }) {
     commit('editAccount', { id, name, importTransactionsFormatId });
+  },
+
+  addAccountCategory({ commit }, { name, type }) {
+    commit('addAccountCategory', { name, type });
   }
 };

@@ -19,8 +19,8 @@
               label="Date"
               prepend-icon="event"
               readonly
+              class="required"
               v-on="on"
-              required
             />
           </template>
           <VDatePicker v-model="date" @input="dateMenu = false" />
@@ -32,7 +32,7 @@
           v-model="newTransaction.description"
           label="Description"
           prepend-icon="description"
-          required
+          class="required"
           @keyup.enter="save"
         />
         <VTextField
@@ -47,7 +47,7 @@
           v-model="newTransaction.account"
           label="Account"
           prepend-icon="account_balance"
-          required
+          class="required"
           @keyup.enter="save"
           :disabled="!isNewTransaction"
         />

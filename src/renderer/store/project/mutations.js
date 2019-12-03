@@ -8,6 +8,10 @@ export default {
   init(state, data) {
     const clonedData = JSON.parse(JSON.stringify(data));
     state.accounts = clonedData.accounts;
+    // accountCategories were introduced in v1.3.0
+    if (clonedData.accountCategories) {
+      state.accountCategories = clonedData.accountCategories;
+    }
     state.transactions = clonedData.transactions;
     state.summary = clonedData.summary;
     state.bulkTransactions = clonedData.bulkTransactions;
@@ -123,6 +127,19 @@ export default {
     state.accounts.splice(state.accounts.indexOf(account), 1, {
       ...account,
       ...newAccount
+    });
+  },
+
+  addAccountCategory(state, category) {
+    requireObjectProperties(category, ['name', 'type']);
+    const id = getFriendlyId(
+      category.name,
+      state.accountCategories.map(_ => _.id)
+    );
+    state.accountCategories.push({
+      id,
+      name: category.name,
+      type: category.type
     });
   },
 
