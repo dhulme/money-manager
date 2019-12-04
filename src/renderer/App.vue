@@ -1,13 +1,5 @@
 <template>
-  <VApp
-    v-hotkey.save="$history.save"
-    v-hotkey.saveAs="$history.saveAs"
-    v-hotkey.open="$history.open"
-    v-hotkey.undo="$history.undo"
-    v-hotkey.redo="$history.redo"
-    v-hotkey.new="$history.new"
-    v-hotkey.quit="quit"
-  >
+  <VApp>
     <TheToolbar />
     <main>
       <VContent class="app-content">

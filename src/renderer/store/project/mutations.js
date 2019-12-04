@@ -8,10 +8,7 @@ export default {
   init(state, data) {
     const clonedData = JSON.parse(JSON.stringify(data));
     state.accounts = clonedData.accounts;
-    // accountCategories were introduced in v1.3.0
-    if (clonedData.accountCategories) {
-      state.accountCategories = clonedData.accountCategories;
-    }
+    state.accountCategories = clonedData.accountCategories;
     state.transactions = clonedData.transactions;
     state.summary = clonedData.summary;
     state.bulkTransactions = clonedData.bulkTransactions;
@@ -93,13 +90,7 @@ export default {
   },
 
   addAccount(state, account = required('account')) {
-    requireObjectProperties(account, [
-      'name',
-      'balance',
-      'type',
-      'category',
-      'importTransactionsFormatId'
-    ]);
+    requireObjectProperties(account, ['name', 'balance', 'type', 'category']);
     const {
       name,
       balance,

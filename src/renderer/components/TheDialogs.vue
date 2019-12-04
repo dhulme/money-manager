@@ -1,5 +1,5 @@
 <template>
-  <div v-hotkey.settings="openSettingsDialog" v-hotkey.close="close">
+  <div v-hotkey.close="close">
     <AboutDialog />
     <SettingsDialog />
   </div>

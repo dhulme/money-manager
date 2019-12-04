@@ -66,7 +66,8 @@ export default {
       return this.$route.params.accountType;
     },
     accountId() {
-      return this.$route.params.accountId;
+      const accountId = this.$route.params.accountId;
+      return accountId !== 'new' ? accountId : null;
     },
     account() {
       return (
@@ -91,7 +92,6 @@ export default {
       if (!this.$refs.form.validate()) {
         return;
       }
-
       if (this.accountId) {
         this.$store.dispatch('project/editAccount', {
           id: this.newAccount.id,

@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 const moment = require('moment');
 
 import settings from './settings';
+import defaultProject from './default-project.json';
 
 function backup(path, data) {
   const date = settings.getLastBackupDate(path);
@@ -32,9 +33,16 @@ const project = {
 
   async open(path) {
     console.log(`Opening project ${path}`);
-    return fs.readJson(path).catch(() => {
+    try {
+      const data = await fs.readJson(path);
+      // accountCategories were introduced in v1.3.0
+      if (!data.accountCategories) {
+        data.accountCategories = defaultProject.accountCategories;
+      }
+      return data;
+    } catch (e) {
       throw new Error('Failed to open project');
-    });
+    }
   },
 
   async exportCsv(path, data) {

@@ -16,7 +16,8 @@ const actionNames = {
   addBulkTransactionTransaction: 'Add transaction',
   addBulkTransaction: 'Add bulk transaction',
   addAccount: 'Add account',
-  editAccount: 'Edit account'
+  editAccount: 'Edit account',
+  addAccountCategory: 'Add account category'
 };
 const storePrefix = 'project/';
 
@@ -46,10 +47,13 @@ const history = {
     });
 
     ipc.on('projectOpened', (event, data) => {
+      const callReady = !initData;
       initData = data;
       store.commit(`${storePrefix}init`, initData);
       setEdited(false);
-      ready();
+      if (callReady) {
+        ready();
+      }
     });
     ipc.openDefaultProject();
 
