@@ -48,7 +48,6 @@
           label="Account"
           prepend-icon="account_balance"
           class="required"
-          @keyup.enter="save"
           :disabled="!isNewTransaction"
         />
         <VTextField

@@ -9,6 +9,7 @@ const actionNames = {
   addDualTransaction: 'Add transaction',
   addDualTransactions: 'Add transactions',
   updateTransaction: 'Update transaction',
+  updateDualTransaction: 'Update transaction',
   deleteAccount: 'Delete account',
   runBulkTransactionTransactions: 'Run bulk transactions',
   updateBulkTransactionTransaction: 'Update transaction',

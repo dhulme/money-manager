@@ -7,24 +7,30 @@
 				:category="account.category"
 				:height="200" />
 		</VCard> -->
-    <VCard>
-      <VCardTitle>Account value over time</VCardTitle>
-      <AccountValueOverTime :account="account" :height="120" />
-    </VCard>
     <VRow>
       <VCol md="6">
         <VCard>
           <VCardTitle>Monthly spending over time</VCardTitle>
-          <AccountSpendingOverTime :account="account" :height="200" />
+          <VCardText
+            ><AccountSpendingOverTime :account="account" :height="200"
+          /></VCardText>
         </VCard>
       </VCol>
       <VCol md="6">
         <VCard>
           <VCardTitle>Spending last month</VCardTitle>
-          <SpendingPerMonth :date="monthDate" :height="200" />
+          <VCardText
+            ><SpendingPerMonth :date="monthDate" :height="200"
+          /></VCardText>
         </VCard>
       </VCol>
     </VRow>
+    <VCard>
+      <VCardTitle>Account value over time</VCardTitle>
+      <VCardText
+        ><AccountValueOverTime :account="account" :height="120"
+      /></VCardText>
+    </VCard>
   </div>
 </template>
 

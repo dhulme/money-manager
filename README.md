@@ -43,6 +43,10 @@ For transactions that happen regularly, such as assigning money from a salary to
 
 ![Account](./docs/screenshots/account.png)
 
+## Insights
+
+![Insights](./docs/screenshots/insights.png)
+
 ## Development Setup
 
 Uses [Electron Vue](https://github.com/SimulatedGREG/electron-vue) to integrate Vue with Electron and handle build process.
