@@ -13,6 +13,9 @@
         </p>
         <p>Version {{ version }}</p>
       </VCardText>
+      <VCardActions>
+        <VBtn text @click="dialog = null">Close</VBtn>
+      </VCardActions>
     </VCard>
   </VDialog>
 </template>

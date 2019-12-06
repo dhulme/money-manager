@@ -93,17 +93,17 @@ export default {
       search: '',
       headers: [
         {
-          text: this.$t('transactions.date'),
+          text: 'Date',
           value: 'date',
           align: 'left'
         },
         {
-          text: this.$t('transactions.description'),
+          text: 'Description',
           value: 'description',
           align: 'left'
         },
         {
-          text: this.$t('transactions.note'),
+          text: 'Note',
           value: 'note',
           align: 'left'
         },
@@ -113,12 +113,12 @@ export default {
           align: 'left'
         },
         {
-          text: this.$t('transactions.in'),
+          text: 'In',
           value: 'value',
           align: 'left'
         },
         {
-          text: this.$t('transactions.out'),
+          text: 'Out',
           value: 'value',
           align: 'left'
         },

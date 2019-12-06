@@ -3,18 +3,26 @@
     <VCard class="mb-4">
       <VCardTitle class="headline">New Bulk Transaction</VCardTitle>
       <VCardText>
-        <VTextField v-model="name" label="Name" />
-        <VTextField v-model="description" label="Description" />
+        <VForm ref="mainForm" v-model="mainFormValid" lazy-validation>
+          <VTextField
+            v-model="name"
+            label="Name"
+            class="required"
+            :rules="mainFormNameRules"
+          />
+          <VTextField v-model="description" label="Description" />
+        </VForm>
       </VCardText>
     </VCard>
     <VCard class="mb-4">
       <VCardTitle>Add Transaction</VCardTitle>
-      <VCardText>
-        <VForm
-          ref="newTransactionForm"
-          lazy-validation
-          v-model="newTransactionFormValid"
-        >
+      <VForm
+        ref="newTransactionForm"
+        lazy-validation
+        v-model="newTransactionFormValid"
+        @submit.prevent="addTransaction"
+      >
+        <VCardText>
           <VTextField
             v-model="newTransaction.value"
             label="Amount"
@@ -39,11 +47,11 @@
           />
 
           <VTextField v-model="newTransaction.note" placeholder="Note" />
-        </VForm>
-      </VCardText>
-      <VCardActions>
-        <VBtn text color="primary" @click="addTransaction">Add</VBtn>
-      </VCardActions>
+        </VCardText>
+        <VCardActions>
+          <VBtn text color="primary" type="submit">Add</VBtn>
+        </VCardActions>
+      </VForm>
     </VCard>
     <VCard>
       <VCardTitle>Transactions</VCardTitle>
@@ -115,6 +123,11 @@ export default {
       newTransactionValueToRules: [
         value =>
           this.newTransactionFormClean || !!value || 'To account is required'
+      ],
+      mainFormValid: true,
+      mainFormClean: true,
+      mainFormNameRules: [
+        value => this.mainFormClean || !!value || 'Name is required'
       ]
     };
   },
@@ -144,6 +157,11 @@ export default {
       }
     },
     addBulkTransaction() {
+      this.mainFormClean = false;
+      if (!this.$refs.mainForm.validate()) {
+        return;
+      }
+
       this.$store.dispatch('project/addBulkTransaction', {
         name: this.name,
         description: this.description,
