@@ -14,14 +14,14 @@ Download the latest release [here](https://github.com/dhulme/money-manager/relea
 
 💳 Keep track of transactions to and from your bank accounts and credit cards  
 💰 Assign money from your accounts to different budgets  
-💹 Get insights and analyse your account and budget balances over time  
+💹 Get insights and analyse your spending and balances over time  
 📅 Create bulk transactions that happen regularly, like paying bills or being paid your salary  
 📤 Export your accounts and transactions as CSV  
 🖊️ Highlight important transactions  
-💾 All your data is stored locally and never sent over the internet  
 🕒 Monthly backups made of your data  
-🏦 Import transactions from your bank statements (a number of common CSV formats supported)  
+🏦 Import transactions from your bank statements (several common formats supported)  
 🌍 Change the currency and date format to match your region  
+💾 All your data is stored locally and never sent over the internet  
 
 ## Getting Started
 
