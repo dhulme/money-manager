@@ -5,7 +5,7 @@ import { capitalizeFirstLetter } from './util';
 import ipc from './ipc';
 import store from './store';
 
-function handleErrors(errors) {
+function handleCsvErrors(errors) {
   store.commit(
     'setError',
     'Failed to import transactions CSV' +
@@ -19,6 +19,7 @@ export const importTransactionsFormats = [
   {
     id: 'midata',
     name: 'midata',
+    extensions: ['csv'],
     toTransactions(csvData) {
       let { data, errors } = parse(csvData, {
         header: true,
@@ -33,7 +34,7 @@ export const importTransactionsFormats = [
       }
 
       return errors.length
-        ? handleErrors(errors)
+        ? handleCsvErrors(errors)
         : data.map(row => {
             const value = Number(row['Debit/Credit'].replace(/[^0-9.]/g, ''));
             const description =
@@ -50,19 +51,44 @@ export const importTransactionsFormats = [
   {
     id: 'capitalOne',
     name: 'Capital One',
+    extensions: ['csv'],
     toTransactions(csvData) {
       const { data, errors } = parse(csvData, {
         header: true
       });
 
       return errors.length
-        ? handleErrors(errors)
+        ? handleCsvErrors(errors)
         : data.map(row => ({
             date: moment(row.date),
             description: capitalizeFirstLetter(row.description.toLowerCase()),
             value: Number(row.amount),
             type: row.debitCreditCode === 'Credit' ? 'in' : 'out'
           }));
+    }
+  },
+  {
+    id: 'santanderText',
+    name: 'Santander Text',
+    extensions: ['txt'],
+    toTransactions(textData) {
+      const transactions = textData
+        .split('\n')
+        .slice(4)
+        .join('\n')
+        .split('\t\t\t\t\t\t\n');
+
+      return transactions.map(transaction => {
+        const value = Number(transaction.match(/Amount:�(.+)�/)[1]);
+        return {
+          date: moment(transaction.match(/Date:�(.+)/)[1], 'DD/MM/YYYY'),
+          description: capitalizeFirstLetter(
+            transaction.match(/Description:�(.+)/)[1].toLowerCase()
+          ),
+          value: Math.abs(value),
+          type: value < 0 ? 'out' : 'in'
+        };
+      });
     }
   }
 ];
@@ -84,6 +110,6 @@ ipc.on('importTransactionsDone', (event, { data, format }) => {
     }
   } catch (e) {
     console.error(e);
-    handleErrors();
+    handleCsvErrors();
   }
 });

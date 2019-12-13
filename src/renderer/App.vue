@@ -1,13 +1,5 @@
 <template>
-  <VApp
-    v-hotkey.save="$history.save"
-    v-hotkey.saveAs="$history.saveAs"
-    v-hotkey.open="$history.open"
-    v-hotkey.undo="$history.undo"
-    v-hotkey.redo="$history.redo"
-    v-hotkey.new="$history.new"
-    v-hotkey.quit="quit"
-  >
+  <VApp>
     <TheToolbar />
     <main>
       <VContent class="app-content">
@@ -48,7 +40,11 @@ export default {
       exportSummaryClick: () => this.$history.exportSummary(),
       exportTransactionsClick: () => this.$history.exportTransactions(),
       aboutClick: () => this.$store.commit('setDialog', 'about'),
-      settingsClick: () => this.$store.commit('setDialog', 'settings')
+      settingsClick: () => this.$store.commit('setDialog', 'settings'),
+      accountCategoriesClick: () =>
+        this.$router.push({
+          name: 'newAccountCategory'
+        })
     });
   },
   methods: {
@@ -72,4 +68,8 @@ export default {
 
 <style lang="scss">
 @import './_fonts.scss';
+
+.required label::after {
+  content: '*';
+}
 </style>

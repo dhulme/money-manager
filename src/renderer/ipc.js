@@ -1,12 +1,10 @@
 const electron = require('electron');
 
+import { importTransactionsFormats } from './import-transactions';
+
 const defaultTitle = 'Money Manager';
 let stateEdited = false;
 let currentTitle = '';
-
-// electron.ipcRenderer.on('close', () => {
-//   console.log('test');
-// })
 
 const ipc = {
   send(channel, data) {
@@ -68,7 +66,8 @@ const ipc = {
   },
 
   importTransactions(format) {
-    return ipc.invoke('importTransactions', format);
+    const { extensions } = importTransactionsFormats.find(_ => _.id === format);
+    return ipc.invoke('importTransactions', { extensions, format });
   },
 
   getSettings() {

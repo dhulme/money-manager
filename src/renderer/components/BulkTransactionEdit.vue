@@ -3,41 +3,47 @@
     <VCardTitle class="headline">
       {{ transaction.id ? 'Edit' : 'Add' }} Transaction
     </VCardTitle>
-    <VCardText>
-      <VAutocomplete
-        :items="accounts"
-        v-model="newTransaction.from"
-        label="From"
-        prepend-icon="account_balance"
-      />
-      <VAutocomplete
-        :items="accounts"
-        v-model="newTransaction.to"
-        label="To"
-        prepend-icon="account_balance"
-      />
-      <VTextField
-        v-model="newTransaction.note"
-        label="Note"
-        prepend-icon="note"
-        @keyup.enter="save"
-      />
-      <VTextField
-        v-model="newTransaction.value"
-        label="Amount"
-        :prefix="$currencyPrefix"
-        @keyup.enter="save"
-      />
-    </VCardText>
-    <VCardActions>
-      <VBtn text @click="close">Close</VBtn>
-      <VBtn v-if="transaction.id" text @click="_delete" color="error"
-        >Delete</VBtn
-      >
-      <VBtn color="primary" text @click="save">{{
-        transaction.id ? 'Update' : 'Add'
-      }}</VBtn>
-    </VCardActions>
+    <VForm ref="form" v-model="valid" lazy-validation @submit.prevent="save">
+      <VCardText>
+        <VTextField
+          v-model="newTransaction.value"
+          label="Amount"
+          :prefix="$currencyPrefix"
+          class="required"
+          :rules="valueRules"
+        />
+        <VAutocomplete
+          :items="accounts"
+          v-model="newTransaction.from"
+          label="From"
+          prepend-icon="account_balance"
+          class="required"
+          :rules="fromRules"
+        />
+        <VAutocomplete
+          :items="accounts"
+          v-model="newTransaction.to"
+          label="To"
+          prepend-icon="account_balance"
+          class="required"
+          :rules="toRules"
+        />
+        <VTextField
+          v-model="newTransaction.note"
+          label="Note"
+          prepend-icon="note"
+        />
+      </VCardText>
+      <VCardActions>
+        <VBtn text @click="close">Close</VBtn>
+        <VBtn v-if="transaction.id" text @click="_delete" color="error"
+          >Delete</VBtn
+        >
+        <VBtn type="submit" color="primary" text>{{
+          transaction.id ? 'Update' : 'Add'
+        }}</VBtn>
+      </VCardActions>
+    </VForm>
   </VCard>
 </template>
 
@@ -57,7 +63,20 @@ export default {
   },
   data() {
     return {
-      newTransaction: {}
+      newTransaction: {},
+      valid: true,
+      formClean: true,
+      valueRules: [
+        value => this.formClean || !!value || 'Value is required',
+        value =>
+          this.formClean ||
+          !Number.isNaN(Number(value)) ||
+          'Value must be a number'
+      ],
+      fromRules: [
+        value => this.formClean || !!value || 'From account is required'
+      ],
+      toRules: [value => this.formClean || !!value || 'To account is required']
     };
   },
   computed: {
@@ -71,12 +90,19 @@ export default {
         this.newTransaction = {
           ...transaction
         };
+        this.formClean = true;
+        this.valid = true;
       },
       immediate: true
     }
   },
   methods: {
     save() {
+      this.formClean = false;
+      if (!this.$refs.form.validate()) {
+        return;
+      }
+
       if (this.bulkTransaction) {
         if (this.transaction.id) {
           this.$store.dispatch('project/updateBulkTransactionTransaction', {

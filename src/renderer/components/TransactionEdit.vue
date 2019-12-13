@@ -19,8 +19,8 @@
               label="Date"
               prepend-icon="event"
               readonly
+              class="required"
               v-on="on"
-              required
             />
           </template>
           <VDatePicker v-model="date" @input="dateMenu = false" />
@@ -32,7 +32,7 @@
           v-model="newTransaction.description"
           label="Description"
           prepend-icon="description"
-          required
+          class="required"
           @keyup.enter="save"
         />
         <VTextField
@@ -47,8 +47,8 @@
           v-model="newTransaction.account"
           label="Account"
           prepend-icon="account_balance"
-          required
-          @keyup.enter="save"
+          class="required"
+          :disabled="!isNewTransaction"
         />
         <VTextField
           v-model="newTransaction.valueIn"
@@ -56,6 +56,7 @@
           label="In"
           :prefix="$currencyPrefix"
           @keyup.enter="save"
+          :disabled="!isNewTransaction && isFromTransaction"
         />
         <VTextField
           v-model="newTransaction.valueOut"
@@ -63,6 +64,12 @@
           label="Out"
           :prefix="$currencyPrefix"
           @keyup.enter="save"
+          :disabled="!isNewTransaction && !isFromTransaction"
+        />
+        <VCheckbox
+          v-if="!isNewTransaction"
+          v-model="newTransaction.highlighted"
+          label="Highlighted"
         />
       </VForm>
     </VCardText>
@@ -93,9 +100,13 @@ export default {
     return {
       newTransaction: {},
       dateMenu: false,
-      valid: false,
+      valid: true,
+      formClean: true,
       valueValidationRules: [
         () => {
+          if (this.formClean) {
+            return true;
+          }
           const value =
             this.newTransaction.valueIn || this.newTransaction.valueOut;
           if (value === undefined) {
@@ -107,12 +118,15 @@ export default {
           return true;
         }
       ],
-      dateValidationRules: [value => !!value || 'Transaction date is required'],
+      dateValidationRules: [
+        value => this.formClean || !!value || 'Transaction date is required'
+      ],
       descriptionValidationRules: [
-        value => !!value || 'Transaction description is required'
+        value =>
+          this.formClean || !!value || 'Transaction description is required'
       ],
       accountValidationRules: [
-        value => !!value || 'Transaction account is required'
+        value => this.formClean || !!value || 'Transaction account is required'
       ],
       date: moment().format('YYYY-MM-DD'),
       prettyDate: moment().format(this.$dateFormat)
@@ -120,31 +134,41 @@ export default {
   },
   computed: {
     isNewTransaction() {
-      return !this.transaction.account;
+      return !this.transaction.id;
     },
     accounts() {
       return this.$store.getters['project/accountItems'].filter(
         account => account.value !== this.account.id
       );
+    },
+    isFromTransaction() {
+      return this.transaction.from === this.account.id;
     }
   },
   watch: {
-    transaction(transaction) {
-      this.$refs.form.reset();
-      this.newTransaction = {
-        ...transaction
-      };
-      this.date = moment().format('YYYY-MM-DD');
-      this.$nextTick(() => {
-        this.prettyDate = moment().format('DD/MM/YYYY');
-        this.$refs.description.focus();
-      });
-      if (transaction.from === this.account.id) {
-        this.newTransaction.valueOut = transaction.value;
-        this.newTransaction.account = transaction.to;
-      } else {
-        this.newTransaction.valueIn = transaction.value;
-        this.newTransaction.account = transaction.from;
+    transaction: {
+      immediate: true,
+      handler(transaction) {
+        if (this.$refs.form) {
+          this.$refs.form.resetValidation();
+          this.formClean = true;
+        }
+        this.date = moment(transaction.date).format('YYYY-MM-DD');
+        this.$nextTick(() => {
+          this.prettyDate = moment(transaction.date).format(this.$dateFormat);
+          this.$refs.description.focus();
+        });
+        const isFromTransaction = transaction.from === this.account.id;
+        this.newTransaction = {
+          ...transaction,
+          account: transaction.linkedTransaction
+            ? transaction.expense
+            : isFromTransaction
+            ? transaction.to
+            : transaction.from,
+          ...(isFromTransaction && { valueOut: transaction.value }),
+          ...(!isFromTransaction && { valueIn: transaction.value })
+        };
       }
     },
     date: {
@@ -155,18 +179,21 @@ export default {
   },
   methods: {
     save() {
+      this.formClean = false;
       if (!this.$refs.form.validate()) {
         return;
       }
 
+      this.$emit(
+        this.isNewTransaction ? 'added' : 'updated',
+        this.isNewTransaction ? this.add() : this.update()
+      );
+    },
+    getTransactionFromUi() {
       const uiTransaction = this.newTransaction;
       const date = moment(this.date);
-      const transactionAccount = this.$store.getters['project/account'](
-        uiTransaction.account
-      );
-      const transaction = {
-        description: uiTransaction.description,
-        note: uiTransaction.note,
+      return {
+        ...uiTransaction,
         date: moment()
           .set({
             year: date.year(),
@@ -174,9 +201,52 @@ export default {
             date: date.date()
           })
           .toDate(),
-        id: getId(),
+        id: uiTransaction.id || getId(),
         value: uiTransaction.valueIn || uiTransaction.valueOut
       };
+    },
+    update() {
+      const uiTransaction = this.getTransactionFromUi();
+
+      const transaction = this.$store.getters['project/transaction'](
+        uiTransaction.id
+      );
+      const updates = {
+        description: uiTransaction.description,
+        note: uiTransaction.note,
+        value: uiTransaction.value,
+        date: uiTransaction.date,
+        highlighted: uiTransaction.highlighted
+      };
+      const updatedTransaction = {
+        ...transaction,
+        ...updates
+      };
+
+      if (transaction.linkedTransaction) {
+        const linkedTransaction = this.$store.getters['project/transaction'](
+          transaction.linkedTransaction
+        );
+
+        this.$store.dispatch('project/updateDualTransaction', {
+          primary: updatedTransaction,
+          secondary: {
+            ...linkedTransaction,
+            ...updates
+          }
+        });
+      } else {
+        this.$store.dispatch('project/updateTransaction', updatedTransaction);
+      }
+
+      return transaction;
+    },
+    add() {
+      const uiTransaction = this.newTransaction;
+      const transactionAccount = this.$store.getters['project/account'](
+        uiTransaction.account
+      );
+      const transaction = this.getTransactionFromUi();
 
       if (
         parseFloat(uiTransaction.valueIn) < 0 ||
@@ -214,8 +284,10 @@ export default {
         const secondaryTransaction = {
           ...transaction,
           expense: this.account.id,
-          id: getId()
+          id: getId(),
+          linkedTransaction: transaction.id
         };
+        transaction.linkedTransaction = secondaryTransaction.id;
         if (uiTransaction.valueIn) {
           transaction.from = 'none';
           transaction.to = this.account.id;
@@ -241,8 +313,7 @@ export default {
         }
       }
 
-      const event = this.isNewTransaction ? 'added' : 'updated';
-      this.$emit(event, transaction);
+      return transaction;
     },
     close() {
       this.$emit('close');

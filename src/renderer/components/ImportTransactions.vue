@@ -22,7 +22,7 @@
               <VAutocomplete
                 :items="accounts"
                 v-model="props.item.account"
-                required
+                class="required"
                 hide-details
                 :ref="'account' + props.index"
                 @change="accountChange(props.index)"

@@ -3,30 +3,38 @@
     <VCard class="mb-4">
       <VCardTitle class="headline">New Bulk Transaction</VCardTitle>
       <VCardText>
-        <VTextField v-model="name" label="Name" />
-        <VTextField v-model="description" label="Description" />
+        <VForm ref="mainForm" v-model="mainFormValid" lazy-validation>
+          <VTextField
+            v-model="name"
+            label="Name"
+            class="required"
+            :rules="mainFormNameRules"
+          />
+          <VTextField v-model="description" label="Description" />
+        </VForm>
       </VCardText>
     </VCard>
     <VCard class="mb-4">
       <VCardTitle>Add Transaction</VCardTitle>
-      <VCardText>
-        <VForm
-          ref="newTransactionForm"
-          lazy-validation
-          v-model="newTransactionFormValid"
-        >
+      <VForm
+        ref="newTransactionForm"
+        lazy-validation
+        v-model="newTransactionFormValid"
+        @submit.prevent="addTransaction"
+      >
+        <VCardText>
           <VTextField
             v-model="newTransaction.value"
             label="Amount"
             :prefix="$currencyPrefix"
-            required
+            class="required"
             :rules="newTransactionValueValidationRules"
           />
           <VAutocomplete
             :items="projectItems"
             v-model="newTransaction.from"
             label="From"
-            required
+            class="required"
             :rules="newTransactionValueFromRules"
           />
 
@@ -34,16 +42,16 @@
             :items="projectItems"
             v-model="newTransaction.to"
             label="To"
-            required
+            class="required"
             :rules="newTransactionValueToRules"
           />
 
           <VTextField v-model="newTransaction.note" placeholder="Note" />
-        </VForm>
-      </VCardText>
-      <VCardActions>
-        <VBtn text color="primary" @click="addTransaction">Add</VBtn>
-      </VCardActions>
+        </VCardText>
+        <VCardActions>
+          <VBtn text color="primary" type="submit">Add</VBtn>
+        </VCardActions>
+      </VForm>
     </VCard>
     <VCard>
       <VCardTitle>Transactions</VCardTitle>
@@ -100,14 +108,27 @@ export default {
       },
       dialogVisible: false,
       newTransactionFormValid: true,
+      newTransactionFormClean: true,
       newTransactionValueValidationRules: [
-        value => !!value || 'Value is required',
-        value => !Number.isNaN(Number(value)) || 'Value must be a number'
+        value => this.newTransactionFormClean || !!value || 'Value is required',
+        value =>
+          this.newTransactionFormClean ||
+          !Number.isNaN(Number(value)) ||
+          'Value must be a number'
       ],
       newTransactionValueFromRules: [
-        value => !!value || 'From account is required'
+        value =>
+          this.newTransactionFormClean || !!value || 'From account is required'
       ],
-      newTransactionValueToRules: [value => !!value || 'To account is required']
+      newTransactionValueToRules: [
+        value =>
+          this.newTransactionFormClean || !!value || 'To account is required'
+      ],
+      mainFormValid: true,
+      mainFormClean: true,
+      mainFormNameRules: [
+        value => this.mainFormClean || !!value || 'Name is required'
+      ]
     };
   },
   computed: {
@@ -125,15 +146,22 @@ export default {
   },
   methods: {
     addTransaction() {
+      this.newTransactionFormClean = false;
       if (this.$refs.newTransactionForm.validate()) {
+        this.newTransactionFormClean = true;
         this.transactions.push(this.newTransaction);
         this.newTransaction = {
           id: getId()
         };
-        this.$refs.newTransactionForm.reset();
+        this.$refs.newTransactionForm.resetValidation();
       }
     },
     addBulkTransaction() {
+      this.mainFormClean = false;
+      if (!this.$refs.mainForm.validate()) {
+        return;
+      }
+
       this.$store.dispatch('project/addBulkTransaction', {
         name: this.name,
         description: this.description,

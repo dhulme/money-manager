@@ -13,7 +13,8 @@
       ref="dataTable"
       :headers="headers"
       :items="accounts"
-      :items-per-page="20"
+      disable-pagination
+      hide-default-footer
     >
       <template v-slot:item="props">
         <tr @click="openAccount(props.item.id)">

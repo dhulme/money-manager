@@ -14,14 +14,14 @@ Download the latest release [here](https://github.com/dhulme/money-manager/relea
 
 💳 Keep track of transactions to and from your bank accounts and credit cards  
 💰 Assign money from your accounts to different budgets  
-💹 Get insights and analyse your account and budget balances over time  
+💹 Get insights and analyse your spending and balances over time  
 📅 Create bulk transactions that happen regularly, like paying bills or being paid your salary  
 📤 Export your accounts and transactions as CSV  
 🖊️ Highlight important transactions  
-💾 All your data is stored locally and never sent over the internet  
 🕒 Monthly backups made of your data  
-🏦 Import transactions from your bank statements (a number of common CSV formats supported)  
+🏦 Import transactions from your bank statements (several common formats supported)  
 🌍 Change the currency and date format to match your region  
+💾 All your data is stored locally and never sent over the internet  
 
 ## Getting Started
 
@@ -42,6 +42,10 @@ For transactions that happen regularly, such as assigning money from a salary to
 ### Adding a Transaction
 
 ![Account](./docs/screenshots/account.png)
+
+## Insights
+
+![Insights](./docs/screenshots/insights.png)
 
 ## Development Setup
 
@@ -74,13 +78,13 @@ Each 'project' in Money Manager is stored in a single JSON file. Local backups o
 ```javascript
 {
   balance: String,
-  category: String,
+  category: String, // account category ID
   id: String, // human readable
   name: String,
   transactionIds: [String...],
   type: String // one of 'asset', 'budget' or 'none',
-	deleted: Boolean,
-	importTransactionsFormatId: String
+  deleted: Boolean,
+  importTransactionsFormatId: String
 }
 ```
 
@@ -90,12 +94,13 @@ Each 'project' in Money Manager is stored in a single JSON file. Local backups o
 {
   date: String,
   description: String,
-  expense: String, // account ID
+  expense: String, // account ID for nicer visual display of dual transactions
   from: String, // account ID
   to: String, // account ID
   note: String,
   value: String,
-  highlighted: Boolean
+  highlighted: Boolean,
+  linkedTransaction?: String // for dual transactions, so they can be edited as one
 }
 ```
 
@@ -114,8 +119,8 @@ Each 'project' in Money Manager is stored in a single JSON file. Local backups o
   description: String,
   id: String, // human readable
   name: String,
-	transactionIds: [String...],
-	lastModified: Date
+  transactionIds: [String...],
+  lastModified: Date
 }
 ```
 
@@ -136,9 +141,9 @@ Money Manager settings are stored in a JSON file your Windows user profile folde
 
 ```javascript
 {
-	projectPath: String,
-	lastBackupDates: Object, // one key per project
-	currencyPrefix: String,
-	dateFormat: String
+  projectPath: String,
+  lastBackupDates: Object, // one key per project
+  currencyPrefix: String,
+  dateFormat: String
 }
 ```

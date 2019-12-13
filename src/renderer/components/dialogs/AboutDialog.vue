@@ -13,6 +13,9 @@
         </p>
         <p>Version {{ version }}</p>
       </VCardText>
+      <VCardActions>
+        <VBtn text @click="dialog = null">Close</VBtn>
+      </VCardActions>
     </VCard>
   </VDialog>
 </template>
@@ -21,7 +24,7 @@
 export default {
   data() {
     return {
-      version: '1.2.1'
+      version: '1.3.0'
     };
   },
   computed: {

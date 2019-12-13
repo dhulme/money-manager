@@ -17,7 +17,7 @@
     <TransactionList
       :account="account"
       :transactions="transactions"
-      @highlight-transaction="highlightTransaction"
+      @edit-transaction="editTransaction"
       @add-transaction="addTransaction"
     />
 
@@ -26,13 +26,13 @@
       max-width="500px"
       persistent
       no-click-animation
-      eager
     >
       <TransactionEdit
         :transaction="transaction"
         :account="account"
         @close="editTransactionDialogVisible = false"
         @added="editTransactionDialogVisible = false"
+        @updated="editTransactionDialogVisible = false"
       />
     </VDialog>
 
@@ -128,9 +128,14 @@ export default {
         }
       });
     },
-    highlightTransaction(transaction) {
-      transaction.highlighted = !transaction.highlighted;
-      this.$store.dispatch('project/updateTransaction', transaction);
+    editTransaction(transaction) {
+      // Dual transactions can only be edited if they have a linked transaction
+      // (added in 1.3.0)
+      if (transaction.expense && !transaction.linkedTransaction) {
+        return;
+      }
+      this.transaction = transaction;
+      this.editTransactionDialogVisible = true;
     },
     async importTransactions() {
       this.importTransactionsActive = true;

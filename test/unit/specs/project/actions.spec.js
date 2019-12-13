@@ -4,7 +4,8 @@ import {
   getInit,
   getNewTransaction,
   getNewAccount,
-  getNewBulkTransaction
+  getNewBulkTransaction,
+  getNewAccountCategory
 } from './utils';
 
 describe('actions', () => {
@@ -45,6 +46,21 @@ describe('actions', () => {
     });
   });
 
+  describe('addDualTransactions', () => {
+    it('should add an array of dual transactions', () => {
+      const primary = getNewTransaction();
+      const secondary = getNewTransaction('test2');
+      const fromAccount = getNewAccount('from');
+      const toAccount = getNewAccount('to');
+      init({
+        accounts: [fromAccount, toAccount]
+      });
+      dispatch('addDualTransactions', [{ primary, secondary }]);
+      expect(state.transactions[primary.id]).toMatchObject(primary);
+      expect(state.transactions[secondary.id]).toMatchObject(secondary);
+    });
+  });
+
   describe('updateTransaction', () => {
     it('should update a transaction', () => {
       const transaction = getNewTransaction();
@@ -64,6 +80,36 @@ describe('actions', () => {
       expect(state.transactions[transaction.id]).toMatchObject(
         updatedTransaction
       );
+    });
+  });
+
+  describe('updateDualTransaction', () => {
+    it('should update both transactions', () => {
+      const primary = getNewTransaction('test1');
+      const secondary = getNewTransaction('test2');
+      const fromAccount = getNewAccount('from');
+      const toAccount = getNewAccount('to');
+      init({
+        accounts: [fromAccount, toAccount],
+        transactions: {
+          [primary.id]: primary,
+          [secondary.id]: secondary
+        }
+      });
+      const updatedPrimary = {
+        ...primary,
+        description: 'updated'
+      };
+      const updatedSecondary = {
+        ...secondary,
+        description: 'updated'
+      };
+      dispatch('updateDualTransaction', {
+        primary: updatedPrimary,
+        secondary: updatedSecondary
+      });
+      expect(state.transactions[primary.id]).toMatchObject(updatedPrimary);
+      expect(state.transactions[secondary.id]).toMatchObject(updatedSecondary);
     });
   });
 
@@ -191,6 +237,14 @@ describe('actions', () => {
       };
       dispatch('editAccount', editedAccount);
       expect(state.accounts).toContainEqual(editedAccount);
+    });
+  });
+
+  describe('addAccountCategory', () => {
+    it('should an account category', () => {
+      const category = getNewAccountCategory();
+      dispatch('addAccountCategory', category);
+      expect(state.accountCategories).toContainEqual(category);
     });
   });
 });
