@@ -64,7 +64,7 @@
     "crypto-random-string": "^3.0.1",
     "fs-extra": "^8.1.0",
     "moment": "^2.24.0",
-    "papaparse": "^5.1.0",
+    "papaparse": "^5.2.0",
     "vue": "^2.6.10",
     "vue-chartjs": "^3.5.0",
     "vue-router": "^3.1.3",
