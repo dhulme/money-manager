@@ -17,6 +17,7 @@
           label="Search"
           single-line
           hide-details
+          autofocus
         />
       </VCardTitle>
       <VDataTable
