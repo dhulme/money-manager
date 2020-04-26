@@ -120,7 +120,7 @@
     "vue-jest": "^2.5.0",
     "vue-loader": "^15.2.4",
     "vue-style-loader": "^4.1.0",
-    "vue-template-compiler": "^2.6.10",
+    "vue-template-compiler": "^2.6.11",
     "webpack": "^4.43.0",
     "webpack-dev-server": "^3.10.3",
     "webpack-hot-middleware": "^2.22.2",
