@@ -21,7 +21,8 @@ const store = new Vuex.Store({
     },
     newBulkTransaction: initialNewBulkTransaction(),
     importedTransactions: [],
-    dialog: null
+    dialog: null,
+    search: ''
   },
   mutations: {
     setSummaryBalance(state, value) {
@@ -45,6 +46,9 @@ const store = new Vuex.Store({
     },
     setDialog(state, dialog) {
       state.dialog = dialog;
+    },
+    setSearch(state, value) {
+      state.search = value;
     }
   },
   actions: {

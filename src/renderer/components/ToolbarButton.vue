@@ -27,6 +27,7 @@ export default {
   },
   methods: {
     click() {
+      this.$store.commit('setSearch', '');
       this.$router.push({
         name: this.routeName
       });

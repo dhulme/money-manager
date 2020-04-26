@@ -32,7 +32,6 @@ export default {
   },
   data() {
     return {
-      search: '',
       searched: {
         assets: [],
         liabilities: [],
@@ -42,6 +41,16 @@ export default {
   },
   created() {
     this.$ipc.setTitle();
+  },
+  computed: {
+    search: {
+      get() {
+        return this.$store.state.search;
+      },
+      set(value) {
+        this.$store.commit('setSearch', value);
+      }
+    }
   },
   methods: {
     openSearchedAccount() {
