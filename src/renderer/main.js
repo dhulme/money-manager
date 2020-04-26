@@ -85,6 +85,9 @@ Vue.use(history, {
       if (value === undefined || value === null) {
         return '';
       }
+      if (value === 0 && Object.is(value, -0)) {
+        value = 0;
+      }
       return accounting.formatMoney(value, currencyPrefix, 2, ',', '.');
     });
 
