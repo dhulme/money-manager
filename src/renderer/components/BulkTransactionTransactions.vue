@@ -13,10 +13,20 @@
         <td class="text-right">{{ props.item.value | currency }}</td>
       </tr>
     </template>
+    <template v-slot:body.append>
+      <tr>
+        <td />
+        <td />
+        <td />
+        <td class="text-right font-weight-medium">{{ total | currency }}</td>
+      </tr>
+    </template>
   </VDataTable>
 </template>
 
 <script>
+import Big from 'big.js';
+
 export default {
   props: {
     transactions: Array,
@@ -48,6 +58,14 @@ export default {
       ],
       itemsPerPageOptions: [10, 20, 50]
     };
+  },
+  computed: {
+    total() {
+      return this.transactions.reduce(
+        (sum, transaction) => sum.plus(transaction.value),
+        new Big(0)
+      );
+    }
   },
   methods: {
     accountName(accountId) {
