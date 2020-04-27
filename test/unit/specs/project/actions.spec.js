@@ -126,6 +126,20 @@ describe('actions', () => {
     });
   });
 
+  describe('restoreDeletedAccount', () => {
+    it('should restore a deleted account', () => {
+      const account = getNewAccount();
+      account.deleted = true;
+      init({
+        accounts: [account]
+      });
+      dispatch('restoreDeletedAccount', 'test');
+      expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
+        false
+      );
+    });
+  });
+
   describe('runBulkTransactionTransactions', () => {
     it('should add the transactions', () => {
       const transaction = getNewTransaction();

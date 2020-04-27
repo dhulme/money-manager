@@ -22,6 +22,9 @@ export default {
   accounts(state) {
     return state.accounts.filter(account => !account.deleted);
   },
+  deletedAccounts(state) {
+    return state.accounts.filter(account => account.deleted);
+  },
   accountItems(state, getters) {
     return getters.accounts.sort(sortByName).map(account => ({
       text: account.name,

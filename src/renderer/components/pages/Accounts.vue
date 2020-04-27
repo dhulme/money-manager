@@ -20,15 +20,27 @@
       @accounts="searched[category.id] = $event"
       :key="category.id"
     />
+
+    <VBtn text @click="restoreDeletedAccountsDialogVisible = true"
+      >Restore deleted accounts</VBtn
+    >
+
+    <VDialog v-model="restoreDeletedAccountsDialogVisible" max-width="400">
+      <RestoreDeletedAccounts
+        @close="restoreDeletedAccountsDialogVisible = false"
+      />
+    </VDialog>
   </div>
 </template>
 
 <script>
 import AccountList from '@/components/AccountList';
+import RestoreDeletedAccounts from '@/components/RestoreDeletedAccounts';
 
 export default {
   components: {
-    AccountList
+    AccountList,
+    RestoreDeletedAccounts
   },
   data() {
     return {
@@ -36,7 +48,8 @@ export default {
         assets: [],
         liabilities: [],
         budgets: []
-      }
+      },
+      restoreDeletedAccountsDialogVisible: false
     };
   },
   created() {

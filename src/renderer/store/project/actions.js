@@ -49,7 +49,12 @@ export default {
   },
 
   deleteAccount({ commit }, accountId) {
-    commit('deleteAccount', accountId);
+    commit('setAccountDeleted', { accountId, deleted: true });
+    commit('updateSummaryBalance');
+  },
+
+  restoreDeletedAccount({ commit }, accountId) {
+    commit('setAccountDeleted', { accountId, deleted: false });
     commit('updateSummaryBalance');
   },
 

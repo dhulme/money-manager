@@ -41,6 +41,15 @@ describe('getters', () => {
     });
   });
 
+  describe('deletedAccounts', () => {
+    const account1 = getNewAccount('a');
+    const account2 = getNewAccount('b');
+    account1.deleted = true;
+    init({ accounts: [account1, account2] });
+    const accounts = get('deletedAccounts');
+    expect(accounts).toHaveLength(1);
+  });
+
   describe('accountItems', () => {
     it('gets account items', () => {
       const accountA = getNewAccount('a');
