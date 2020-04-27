@@ -84,9 +84,15 @@ export default {
     }, new Big(0));
   },
 
-  deleteAccount(state, accountId = required('accountId')) {
+  setAccountDeleted(
+    state,
+    {
+      accountId = required('accountId'),
+      deleted = required('deleted')
+    } = required('params')
+  ) {
     const account = state.accounts.find(_ => _.id === accountId);
-    account.deleted = true;
+    account.deleted = deleted;
   },
 
   addAccount(state, account = required('account')) {

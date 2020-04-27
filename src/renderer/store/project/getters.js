@@ -20,25 +20,26 @@ export default {
       .map(category => ({ text: category.name, value: category.id }));
   },
   accounts(state) {
-    return state.accounts;
+    return state.accounts.filter(account => !account.deleted);
   },
-  accountItems(state) {
-    return state.accounts.sort(sortByName).map(account => ({
+  deletedAccounts(state) {
+    return state.accounts.filter(account => account.deleted);
+  },
+  accountItems(state, getters) {
+    return getters.accounts.sort(sortByName).map(account => ({
       text: account.name,
       value: account.id
     }));
   },
-  accountsByCategory(state) {
+  accountsByCategory(state, getters) {
     return category =>
-      state.accounts.filter(
-        account => account.category === category && !account.deleted
-      );
+      getters.accounts.filter(account => account.category === category);
   },
-  accountsByType(state) {
-    return type => state.accounts.filter(account => account.type === type);
+  accountsByType(state, getters) {
+    return type => getters.accounts.filter(account => account.type === type);
   },
-  account(state) {
-    return id => state.accounts.find(account => account.id === id);
+  account(state, getters) {
+    return id => getters.accounts.find(account => account.id === id);
   },
   transactions(state) {
     return account => account.transactionIds.map(id => state.transactions[id]);

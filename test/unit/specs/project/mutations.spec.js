@@ -205,10 +205,16 @@ describe('mutations', () => {
     });
   });
 
-  describe('deleteAccount', () => {
-    it('should require an account ID', () => {
+  describe('setAccountDeleted', () => {
+    it('should require an account ID and deleted flag', () => {
       expect(() => {
-        commit('deleteAccount');
+        commit('setAccountDeleted');
+      }).toThrowError('required');
+      expect(() => {
+        commit('setAccountDeleted', { deleted: true });
+      }).toThrowError('required');
+      expect(() => {
+        commit('setAccountDeleted', { accountId: 'a' });
       }).toThrowError('required');
     });
     it('should delete an account', () => {
@@ -216,9 +222,20 @@ describe('mutations', () => {
       init({
         accounts: [account]
       });
-      commit('deleteAccount', 'test');
+      commit('setAccountDeleted', { accountId: 'test', deleted: true });
       expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
         true
+      );
+    });
+    it('should restore a deleted account', () => {
+      const account = getNewAccount();
+      account.deleted = true;
+      init({
+        accounts: [account]
+      });
+      commit('setAccountDeleted', { accountId: 'test', deleted: false });
+      expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
+        false
       );
     });
   });

@@ -15,9 +15,6 @@ export default {
     SettingsDialog
   },
   methods: {
-    openSettingsDialog() {
-      this.$store.commit('setDialog', 'settings');
-    },
     close() {
       this.$store.commit('setDialog', null);
     }

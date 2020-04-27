@@ -29,28 +29,59 @@ describe('getters', () => {
       expect(accounts).toHaveLength(1);
       expect(accounts[0]).toMatchObject(account);
     });
+
+    it('should not return deleted accounts', () => {
+      const account = getNewAccount();
+      account.deleted = true;
+      init({
+        accounts: [account]
+      });
+      const accounts = get('accounts');
+      expect(accounts).toHaveLength(0);
+    });
+  });
+
+  describe('deletedAccounts', () => {
+    const account1 = getNewAccount('a');
+    const account2 = getNewAccount('b');
+    account1.deleted = true;
+    init({ accounts: [account1, account2] });
+    const accounts = get('deletedAccounts');
+    expect(accounts).toHaveLength(1);
   });
 
   describe('accountItems', () => {
-    const accountA = getNewAccount('a');
-    const accountB = getNewAccount('b');
-    const accountC = getNewAccount('c');
-    const accountD = getNewAccount('d');
-    accountD.name = 'a';
-    init({
-      accounts: [accountB, accountC, accountA, accountD]
+    it('gets account items', () => {
+      const accountA = getNewAccount('a');
+      const accountB = getNewAccount('b');
+      const accountC = getNewAccount('c');
+      const accountD = getNewAccount('d');
+      accountD.name = 'a';
+      init({
+        accounts: [accountB, accountC, accountA, accountD]
+      });
+      const accounts = get('accountItems');
+      expect(accounts).toHaveLength(4);
+      expect(accounts[0].text).toBe('a');
+      expect(accounts[1].text).toBe('a');
+      expect(accounts[2]).toMatchObject({
+        text: accountB.name,
+        value: accountB.id
+      });
+      expect(accounts[3]).toMatchObject({
+        text: accountC.name,
+        value: accountC.id
+      });
     });
-    const accounts = get('accountItems');
-    expect(accounts).toHaveLength(4);
-    expect(accounts[0].text).toBe('a');
-    expect(accounts[1].text).toBe('a');
-    expect(accounts[2]).toMatchObject({
-      text: accountB.name,
-      value: accountB.id
-    });
-    expect(accounts[3]).toMatchObject({
-      text: accountC.name,
-      value: accountC.id
+
+    it("doesn't return deleted accounts", () => {
+      const account = getNewAccount('a');
+      account.deleted = true;
+      init({
+        accounts: [account]
+      });
+      const accounts = get('accountItems');
+      expect(accounts).toHaveLength(0);
     });
   });
 
