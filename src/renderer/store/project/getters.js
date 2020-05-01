@@ -38,8 +38,8 @@ export default {
   accountsByType(state, getters) {
     return type => getters.accounts.filter(account => account.type === type);
   },
-  account(state, getters) {
-    return id => getters.accounts.find(account => account.id === id);
+  account(state) {
+    return id => state.accounts.find(account => account.id === id);
   },
   transactions(state) {
     return account => account.transactionIds.map(id => state.transactions[id]);
