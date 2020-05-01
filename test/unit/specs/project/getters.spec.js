@@ -104,6 +104,15 @@ describe('getters', () => {
       });
       expect(get('account')(account.id)).toBe(account);
     });
+
+    it('gets a deleted account', () => {
+      const account = getNewAccount();
+      account.deleted = true;
+      init({
+        accounts: [account]
+      });
+      expect(get('account')(account.id)).toBe(account);
+    });
   });
 
   describe('transactions', () => {
