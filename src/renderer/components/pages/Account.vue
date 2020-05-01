@@ -113,6 +113,7 @@ export default {
         this.editTransactionDialogVisible = false;
         this.importTransactionsDialogVisible = false;
       } else {
+        this.$store.commit('setSearch', '');
         this.$router.push({
           name: 'accounts'
         });
