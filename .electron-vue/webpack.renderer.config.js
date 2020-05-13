@@ -3,7 +3,7 @@
 process.env.BABEL_ENV = 'renderer';
 
 const path = require('path');
-const { dependencies } = require('../package.json');
+const { dependencies, version } = require('../package.json');
 const webpack = require('webpack');
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin');
@@ -122,7 +122,12 @@ let rendererConfig = {
           : false
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+		new webpack.NoEmitOnErrorsPlugin(),
+		new webpack.DefinePlugin({
+			'process.env': {
+				PACKAGE_VERSION: '"' + version + '"'
+			}
+		})
   ],
   output: {
     filename: '[name].js',

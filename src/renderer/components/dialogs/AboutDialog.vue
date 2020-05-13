@@ -24,7 +24,7 @@
 export default {
   data() {
     return {
-      version: '1.3.0'
+      version: process.env.PACKAGE_VERSION
     };
   },
   computed: {
