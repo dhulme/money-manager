@@ -79,7 +79,7 @@
 import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
 import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 
-import { getId } from '../../util';
+import { getId, validateInputValue } from '../../util';
 
 export default {
   components: {
@@ -110,11 +110,9 @@ export default {
       newTransactionFormValid: true,
       newTransactionFormClean: true,
       newTransactionValueValidationRules: [
-        value => this.newTransactionFormClean || !!value || 'Value is required',
         value =>
-          this.newTransactionFormClean ||
-          !Number.isNaN(Number(value)) ||
-          'Value must be a number'
+          this.newTransactionFormClean || !!value || 'Amount is required',
+        value => this.newTransactionFormClean || validateInputValue(value)
       ],
       newTransactionValueFromRules: [
         value =>
