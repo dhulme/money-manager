@@ -67,7 +67,7 @@ export default {
       valid: true,
       formClean: true,
       valueRules: [
-        value => this.formClean || !!value || 'Ammount is required',
+        value => this.formClean || !!value || 'Amount is required',
         value => this.formClean || validateInputValue(value)
       ],
       fromRules: [
