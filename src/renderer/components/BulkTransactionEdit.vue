@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { getId } from '../util';
+import { getId, validateInputValue } from '../util';
 
 export default {
   props: {
@@ -67,11 +67,8 @@ export default {
       valid: true,
       formClean: true,
       valueRules: [
-        value => this.formClean || !!value || 'Value is required',
-        value =>
-          this.formClean ||
-          !Number.isNaN(Number(value)) ||
-          'Value must be a number'
+        value => this.formClean || !!value || 'Amount is required',
+        value => this.formClean || validateInputValue(value)
       ],
       fromRules: [
         value => this.formClean || !!value || 'From account is required'

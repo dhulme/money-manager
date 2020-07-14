@@ -26,6 +26,7 @@
         :search="search"
         :custom-filter="customFilter"
         :footer-props="footerProps"
+        :page.sync="page"
       >
         <template v-slot:item="props">
           <tr
@@ -51,7 +52,7 @@
             <td />
             <td
               :class="{ 'red--text': parseFloat(account.balance) < 0 }"
-              class="font-weight-medium"
+              class="balance"
             >
               {{ account.balance | currency }}
             </td>
@@ -130,7 +131,8 @@ export default {
       ],
       footerProps: {
         itemsPerPageOptions: [10, -1]
-      }
+      },
+      page: 1
     };
   },
   computed: {
@@ -145,6 +147,11 @@ export default {
         currency: accounting.unformat(this.search),
         date: moment(this.search, this.$dateFormat).format('YYYY-MM-DD')
       };
+    }
+  },
+  watch: {
+    search() {
+      this.page = 1;
     }
   },
   methods: {
@@ -206,3 +213,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.balance {
+  font-size: 0.875rem;
+  height: 48px;
+  padding: 0 1rem;
+  font-weight: 500;
+}
+</style>

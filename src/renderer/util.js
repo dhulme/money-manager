@@ -35,3 +35,14 @@ export function getId() {
 export function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function validateInputValue(value) {
+  if (Number.isNaN(Number(value))) {
+    return 'Amount must be a number';
+  }
+  const dp = value.split('.')[1];
+  if (dp && dp.length > 2) {
+    return 'Amount must have no more than 2 decimal places';
+  }
+  return true;
+}

@@ -7,6 +7,14 @@ import { requireObjectProperties, required, getFriendlyId } from '../../util';
 export default {
   init(state, data) {
     const clonedData = JSON.parse(JSON.stringify(data));
+
+    // Old accounts may not have deleted flag set, which causes reactivity issues if deleted
+    clonedData.accounts.forEach(account => {
+      if (account.deleted === undefined) {
+        account.deleted = false;
+      }
+    });
+
     state.accounts = clonedData.accounts;
     state.accountCategories = clonedData.accountCategories;
     state.transactions = clonedData.transactions;

@@ -29,10 +29,7 @@
       </template>
       <template v-slot:body.append>
         <td />
-        <td
-          :class="{ 'red--text': parseFloat(total) < 0 }"
-          class="text-right font-weight-medium"
-        >
+        <td :class="{ 'red--text': parseFloat(total) < 0 }" class="balance">
           {{ total | currency }}
         </td>
       </template>
@@ -110,3 +107,13 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.balance {
+  font-size: 0.875rem;
+  height: 48px;
+  padding: 0 1rem;
+  text-align: right;
+  font-weight: 500;
+}
+</style>

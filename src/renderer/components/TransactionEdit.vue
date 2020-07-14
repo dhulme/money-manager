@@ -83,7 +83,7 @@
 <script>
 import moment from 'moment';
 
-import { getId } from '../util';
+import { getId, validateInputValue } from '../util';
 
 export default {
   props: {
@@ -112,10 +112,7 @@ export default {
           if (value === undefined) {
             return 'A value for in or out is required';
           }
-          if (Number.isNaN(Number(value))) {
-            return 'Value must be a number';
-          }
-          return true;
+          return validateInputValue(value);
         }
       ],
       dateValidationRules: [

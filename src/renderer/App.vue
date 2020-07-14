@@ -2,9 +2,9 @@
   <VApp>
     <TheToolbar />
     <main>
-      <VContent class="app-content">
+      <VMain class="app-content">
         <RouterView class="router-container" />
-      </VContent>
+      </VMain>
     </main>
     <TheSnackbar />
     <TheDialogs />
