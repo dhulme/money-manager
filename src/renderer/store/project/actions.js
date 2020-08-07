@@ -41,11 +41,13 @@ export default {
 
   updateTransaction({ commit }, transaction) {
     commit('updateTransaction', transaction);
+    commit('updateSummaryBalance');
   },
 
   updateDualTransaction({ commit }, { primary, secondary }) {
     commit('updateTransaction', primary);
     commit('updateTransaction', secondary);
+    commit('updateSummaryBalance');
   },
 
   deleteAccount({ commit }, accountId) {
