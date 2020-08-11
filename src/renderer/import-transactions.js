@@ -20,6 +20,7 @@ export const importTransactionsFormats = [
     id: 'midata',
     name: 'midata',
     extensions: ['csv'],
+    type: 'account',
     toTransactions(csvData) {
       let { data, errors } = parse(csvData, {
         header: true,
@@ -51,6 +52,7 @@ export const importTransactionsFormats = [
   {
     id: 'capitalOne',
     name: 'Capital One',
+    type: 'account',
     extensions: ['csv'],
     toTransactions(csvData) {
       const { data, errors } = parse(csvData, {
@@ -71,6 +73,7 @@ export const importTransactionsFormats = [
     id: 'santanderText',
     name: 'Santander Text',
     extensions: ['txt'],
+    type: 'account',
     toTransactions(textData) {
       const transactions = textData
         .split('\n')
@@ -90,15 +93,36 @@ export const importTransactionsFormats = [
         };
       });
     }
+  },
+  {
+    id: 'moneyManagerBulkTransactions',
+    name: 'Money Manager Bulk Transactions',
+    extensions: ['tsv'],
+    type: 'bulkTransaction',
+    toTransactions(tsvData) {
+      const { data, errors } = parse(tsvData, {
+        header: true,
+        skipEmptyLines: true,
+        delimiter: '\t'
+      });
+      return errors.length
+        ? handleCsvErrors(errors)
+        : data.map(row => ({
+            fromName: row.From,
+            toName: row.To,
+            note: row.Note,
+            value: Number(row.Amount.replace(/[\s£,]/g, ''))
+          }));
+    }
   }
 ];
 
-export const importTransactionsFormatItems = importTransactionsFormats.map(
-  format => ({
+export const importAccountTransactionsFormatItems = importTransactionsFormats
+  .filter(format => format.type === 'account')
+  .map(format => ({
     text: format.name,
     value: format.id
-  })
-);
+  }));
 
 ipc.on('importTransactionsDone', (event, { data, format }) => {
   try {

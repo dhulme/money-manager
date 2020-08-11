@@ -3,32 +3,29 @@
   "env": {
     "main": {
       "presets": [
-        ["env", {
-          "targets": { "node": 7 }
-        }],
-        "stage-0"
+        ["@babel/preset-env", {
+          "targets": { "node": 10 }
+        }]
       ]
     },
     "renderer": {
       "presets": [
-        ["env", {
+        ["@babel/preset-env", {
           "modules": false
-        }],
-        "stage-0"
+        }]
       ]
     },
     "web": {
       "presets": [
-        ["env", {
+        ["@babel/preset-env", {
           "modules": false
-        }],
-        "stage-0"
+        }]
       ]
     },
     "test": {
-      "presets": ["env", "stage-0"],
+      "presets": ["@babel/preset-env"],
       "plugins": ["transform-es2015-modules-commonjs", "dynamic-import-node"]
     }
   },
-  "plugins": ["transform-runtime"]
+  "plugins": ["@babel/plugin-transform-runtime"]
 }

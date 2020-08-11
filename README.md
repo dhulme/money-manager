@@ -147,3 +147,28 @@ Money Manager settings are stored in a JSON file your Windows user profile folde
   dateFormat: String
 }
 ```
+
+## Import Formats
+
+### Money Manager Bulk Transactions
+
+Custom TSV (tab separated values) format used for importing bulk transactions.
+
+Example:
+```
+From	To	Note	Amount
+Salary	Mortgage		 £1.00
+Salary	Food		 £1.00
+```
+
+### Midata
+
+A UK standard for financial data.
+
+### Capital One
+
+Used by Capital One UK.
+
+### Santander
+
+Used by Satander UK.

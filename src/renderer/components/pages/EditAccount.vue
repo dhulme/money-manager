@@ -28,7 +28,7 @@
             class="required"
           />
           <VSelect
-            :items="importTransactionsFormatItems"
+            :items="importAccountTransactionsFormatItems"
             label="Transaction import format"
             v-model="newAccount.importTransactionsFormatId"
           />
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { importTransactionsFormatItems } from '../../import-transactions';
+import { importAccountTransactionsFormatItems } from '../../import-transactions';
 export default {
   data() {
     return {
@@ -49,7 +49,7 @@ export default {
         openingBalance: '0',
         importTransactionsFormatId: null
       },
-      importTransactionsFormatItems,
+      importAccountTransactionsFormatItems,
       valid: true,
       formClean: true,
       nameRules: [value => this.formClean || !!value || 'Name is required'],

@@ -76,6 +76,10 @@ const ipc = {
 
   saveSettings(data) {
     return ipc.invoke('saveSettings', data);
+  },
+
+  importBulkTransactionTransactions() {
+    return ipc.invoke('importBulkTransactionTransactions');
   }
 };
 

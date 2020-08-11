@@ -41,6 +41,9 @@ export default {
   account(state) {
     return id => state.accounts.find(account => account.id === id);
   },
+  accountByName(state) {
+    return name => state.accounts.find(account => account.name === name);
+  },
   transactions(state) {
     return account => account.transactionIds.map(id => state.transactions[id]);
   },

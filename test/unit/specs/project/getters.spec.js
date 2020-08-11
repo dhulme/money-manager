@@ -115,6 +115,16 @@ describe('getters', () => {
     });
   });
 
+  describe('accountByName', () => {
+    it('gets account by name', () => {
+      const account = getNewAccount();
+      init({
+        accounts: [account]
+      });
+      expect(get('accountByName')(account.name)).toBe(account);
+    });
+  });
+
   describe('transactions', () => {
     it('gets transactions by account', () => {
       const account = getNewAccount();

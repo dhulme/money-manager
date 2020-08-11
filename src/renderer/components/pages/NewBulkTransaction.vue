@@ -1,7 +1,13 @@
 <template>
   <div v-hotkey.close="goToBulkTransactions">
     <VCard class="mb-4">
-      <VCardTitle class="headline">New Bulk Transaction</VCardTitle>
+      <VCardTitle
+        ><span class="headline">New Bulk Transaction</span><VSpacer /><VBtn
+          text
+          @click="importTransactions"
+          >Import</VBtn
+        ></VCardTitle
+      >
       <VCardText>
         <VForm ref="mainForm" v-model="mainFormValid" lazy-validation>
           <VTextField
@@ -135,11 +141,48 @@ export default {
         text: account.name,
         value: account.id
       }));
+    },
+    importedTransactions() {
+      return this.$store.state.importedTransactions;
     }
   },
   watch: {
     name(name) {
       this.$ipc.setTitle(name);
+    },
+    importedTransactions(transactions) {
+      const missingAccountNames = new Set();
+      transactions.forEach(transaction => {
+        const from = this.$store.getters['project/accountByName'](
+          transaction.fromName
+        )?.id;
+        const to = this.$store.getters['project/accountByName'](
+          transaction.toName
+        )?.id;
+
+        if (!from) {
+          missingAccountNames.add(transaction.fromName);
+        }
+        if (!to) {
+          missingAccountNames.add(transaction.toName);
+        }
+        if (from && to && transaction.value) {
+          this.transactions.push({
+            from,
+            to,
+            value: transaction.value,
+            note: transaction.note
+          });
+        }
+      });
+      if (missingAccountNames.size) {
+        this.$store.commit(
+          'setError',
+          `Accounts named ${[...missingAccountNames].join(
+            ', '
+          )} could not be found`
+        );
+      }
     }
   },
   methods: {
@@ -190,6 +233,9 @@ export default {
       this.dialogVisible = false;
       const index = this.transactions.findIndex(_ => _.id === transaction.id);
       this.transactions.splice(index, 1);
+    },
+    importTransactions() {
+      this.$ipc.importTransactions('moneyManagerBulkTransactions');
     }
   }
 };
