@@ -47,15 +47,15 @@ export default {
       newAccount: {
         name: '',
         openingBalance: '0',
-        importTransactionsFormatId: null
+        importTransactionsFormatId: null,
       },
       importAccountTransactionsFormatItems,
       valid: true,
       formClean: true,
-      nameRules: [value => this.formClean || !!value || 'Name is required'],
+      nameRules: [(value) => this.formClean || !!value || 'Name is required'],
       openingBalanceRules: [
-        value => this.formClean || !!value || 'Opening balance is required'
-      ]
+        (value) => this.formClean || !!value || 'Opening balance is required',
+      ],
     };
   },
   computed: {
@@ -73,7 +73,7 @@ export default {
       return (
         this.accountId && this.$store.getters['project/account'](this.accountId)
       );
-    }
+    },
   },
   mounted() {
     this.newAccount = { ...this.account };
@@ -81,7 +81,7 @@ export default {
   watch: {
     'newAccount.name'(name) {
       this.$ipc.setTitle(name);
-    }
+    },
   },
   created() {
     this.$ipc.setTitle();
@@ -96,17 +96,28 @@ export default {
         this.$store.dispatch('project/editAccount', {
           id: this.newAccount.id,
           name: this.newAccount.name,
-          importTransactionsFormatId: this.newAccount.importTransactionsFormatId
-        });
-      } else {
-        this.$store.dispatch('project/addAccount', {
-          name: this.newAccount.name,
-          balance: this.newAccount.openingBalance,
           importTransactionsFormatId: this.newAccount
             .importTransactionsFormatId,
-          category: this.accountCategory,
-          type: this.accountType
         });
+      } else {
+        try {
+          this.$store.dispatch('project/addAccount', {
+            name: this.newAccount.name,
+            balance: this.newAccount.openingBalance,
+            importTransactionsFormatId: this.newAccount
+              .importTransactionsFormatId,
+            category: this.accountCategory,
+            type: this.accountType,
+          });
+        } catch (e) {
+          if (e.message.includes('Duplicate ID')) {
+            this.$store.commit(
+              'setError',
+              'There is already an account named ' + this.newAccount.name
+            );
+            return;
+          }
+        }
       }
 
       this.resetForm();
@@ -127,16 +138,16 @@ export default {
           name: 'account',
           params: {
             accountId: account.id,
-            accountCategory: account.category
-          }
+            accountCategory: account.category,
+          },
         });
       }
     },
     goToAccounts() {
       this.$router.push({
-        name: 'accounts'
+        name: 'accounts',
       });
-    }
-  }
+    },
+  },
 };
 </script>

@@ -8,15 +8,15 @@ import project from './project';
 const filters = [
   {
     name: 'JSON',
-    extensions: ['json']
-  }
+    extensions: ['json'],
+  },
 ];
 
 async function saveAs(data) {
   const defaultPath = settings.getProjectPath();
   const { canceled, filePath } = await dialog.showSaveDialog({
     filters,
-    ...(defaultPath && { defaultPath })
+    ...(defaultPath && { defaultPath }),
   });
   if (canceled || !filePath) {
     return;
@@ -50,7 +50,7 @@ ipcMain.on('projectSaveAs', async (event, data) => {
   saveAs(data);
 });
 
-ipcMain.on('projectOpenDefault', async event => {
+ipcMain.on('projectOpenDefault', async (event) => {
   const projectPath = settings.getProjectPath();
   if (projectPath) {
     try {
@@ -66,9 +66,9 @@ ipcMain.on('projectOpenDefault', async event => {
   }
 });
 
-ipcMain.on('projectOpen', async event => {
+ipcMain.on('projectOpen', async (event) => {
   const { filePaths, canceled } = await dialog.showOpenDialog({
-    filters
+    filters,
   });
 
   if (!filePaths || !filePaths[0] || canceled) return;
@@ -80,7 +80,7 @@ ipcMain.on('projectOpen', async event => {
   event.sender.send('projectOpened', data);
 });
 
-ipcMain.on('projectNew', event => {
+ipcMain.on('projectNew', (event) => {
   settings.setProjectPath(null);
   settings.save();
   event.sender.send('projectOpened', defaultProject);
@@ -91,10 +91,10 @@ ipcMain.on('exportCsv', async (event, { type, data }) => {
     filters: [
       {
         name: 'CSV',
-        extensions: ['csv']
-      }
+        extensions: ['csv'],
+      },
     ],
-    title: `Export ${type} CSV`
+    title: `Export ${type} CSV`,
   });
   if (cancelled || !filePath) {
     return;
@@ -113,17 +113,18 @@ ipcMain.on('showCloseWarning', async (event, data) => {
     type: 'warning',
     title: 'Money Manager',
     buttons: ['Save', "Don't save"],
-    message: 'Do you want to save changes to your project?'
+    message: 'Do you want to save changes to your project?',
   });
   if (response === 0) {
     await save(data);
+  } else if (response === 1) {
+    event.sender.send('closeConfirmed');
   }
-  event.sender.send('closeConfirmed');
 });
 
 ipcMain.handle('importTransactions', async (event, { extensions, format }) => {
   const { filePaths, canceled } = await dialog.showOpenDialog({
-    filters: [{ name: 'Transaction files', extensions }]
+    filters: [{ name: 'Transaction files', extensions }],
   });
   if (!filePaths.length || !filePaths[0] || canceled) {
     return;
@@ -132,7 +133,7 @@ ipcMain.handle('importTransactions', async (event, { extensions, format }) => {
   const data = await fs.readFile(filePaths[0]);
   event.sender.send('importTransactionsDone', {
     data: data.toString(),
-    format
+    format,
   });
 });
 
