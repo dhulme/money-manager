@@ -12,13 +12,11 @@ const actionNames = {
   updateDualTransaction: 'Update transaction',
   deleteAccount: 'Delete account',
   runBulkTransactionTransactions: 'Run bulk transactions',
-  updateBulkTransactionTransaction: 'Update transaction',
   deleteBulkTransactionTransaction: 'Delete bulk transaction',
-  addBulkTransactionTransaction: 'Add transaction',
   addBulkTransaction: 'Add bulk transaction',
   addAccount: 'Add account',
   editAccount: 'Edit account',
-  addAccountCategory: 'Add account category'
+  addAccountCategory: 'Add account category',
 };
 const storePrefix = 'project/';
 
@@ -35,7 +33,7 @@ const history = {
     let initData;
     let savedDoneLength = 0;
 
-    store.subscribeAction(action => {
+    store.subscribeAction((action) => {
       if (!action.type.startsWith(storePrefix)) return;
 
       done.push(action);
@@ -59,7 +57,7 @@ const history = {
     ipc.openDefaultProject();
 
     let canClose = false;
-    window.addEventListener('beforeunload', e => {
+    window.addEventListener('beforeunload', (e) => {
       if (
         process.env.NODE_ENV === 'production' &&
         !canClose &&
@@ -85,7 +83,7 @@ const history = {
 
         newAction = false;
         store.commit(`${storePrefix}init`, initData);
-        done.forEach(action => {
+        done.forEach((action) => {
           store.dispatch(action.type, action.payload);
           done.pop();
         });
@@ -135,11 +133,11 @@ const history = {
         ipc.newProject();
       },
       exportSummary() {
-        const summary = store.state.project.accounts.map(account => ({
+        const summary = store.state.project.accounts.map((account) => ({
           Name: account.name,
           Category: account.category,
           Type: account.type,
-          Balance: Number(account.balance)
+          Balance: Number(account.balance),
         }));
         ipc.exportCsv('summary', unparse(summary));
       },
@@ -147,7 +145,7 @@ const history = {
         const accountNamesById = store.state.project.accounts.reduce(
           (acc, account) => ({
             ...acc,
-            [account.id]: account.name
+            [account.id]: account.name,
           }),
           {}
         );
@@ -157,19 +155,19 @@ const history = {
             const bDateValue = new Date(b.date).valueOf();
             return aDateValue - bDateValue;
           })
-          .map(transaction => ({
+          .map((transaction) => ({
             Date: moment(transaction.date).format('YYYY-MM-DD'),
             From: accountNamesById[transaction.from],
             To: accountNamesById[transaction.to],
             Expense: accountNamesById[transaction.expense],
             Description: transaction.description,
             Note: transaction.note,
-            Value: Number(transaction.value)
+            Value: Number(transaction.value),
           }));
         ipc.exportCsv('transactions', unparse(transactions));
-      }
+      },
     };
-  }
+  },
 };
 
 export default history;

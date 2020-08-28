@@ -84,25 +84,27 @@
 <script>
 import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
 import BulkTransactionEdit from '../BulkTransactionEdit.vue';
+import importBulkTransactions from './importBulkTransactions';
 
 import { getId, validateInputValue } from '../../util';
 
 export default {
   components: {
     BulkTransactionTransactions,
-    BulkTransactionEdit
+    BulkTransactionEdit,
   },
+  mixins: [importBulkTransactions],
   data() {
     const {
       name,
       description,
-      transactions
+      transactions,
     } = this.$store.state.newBulkTransaction;
     return {
       name,
       description,
       newTransaction: {
-        id: getId()
+        id: getId(),
       },
       transactions,
       editedTransaction: {
@@ -110,80 +112,43 @@ export default {
         from: '',
         to: '',
         value: 0,
-        note: ''
+        note: '',
       },
       dialogVisible: false,
       newTransactionFormValid: true,
       newTransactionFormClean: true,
       newTransactionValueValidationRules: [
-        value =>
+        (value) =>
           this.newTransactionFormClean || !!value || 'Amount is required',
-        value => this.newTransactionFormClean || validateInputValue(value)
+        (value) => this.newTransactionFormClean || validateInputValue(value),
       ],
       newTransactionValueFromRules: [
-        value =>
-          this.newTransactionFormClean || !!value || 'From account is required'
+        (value) =>
+          this.newTransactionFormClean || !!value || 'From account is required',
       ],
       newTransactionValueToRules: [
-        value =>
-          this.newTransactionFormClean || !!value || 'To account is required'
+        (value) =>
+          this.newTransactionFormClean || !!value || 'To account is required',
       ],
       mainFormValid: true,
       mainFormClean: true,
       mainFormNameRules: [
-        value => this.mainFormClean || !!value || 'Name is required'
-      ]
+        (value) => this.mainFormClean || !!value || 'Name is required',
+      ],
     };
   },
   computed: {
     projectItems() {
-      return this.$store.getters['project/accounts'].map(account => ({
+      return this.$store.getters['project/accounts'].map((account) => ({
         text: account.name,
-        value: account.id
+        value: account.id,
       }));
     },
-    importedTransactions() {
-      return this.$store.state.importedTransactions;
-    }
   },
   watch: {
     name(name) {
       this.$ipc.setTitle(name);
     },
-    importedTransactions(transactions) {
-      const missingAccountNames = new Set();
-      transactions.forEach(transaction => {
-        const from = this.$store.getters['project/accountByName'](
-          transaction.fromName
-        )?.id;
-        const to = this.$store.getters['project/accountByName'](
-          transaction.toName
-        )?.id;
-
-        if (!from) {
-          missingAccountNames.add(transaction.fromName);
-        }
-        if (!to) {
-          missingAccountNames.add(transaction.toName);
-        }
-        if (from && to && transaction.value) {
-          this.transactions.push({
-            from,
-            to,
-            value: transaction.value,
-            note: transaction.note
-          });
-        }
-      });
-      if (missingAccountNames.size) {
-        this.$store.commit(
-          'setError',
-          `Accounts named ${[...missingAccountNames].join(
-            ', '
-          )} could not be found`
-        );
-      }
-    }
   },
   methods: {
     addTransaction() {
@@ -192,7 +157,7 @@ export default {
         this.newTransactionFormClean = true;
         this.transactions.push(this.newTransaction);
         this.newTransaction = {
-          id: getId()
+          id: getId(),
         };
         this.$refs.newTransactionForm.resetValidation();
       }
@@ -206,17 +171,17 @@ export default {
       this.$store.dispatch('project/addBulkTransaction', {
         name: this.name,
         description: this.description,
-        transactions: this.transactions
+        transactions: this.transactions,
       });
 
       this.$router.push({
-        name: 'bulkTransactions'
+        name: 'bulkTransactions',
       });
     },
     goToBulkTransactions() {
       if (!this.$store.state.dialog) {
         this.$router.push({
-          name: 'bulkTransactions'
+          name: 'bulkTransactions',
         });
       }
     },
@@ -226,17 +191,14 @@ export default {
     },
     saveEditedTransaction(transaction) {
       this.dialogVisible = false;
-      const index = this.transactions.findIndex(_ => _.id === transaction.id);
+      const index = this.transactions.findIndex((_) => _.id === transaction.id);
       this.transactions.splice(index, 1, transaction);
     },
     deleteEditedTransaction(transaction) {
       this.dialogVisible = false;
-      const index = this.transactions.findIndex(_ => _.id === transaction.id);
+      const index = this.transactions.findIndex((_) => _.id === transaction.id);
       this.transactions.splice(index, 1);
     },
-    importTransactions() {
-      this.$ipc.importTransactions('moneyManagerBulkTransactions');
-    }
-  }
+  },
 };
 </script>

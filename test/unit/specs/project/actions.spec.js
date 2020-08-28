@@ -5,7 +5,7 @@ import {
   getNewTransaction,
   getNewAccount,
   getNewBulkTransaction,
-  getNewAccountCategory
+  getNewAccountCategory,
 } from './utils';
 
 describe('actions', () => {
@@ -24,7 +24,7 @@ describe('actions', () => {
       const fromAccount = getNewAccount('from');
       const toAccount = getNewAccount('to');
       init({
-        accounts: [fromAccount, toAccount]
+        accounts: [fromAccount, toAccount],
       });
       dispatch('addTransaction', transaction);
       expect(state.transactions[transaction.id]).toMatchObject(transaction);
@@ -38,7 +38,7 @@ describe('actions', () => {
       const fromAccount = getNewAccount('from');
       const toAccount = getNewAccount('to');
       init({
-        accounts: [fromAccount, toAccount]
+        accounts: [fromAccount, toAccount],
       });
       dispatch('addDualTransaction', { primary, secondary });
       expect(state.transactions[primary.id]).toMatchObject(primary);
@@ -53,7 +53,7 @@ describe('actions', () => {
       const fromAccount = getNewAccount('from');
       const toAccount = getNewAccount('to');
       init({
-        accounts: [fromAccount, toAccount]
+        accounts: [fromAccount, toAccount],
       });
       dispatch('addDualTransactions', [{ primary, secondary }]);
       expect(state.transactions[primary.id]).toMatchObject(primary);
@@ -69,12 +69,12 @@ describe('actions', () => {
       init({
         accounts: [fromAccount, toAccount],
         transactions: {
-          [transaction.id]: transaction
-        }
+          [transaction.id]: transaction,
+        },
       });
       const updatedTransaction = {
         ...transaction,
-        description: 'updated'
+        description: 'updated',
       };
       dispatch('updateTransaction', updatedTransaction);
       expect(state.transactions[transaction.id]).toMatchObject(
@@ -93,20 +93,20 @@ describe('actions', () => {
         accounts: [fromAccount, toAccount],
         transactions: {
           [primary.id]: primary,
-          [secondary.id]: secondary
-        }
+          [secondary.id]: secondary,
+        },
       });
       const updatedPrimary = {
         ...primary,
-        description: 'updated'
+        description: 'updated',
       };
       const updatedSecondary = {
         ...secondary,
-        description: 'updated'
+        description: 'updated',
       };
       dispatch('updateDualTransaction', {
         primary: updatedPrimary,
-        secondary: updatedSecondary
+        secondary: updatedSecondary,
       });
       expect(state.transactions[primary.id]).toMatchObject(updatedPrimary);
       expect(state.transactions[secondary.id]).toMatchObject(updatedSecondary);
@@ -117,10 +117,10 @@ describe('actions', () => {
     it('should delete an account', () => {
       const account = getNewAccount();
       init({
-        accounts: [account]
+        accounts: [account],
       });
       dispatch('deleteAccount', 'test');
-      expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
+      expect(state.accounts.find((_) => _.id === account.id).deleted).toEqual(
         true
       );
     });
@@ -131,10 +131,10 @@ describe('actions', () => {
       const account = getNewAccount();
       account.deleted = true;
       init({
-        accounts: [account]
+        accounts: [account],
       });
       dispatch('restoreDeletedAccount', 'test');
-      expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
+      expect(state.accounts.find((_) => _.id === account.id).deleted).toEqual(
         false
       );
     });
@@ -146,43 +146,20 @@ describe('actions', () => {
       const fromAccount = getNewAccount('from');
       const toAccount = getNewAccount('to');
       init({
-        accounts: [fromAccount, toAccount]
+        accounts: [fromAccount, toAccount],
       });
       dispatch('runBulkTransactionTransactions', {
         bulkTransaction: {
-          name: 'test'
+          name: 'test',
         },
-        transactions: [transaction]
+        transactions: [transaction],
       });
 
       expect(state.transactions[transaction.id]).toMatchObject({
         ...transaction,
         description: 'Bulk Transaction (test)',
-        highlighted: false
+        highlighted: false,
       });
-    });
-  });
-
-  describe('updateBulkTransactionTransaction', () => {
-    it('should update a bulk transaction transaction', () => {
-      const transaction = getNewTransaction();
-      const bulkTransaction = getNewBulkTransaction();
-      bulkTransaction.transactionIds = [transaction.id];
-      init({
-        bulkTransactions: [bulkTransaction]
-      });
-      const updatedTransaction = {
-        ...transaction,
-        note: 'updated'
-      };
-      dispatch('updateBulkTransactionTransaction', {
-        bulkTransaction,
-        transaction: updatedTransaction
-      });
-      expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
-        updatedTransaction
-      );
-      expect(bulkTransaction.transactionIds).toContain(updatedTransaction.id);
     });
   });
 
@@ -192,32 +169,14 @@ describe('actions', () => {
       const bulkTransaction = getNewBulkTransaction();
       bulkTransaction.transactionIds = [transaction.id];
       init({
-        bulkTransactions: [bulkTransaction]
+        bulkTransactions: [bulkTransaction],
       });
       dispatch('deleteBulkTransactionTransaction', {
         bulkTransaction,
-        transaction
+        transaction,
       });
       expect(state.bulkTransactionTransactions[transaction.id]).toBeUndefined();
       expect(bulkTransaction.transactionIds).not.toContain(transaction.id);
-    });
-  });
-
-  describe('addBulkTransactionTransaction', () => {
-    it('should add a bulk transaction transaction', () => {
-      const bulkTransaction = getNewBulkTransaction();
-      const transaction = getNewTransaction();
-      init({
-        bulkTransactions: [bulkTransaction]
-      });
-      dispatch('addBulkTransactionTransaction', {
-        bulkTransaction,
-        transaction
-      });
-      expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
-        transaction
-      );
-      expect(bulkTransaction.transactionIds).toContain(transaction.id);
     });
   });
 
@@ -226,8 +185,40 @@ describe('actions', () => {
       dispatch('addBulkTransaction', {
         description: 'test',
         name: 'test',
-        transactions: [getNewTransaction()]
+        transactions: [getNewTransaction()],
       });
+    });
+  });
+
+  describe('updateBulkTransaction', () => {
+    it('should update the bulk transaction', () => {
+      const bulkTransaction = getNewBulkTransaction();
+      init({
+        bulkTransactions: [bulkTransaction],
+      });
+      const newName = 'newName';
+      dispatch('updateBulkTransaction', {
+        ...bulkTransaction,
+        name: newName,
+      });
+      expect(state.bulkTransactions[0].name).toBe(newName);
+    });
+
+    it('should update the bulk transaction transactions', () => {
+      const bulkTransaction = getNewBulkTransaction();
+      init({
+        bulkTransactions: [bulkTransaction],
+      });
+      const transaction = getNewTransaction();
+      dispatch('updateBulkTransaction', {
+        ...bulkTransaction,
+        transactions: [transaction],
+      });
+      expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
+        transaction
+      );
+      const updateBulkTransaction = state.bulkTransactions[0];
+      expect(updateBulkTransaction.transactionIds).toContain(transaction.id);
     });
   });
 
@@ -243,11 +234,11 @@ describe('actions', () => {
     it('should edit an account', () => {
       const account = getNewAccount();
       init({
-        accounts: [account]
+        accounts: [account],
       });
       const editedAccount = {
         ...account,
-        name: 'edited'
+        name: 'edited',
       };
       dispatch('editAccount', editedAccount);
       expect(state.accounts).toContainEqual(editedAccount);

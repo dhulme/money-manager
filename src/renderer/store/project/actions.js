@@ -5,11 +5,11 @@ function getAddTransactionParams(transaction) {
   return {
     transaction: {
       ...transaction,
-      highlighted: false
+      highlighted: false,
     },
     value: transaction.value,
     toAccountId: transaction.to,
-    fromAccountId: transaction.from
+    fromAccountId: transaction.from,
   };
 }
 
@@ -64,25 +64,15 @@ export default {
     { commit },
     { bulkTransaction, transactions }
   ) {
-    transactions.forEach(transaction => {
+    transactions.forEach((transaction) => {
       commit(
         'addTransaction',
         getAddTransactionParams({
           ...transaction,
           description: `Bulk Transaction (${bulkTransaction.name})`,
-          note: transaction.note
+          note: transaction.note,
         })
       );
-    });
-  },
-
-  updateBulkTransactionTransaction(
-    { commit },
-    { bulkTransaction, transaction }
-  ) {
-    commit('addUpdateBulkTransactionTransaction', {
-      bulkTransaction,
-      transaction
     });
   },
 
@@ -92,14 +82,7 @@ export default {
   ) {
     commit('deleteBulkTransactionTransaction', {
       bulkTransaction,
-      transaction
-    });
-  },
-
-  addBulkTransactionTransaction({ commit }, { bulkTransaction, transaction }) {
-    commit('addUpdateBulkTransactionTransaction', {
-      bulkTransaction,
-      transaction
+      transaction,
     });
   },
 
@@ -107,20 +90,41 @@ export default {
     { commit, state, getters },
     { description, name, transactions }
   ) {
-    const existingIds = state.bulkTransactions.map(_ => _.id);
+    const existingIds = state.bulkTransactions.map((_) => _.id);
     const id = getFriendlyId(name, existingIds);
     commit('addBulkTransaction', {
       description,
       name,
-      id
+      id,
     });
     const bulkTransaction = getters.bulkTransaction(id);
-    transactions.forEach(transaction =>
+    transactions.forEach((transaction) =>
       commit('addUpdateBulkTransactionTransaction', {
         bulkTransaction,
-        transaction
+        transaction,
       })
     );
+  },
+
+  updateBulkTransaction(
+    { commit, getters },
+    { id, description, name, transactions }
+  ) {
+    commit('updateBulkTransaction', {
+      id,
+      description,
+      name,
+      ...(transactions && { transactionIds: [] }),
+    });
+    if (transactions) {
+      const bulkTransaction = getters.bulkTransaction(id);
+      transactions.forEach((transaction) =>
+        commit('addUpdateBulkTransactionTransaction', {
+          bulkTransaction,
+          transaction,
+        })
+      );
+    }
   },
 
   addAccount(
@@ -132,7 +136,7 @@ export default {
       balance,
       type,
       category,
-      importTransactionsFormatId
+      importTransactionsFormatId,
     });
   },
 
@@ -142,5 +146,5 @@ export default {
 
   addAccountCategory({ commit }, { name, type }) {
     commit('addAccountCategory', { name, type });
-  }
+  },
 };

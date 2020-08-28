@@ -7,6 +7,8 @@
       <VCardTitle>
         <span class="headline">{{ bulkTransaction.name }}</span>
         <VBtn text @click="addTransaction">Add</VBtn>
+        <VBtn text @click="importTransactions">Import</VBtn>
+        <VBtn text @click="clone">Clone</VBtn>
         <VSpacer />
         <VTextField
           v-model="search"
@@ -30,7 +32,7 @@
       />
       <VCardActions>
         <VBtn text color="primary" @click="process">Run</VBtn>
-        <VBtn text @click="saveAs">Save as</VBtn>
+        <VBtn text @click="save">Save</VBtn>
       </VCardActions>
     </VCard>
 
@@ -53,18 +55,20 @@ import { getId } from '../../util';
 
 import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
 import BulkTransactionEdit from '../BulkTransactionEdit.vue';
+import importBulkTransactions from './importBulkTransactions';
 
 export default {
   components: {
     BulkTransactionTransactions,
-    BulkTransactionEdit
+    BulkTransactionEdit,
   },
+  mixins: [importBulkTransactions],
   data() {
     return {
       search: '',
       dialogVisible: false,
       transaction: {},
-      transactions: []
+      transactions: [],
     };
   },
   computed: {
@@ -72,7 +76,7 @@ export default {
       return this.$store.getters['project/bulkTransaction'](
         this.$route.params.bulkTransactionId
       );
-    }
+    },
   },
   created() {
     this.transactions = this.$store.getters[
@@ -84,11 +88,11 @@ export default {
     process() {
       this.$store.dispatch('project/runBulkTransactionTransactions', {
         bulkTransaction: this.bulkTransaction,
-        transactions: this.transactions.map(transaction => ({
+        transactions: this.transactions.map((transaction) => ({
           ...transaction,
           id: getId(),
-          date: moment()
-        }))
+          date: moment(),
+        })),
       });
       this.$store.dispatch('openSnackbar', 'Transactions done');
     },
@@ -102,7 +106,7 @@ export default {
     },
     savedTransaction(transaction) {
       this.dialogVisible = false;
-      const index = this.transactions.findIndex(_ => _.id === transaction.id);
+      const index = this.transactions.findIndex((_) => _.id === transaction.id);
       if (index !== -1) {
         this.transactions.splice(index, 1, transaction);
       } else {
@@ -111,26 +115,33 @@ export default {
     },
     deletedTransaction(transaction) {
       this.dialogVisible = false;
-      const index = this.transactions.findIndex(_ => _.id === transaction.id);
+      const index = this.transactions.findIndex((_) => _.id === transaction.id);
       this.transactions.splice(index, 1);
     },
     goToBulkTransactionsIfDialogClosed() {
       if (!this.$store.state.dialog && !this.dialogVisible) {
         this.$router.push({
-          name: 'bulkTransactions'
+          name: 'bulkTransactions',
         });
       }
     },
-    saveAs() {
+    clone() {
       this.$store.commit('setNewBulkTransaction', {
         ...this.bulkTransaction,
-        transactions: this.transactions
+        transactions: this.transactions,
       });
       this.$router.push({
-        name: 'newBulkTransaction'
+        name: 'newBulkTransaction',
       });
-    }
-  }
+    },
+    save() {
+      this.$store.dispatch('project/updateBulkTransaction', {
+        ...this.bulkTransaction,
+        transactions: this.transactions,
+      });
+      this.$store.dispatch('openSnackbar', 'Saved bulk transaction');
+    },
+  },
 };
 </script>
 

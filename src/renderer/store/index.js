@@ -8,7 +8,7 @@ function initialNewBulkTransaction() {
   return {
     name: '',
     description: '',
-    transactions: []
+    transactions: [],
   };
 }
 
@@ -17,12 +17,12 @@ const store = new Vuex.Store({
     error: '',
     snackbar: {
       message: '',
-      active: false
+      active: false,
     },
     newBulkTransaction: initialNewBulkTransaction(),
     importedTransactions: [],
     dialog: null,
-    search: ''
+    search: '',
   },
   mutations: {
     setSummaryBalance(state, value) {
@@ -49,17 +49,17 @@ const store = new Vuex.Store({
     },
     setSearch(state, value) {
       state.search = value;
-    }
+    },
   },
   actions: {
     openSnackbar({ commit }, message) {
       commit('setSnackbarMessage', message);
       commit('setSnackbarActive', true);
-    }
+    },
   },
   modules: {
-    project
-  }
+    project,
+  },
 });
 
 window.store = store;

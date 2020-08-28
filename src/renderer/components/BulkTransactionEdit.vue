@@ -54,12 +54,12 @@ export default {
   props: {
     transaction: {
       type: Object,
-      required: true
+      required: true,
     },
     bulkTransaction: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -67,52 +67,40 @@ export default {
       valid: true,
       formClean: true,
       valueRules: [
-        value => this.formClean || !!value || 'Amount is required',
-        value => this.formClean || validateInputValue(value)
+        (value) => this.formClean || !!value || 'Amount is required',
+        (value) => this.formClean || validateInputValue(value),
       ],
       fromRules: [
-        value => this.formClean || !!value || 'From account is required'
+        (value) => this.formClean || !!value || 'From account is required',
       ],
-      toRules: [value => this.formClean || !!value || 'To account is required']
+      toRules: [
+        (value) => this.formClean || !!value || 'To account is required',
+      ],
     };
   },
   computed: {
     accounts() {
       return this.$store.getters['project/accountItems'];
-    }
+    },
   },
   watch: {
     transaction: {
       handler(transaction) {
         this.newTransaction = {
-          ...transaction
+          id: getId(),
+          ...transaction,
         };
         this.formClean = true;
         this.valid = true;
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   methods: {
     save() {
       this.formClean = false;
       if (!this.$refs.form.validate()) {
         return;
-      }
-
-      if (this.bulkTransaction) {
-        if (this.transaction.id) {
-          this.$store.dispatch('project/updateBulkTransactionTransaction', {
-            transaction: this.newTransaction,
-            bulkTransaction: this.bulkTransaction
-          });
-        } else {
-          this.newTransaction.id = getId();
-          this.$store.dispatch('project/addBulkTransactionTransaction', {
-            transaction: this.newTransaction,
-            bulkTransaction: this.bulkTransaction
-          });
-        }
       }
 
       this.$emit('saved', this.newTransaction);
@@ -123,16 +111,9 @@ export default {
       }
     },
     _delete() {
-      if (this.bulkTransaction) {
-        this.$store.dispatch('project/deleteBulkTransactionTransaction', {
-          transaction: this.newTransaction,
-          bulkTransaction: this.bulkTransaction
-        });
-      }
-
       this.$emit('deleted', this.newTransaction);
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -10,7 +10,7 @@ export default {
 
     // Old accounts may not have deleted flag set, which causes reactivity issues if deleted
     if (Array.isArray(clonedData.accounts)) {
-      clonedData.accounts.forEach(account => {
+      clonedData.accounts.forEach((account) => {
         if (account.deleted === undefined) {
           account.deleted = false;
         }
@@ -31,20 +31,20 @@ export default {
       transaction = required('transaction'),
       value = required('value'),
       toAccountId = required('toAccountId'),
-      fromAccountId = required('fromAccountId')
+      fromAccountId = required('fromAccountId'),
     }
   ) {
     requireObjectProperties(transaction, ['id', 'value', 'from', 'to']);
 
     Vue.set(state.transactions, transaction.id, transaction);
-    const fromAccount = state.accounts.find(_ => _.id === fromAccountId);
+    const fromAccount = state.accounts.find((_) => _.id === fromAccountId);
     if (!fromAccount) {
       throw new Error(`Cannot find 'from' account called ${fromAccountId}`);
     }
     fromAccount.balance = new Big(fromAccount.balance).minus(value);
     fromAccount.transactionIds.push(transaction.id);
 
-    const toAccount = state.accounts.find(_ => _.id === toAccountId);
+    const toAccount = state.accounts.find((_) => _.id === toAccountId);
     if (!toAccount) {
       throw new Error(`Cannot find 'to' account called ${fromAccountId}`);
     }
@@ -63,20 +63,20 @@ export default {
       currentTransaction.value
     );
 
-    const fromAccount = state.accounts.find(_ => _.id === transaction.from);
+    const fromAccount = state.accounts.find((_) => _.id === transaction.from);
     if (!fromAccount) {
       throw new Error(`Cannot find 'from' account called ${transaction.from}`);
     }
     fromAccount.balance = new Big(fromAccount.balance).minus(balanceDifference);
 
-    const toAccount = state.accounts.find(_ => _.id === transaction.to);
+    const toAccount = state.accounts.find((_) => _.id === transaction.to);
     if (!toAccount) {
       throw new Error(`Cannot find 'to' account called ${transaction.to}`);
     }
     toAccount.balance = new Big(toAccount.balance).add(balanceDifference);
 
     state.transactions[transaction.id] = {
-      ...transaction
+      ...transaction,
     };
   },
 
@@ -98,10 +98,10 @@ export default {
     state,
     {
       accountId = required('accountId'),
-      deleted = required('deleted')
+      deleted = required('deleted'),
     } = required('params')
   ) {
-    const account = state.accounts.find(_ => _.id === accountId);
+    const account = state.accounts.find((_) => _.id === accountId);
     account.deleted = deleted;
   },
 
@@ -112,9 +112,9 @@ export default {
       balance,
       type,
       category,
-      importTransactionsFormatId
+      importTransactionsFormatId,
     } = account;
-    const existingIds = state.accounts.map(_ => _.id);
+    const existingIds = state.accounts.map((_) => _.id);
     const newAccount = {
       transactionIds: [],
       id: getFriendlyId(name, existingIds),
@@ -123,17 +123,17 @@ export default {
       category,
       name,
       deleted: false,
-      importTransactionsFormatId
+      importTransactionsFormatId,
     };
     state.accounts.push(newAccount);
   },
 
   editAccount(state, newAccount = required('account')) {
     requireObjectProperties(newAccount, ['name', 'id']);
-    const account = state.accounts.find(_ => _.id === newAccount.id);
+    const account = state.accounts.find((_) => _.id === newAccount.id);
     state.accounts.splice(state.accounts.indexOf(account), 1, {
       ...account,
-      ...newAccount
+      ...newAccount,
     });
   },
 
@@ -141,34 +141,50 @@ export default {
     requireObjectProperties(category, ['name', 'type']);
     const id = getFriendlyId(
       category.name,
-      state.accountCategories.map(_ => _.id)
+      state.accountCategories.map((_) => _.id)
     );
     state.accountCategories.push({
       id,
       name: category.name,
-      type: category.type
+      type: category.type,
     });
   },
 
   addBulkTransaction(state, bulkTransaction) {
     requireObjectProperties(bulkTransaction, ['description', 'name']);
     const { description, name } = bulkTransaction;
-    const existingIds = state.bulkTransactions.map(_ => _.id);
+    const existingIds = state.bulkTransactions.map((_) => _.id);
     const newBulkTransaction = {
       name,
       description,
       id: bulkTransaction.id || getFriendlyId(name, existingIds),
       transactionIds: [],
-      lastModified: bulkTransaction.lastModified || moment()
+      lastModified: bulkTransaction.lastModified || moment(),
     };
     state.bulkTransactions.push(newBulkTransaction);
+  },
+
+  updateBulkTransaction(state, bulkTransaction) {
+    requireObjectProperties(bulkTransaction, ['description', 'name', 'id']);
+    const { description, name, transactionIds, id } = bulkTransaction;
+    const index = state.bulkTransactions.findIndex(
+      (_) => _.id === bulkTransaction.id
+    );
+    state.bulkTransactions[index] = {
+      id,
+      name,
+      description,
+      transactionIds:
+        transactionIds || state.bulkTransactions[index].transactionIds,
+      lastModified: moment(),
+    };
   },
 
   addUpdateBulkTransactionTransaction(
     state,
     {
       transaction = required('transaction'),
-      bulkTransaction = required('bulkTransaction')
+      bulkTransaction = required('bulkTransaction'),
     }
   ) {
     requireObjectProperties(transaction, ['to', 'from', 'value', 'id']);
@@ -179,7 +195,7 @@ export default {
       from,
       value,
       note,
-      id
+      id,
     });
     if (!bulkTransaction.transactionIds.includes(id)) {
       bulkTransaction.transactionIds.push(id);
@@ -191,7 +207,7 @@ export default {
     state,
     {
       transaction = required('transaction'),
-      bulkTransaction = required('bulkTransaction')
+      bulkTransaction = required('bulkTransaction'),
     }
   ) {
     requireObjectProperties(transaction, ['id']);
@@ -203,5 +219,5 @@ export default {
       bulkTransaction.transactionIds.splice(index, 1);
     }
     bulkTransaction.lastModified = moment();
-  }
+  },
 };

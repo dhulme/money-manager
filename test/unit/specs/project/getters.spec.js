@@ -6,7 +6,7 @@ import {
   getInit,
   getNewTransaction,
   getNewAccount,
-  getNewBulkTransaction
+  getNewBulkTransaction,
 } from './utils';
 
 describe('getters', () => {
@@ -23,7 +23,7 @@ describe('getters', () => {
     it('should return accounts', () => {
       const account = getNewAccount();
       init({
-        accounts: [account]
+        accounts: [account],
       });
       const accounts = get('accounts');
       expect(accounts).toHaveLength(1);
@@ -34,7 +34,7 @@ describe('getters', () => {
       const account = getNewAccount();
       account.deleted = true;
       init({
-        accounts: [account]
+        accounts: [account],
       });
       const accounts = get('accounts');
       expect(accounts).toHaveLength(0);
@@ -58,7 +58,7 @@ describe('getters', () => {
       const accountD = getNewAccount('d');
       accountD.name = 'a';
       init({
-        accounts: [accountB, accountC, accountA, accountD]
+        accounts: [accountB, accountC, accountA, accountD],
       });
       const accounts = get('accountItems');
       expect(accounts).toHaveLength(4);
@@ -66,11 +66,11 @@ describe('getters', () => {
       expect(accounts[1].text).toBe('a');
       expect(accounts[2]).toMatchObject({
         text: accountB.name,
-        value: accountB.id
+        value: accountB.id,
       });
       expect(accounts[3]).toMatchObject({
         text: accountC.name,
-        value: accountC.id
+        value: accountC.id,
       });
     });
 
@@ -78,7 +78,7 @@ describe('getters', () => {
       const account = getNewAccount('a');
       account.deleted = true;
       init({
-        accounts: [account]
+        accounts: [account],
       });
       const accounts = get('accountItems');
       expect(accounts).toHaveLength(0);
@@ -89,7 +89,7 @@ describe('getters', () => {
     it('gets accounts by category', () => {
       const account = getNewAccount();
       init({
-        accounts: [account]
+        accounts: [account],
       });
       const accounts = get('accountsByCategory')('test');
       expect(accounts).toHaveLength(1);
@@ -100,7 +100,7 @@ describe('getters', () => {
     it('gets account by id', () => {
       const account = getNewAccount();
       init({
-        accounts: [account]
+        accounts: [account],
       });
       expect(get('account')(account.id)).toBe(account);
     });
@@ -109,7 +109,7 @@ describe('getters', () => {
       const account = getNewAccount();
       account.deleted = true;
       init({
-        accounts: [account]
+        accounts: [account],
       });
       expect(get('account')(account.id)).toBe(account);
     });
@@ -119,7 +119,7 @@ describe('getters', () => {
     it('gets account by name', () => {
       const account = getNewAccount();
       init({
-        accounts: [account]
+        accounts: [account],
       });
       expect(get('accountByName')(account.name)).toBe(account);
     });
@@ -133,8 +133,8 @@ describe('getters', () => {
       init({
         accounts: [account],
         transactions: {
-          test: transaction
-        }
+          test: transaction,
+        },
       });
 
       const transactions = get('transactions')(account);
@@ -146,7 +146,7 @@ describe('getters', () => {
     it('gets transaction by id', () => {
       const transaction = getNewTransaction();
       init({
-        transactions: { [transaction.id]: transaction }
+        transactions: { [transaction.id]: transaction },
       });
       expect(get('transaction')(transaction.id)).toBe(transaction);
     });
@@ -157,8 +157,8 @@ describe('getters', () => {
       const balance = 3;
       init({
         summary: {
-          balance
-        }
+          balance,
+        },
       });
       expect(get('summaryBalance')).toBe(balance);
     });
@@ -168,8 +168,8 @@ describe('getters', () => {
     it('returns true if 0', () => {
       init({
         summary: {
-          balance: 0
-        }
+          balance: 0,
+        },
       });
       expect(get('summaryBalanceEqualsZero')).toBe(true);
     });
@@ -177,8 +177,8 @@ describe('getters', () => {
     it('returns false if not 0', () => {
       init({
         summary: {
-          balance: 3
-        }
+          balance: 3,
+        },
       });
       expect(get('summaryBalanceEqualsZero')).toBe(false);
     });
@@ -191,7 +191,7 @@ describe('getters', () => {
       const account2 = getNewAccount('2');
       account2.balance = 5;
       init({
-        accounts: [account1, account2]
+        accounts: [account1, account2],
       });
       expect(get('accountsTotal')(account1.category)).toMatchObject(
         new Big(account1.balance + account2.balance)
@@ -205,7 +205,7 @@ describe('getters', () => {
       const bulkTransaction2 = getNewBulkTransaction('2');
       bulkTransaction1.lastModified.year('2010');
       init({
-        bulkTransactions: [bulkTransaction1, bulkTransaction2]
+        bulkTransactions: [bulkTransaction1, bulkTransaction2],
       });
       const bulkTransactions = get('bulkTransactions');
       expect(bulkTransactions[0]).toMatchObject(bulkTransaction2);
@@ -220,11 +220,24 @@ describe('getters', () => {
       bulkTransaction.transactionIds = [transaction.id];
       init({
         bulkTransactions: [bulkTransaction],
-        bulkTransactionTransactions: { [transaction.id]: transaction }
+        bulkTransactionTransactions: { [transaction.id]: transaction },
       });
       expect(
         get('bulkTransactionTransactions')(bulkTransaction)[0]
       ).toMatchObject(transaction);
+    });
+
+    it('includes the ID in the returned transactions (for older bulk transactions)', () => {
+      const bulkTransaction = getNewBulkTransaction();
+      const transaction = getNewTransaction();
+      bulkTransaction.transactionIds = [transaction.id];
+      init({
+        bulkTransactions: [bulkTransaction],
+        bulkTransactionTransactions: { [transaction.id]: transaction },
+      });
+      expect(get('bulkTransactionTransactions')(bulkTransaction)[0].id).toBe(
+        transaction.id
+      );
     });
   });
 
@@ -241,8 +254,8 @@ describe('getters', () => {
         accounts: [account],
         transactions: {
           [transaction1.id]: transaction1,
-          [transaction2.id]: transaction2
-        }
+          [transaction2.id]: transaction2,
+        },
       });
 
       expect(get('accountBalance')(account, transaction1.id)).toMatchObject(

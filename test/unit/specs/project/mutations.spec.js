@@ -5,7 +5,7 @@ import {
   getNewTransaction,
   getNewAccount,
   getNewBulkTransaction,
-  getNewAccountCategory
+  getNewAccountCategory,
 } from './utils';
 
 describe('mutations', () => {
@@ -26,7 +26,7 @@ describe('mutations', () => {
         transactions: test,
         summary: test,
         bulkTransactions: test,
-        bulkTransactionTransactions: test
+        bulkTransactionTransactions: test,
       });
       expect(state.accounts).toBe(test);
       expect(state.transactions).toBe(test);
@@ -37,7 +37,7 @@ describe('mutations', () => {
 
     it('should not allow other properties to be set', () => {
       commit('init', {
-        test: 'test'
+        test: 'test',
       });
       expect(state.test).toBeUndefined();
     });
@@ -45,7 +45,7 @@ describe('mutations', () => {
     it('should clone the data', () => {
       const accountsData = [];
       commit('init', {
-        accounts: accountsData
+        accounts: accountsData,
       });
       expect(state.accounts).not.toBe(accountsData);
       expect(state.accounts).toEqual([]);
@@ -64,14 +64,14 @@ describe('mutations', () => {
       const fromAccount = getNewAccount('from');
       const toAccount = getNewAccount('to');
       init({
-        accounts: [fromAccount, toAccount]
+        accounts: [fromAccount, toAccount],
       });
       expect(() => {
         commit('addTransaction', {
           transaction,
           value: transaction.value,
           toAccountId: transaction.to,
-          fromAccountId: 'bob'
+          fromAccountId: 'bob',
         });
       }).toThrowError("Cannot find 'from' account");
     });
@@ -81,14 +81,14 @@ describe('mutations', () => {
       const fromAccount = getNewAccount('from');
       const toAccount = getNewAccount('to');
       init({
-        accounts: [fromAccount, toAccount]
+        accounts: [fromAccount, toAccount],
       });
       expect(() => {
         commit('addTransaction', {
           transaction,
           value: transaction.value,
           fromAccountId: transaction.from,
-          toAccountId: 'bob'
+          toAccountId: 'bob',
         });
       }).toThrowError("Cannot find 'to' account");
     });
@@ -98,13 +98,13 @@ describe('mutations', () => {
       const fromAccount = getNewAccount('from');
       const toAccount = getNewAccount('to');
       init({
-        accounts: [fromAccount, toAccount]
+        accounts: [fromAccount, toAccount],
       });
       commit('addTransaction', {
         transaction,
         value: transaction.value,
         toAccountId: transaction.to,
-        fromAccountId: transaction.from
+        fromAccountId: transaction.from,
       });
       expect(state.transactions[transaction.id]).toBe(transaction);
       expect(fromAccount.balance.toString()).toEqual('-10');
@@ -129,12 +129,12 @@ describe('mutations', () => {
       init({
         accounts: [fromAccount, toAccount],
         transactions: {
-          [transaction.id]: transaction
-        }
+          [transaction.id]: transaction,
+        },
       });
       const updatedTransaction = {
         ...transaction,
-        description: 'updated'
+        description: 'updated',
       };
       commit('updateTransaction', updatedTransaction);
       expect(state.transactions[transaction.id]).toMatchObject(
@@ -149,8 +149,8 @@ describe('mutations', () => {
       init({
         accounts: [fromAccount, toAccount],
         transactions: {
-          [transaction.id]: transaction
-        }
+          [transaction.id]: transaction,
+        },
       });
       const offset = 500;
       fromAccount.balance = offset - transaction.value;
@@ -159,7 +159,7 @@ describe('mutations', () => {
       const newValue = 20;
       const updatedTransaction = {
         ...transaction,
-        value: newValue
+        value: newValue,
       };
 
       commit('updateTransaction', updatedTransaction);
@@ -175,8 +175,8 @@ describe('mutations', () => {
       init({
         accounts: [
           { id: 'a', balance: 10, transactionIds: [] },
-          { id: 'b', balance: 10, transactionIds: [] }
-        ]
+          { id: 'b', balance: 10, transactionIds: [] },
+        ],
       });
       commit('updateSummaryBalance');
       expect(state.summary.balance.toString()).toBe('20');
@@ -186,8 +186,8 @@ describe('mutations', () => {
       init({
         accounts: [
           { id: 'a', balance: 10, transactionIds: [], type: 'budget' },
-          { id: 'b', balance: 20, transactionIds: [] }
-        ]
+          { id: 'b', balance: 20, transactionIds: [] },
+        ],
       });
       commit('updateSummaryBalance');
       expect(state.summary.balance.toString()).toBe('10');
@@ -197,8 +197,8 @@ describe('mutations', () => {
       init({
         accounts: [
           { id: 'a', balance: 10, transactionIds: [], type: 'none' },
-          { id: 'b', balance: 10, transactionIds: [], type: 'none' }
-        ]
+          { id: 'b', balance: 10, transactionIds: [], type: 'none' },
+        ],
       });
       commit('updateSummaryBalance');
       expect(state.summary.balance.toString()).toBe('0');
@@ -220,10 +220,10 @@ describe('mutations', () => {
     it('should delete an account', () => {
       const account = getNewAccount();
       init({
-        accounts: [account]
+        accounts: [account],
       });
       commit('setAccountDeleted', { accountId: 'test', deleted: true });
-      expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
+      expect(state.accounts.find((_) => _.id === account.id).deleted).toEqual(
         true
       );
     });
@@ -231,10 +231,10 @@ describe('mutations', () => {
       const account = getNewAccount();
       account.deleted = true;
       init({
-        accounts: [account]
+        accounts: [account],
       });
       commit('setAccountDeleted', { accountId: 'test', deleted: false });
-      expect(state.accounts.find(_ => _.id === account.id).deleted).toEqual(
+      expect(state.accounts.find((_) => _.id === account.id).deleted).toEqual(
         false
       );
     });
@@ -266,11 +266,11 @@ describe('mutations', () => {
     it('should edit an account', () => {
       const account = getNewAccount();
       init({
-        accounts: [account]
+        accounts: [account],
       });
       const editedAccount = {
         ...account,
-        name: 'edited'
+        name: 'edited',
       };
       commit('editAccount', editedAccount);
       expect(state.accounts).toContainEqual(editedAccount);
@@ -314,7 +314,7 @@ describe('mutations', () => {
       expect(state.bulkTransactions[0]).toMatchObject({
         ...bulkTransaction,
         id: 'test',
-        transactionIds: []
+        transactionIds: [],
       });
     });
 
@@ -328,6 +328,27 @@ describe('mutations', () => {
     });
   });
 
+  describe('updateBulkTransaction', () => {
+    it('should require parameters', () => {
+      expect(() => {
+        commit('addBulkTransaction', {});
+      }).toThrowError('required');
+    });
+
+    it('should update a bulk transaction', () => {
+      const bulkTransaction = getNewBulkTransaction();
+      init({
+        bulkTransactions: [bulkTransaction],
+      });
+      const newName = 'newName';
+      commit('updateBulkTransaction', {
+        ...bulkTransaction,
+        name: newName,
+      });
+      expect(state.bulkTransactions[0].name).toBe(newName);
+    });
+  });
+
   describe('addUpdateBulkTransactionTransaction', () => {
     it('should require parameters', () => {
       expect(() => {
@@ -336,7 +357,7 @@ describe('mutations', () => {
       expect(() => {
         commit('addUpdateBulkTransactionTransaction', {
           transaction: {},
-          bulkTransaction: {}
+          bulkTransaction: {},
         });
       }).toThrowError('required');
     });
@@ -345,12 +366,12 @@ describe('mutations', () => {
       const bulkTransaction = getNewBulkTransaction();
       const transaction = getNewTransaction();
       init({
-        bulkTransactions: [bulkTransaction]
+        bulkTransactions: [bulkTransaction],
       });
 
       commit('addUpdateBulkTransactionTransaction', {
         bulkTransaction,
-        transaction
+        transaction,
       });
       expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
         transaction
@@ -359,11 +380,11 @@ describe('mutations', () => {
 
       const updatedTransaction = {
         ...transaction,
-        note: 'updated'
+        note: 'updated',
       };
       commit('addUpdateBulkTransactionTransaction', {
         bulkTransaction,
-        transaction: updatedTransaction
+        transaction: updatedTransaction,
       });
       expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
         updatedTransaction
@@ -380,22 +401,22 @@ describe('mutations', () => {
       expect(() => {
         commit('addUpdateBulkTransactionTransaction', {
           transaction: {},
-          bulkTransaction: {}
+          bulkTransaction: {},
         });
       }).toThrowError('required');
     });
 
     it('should delete a bulk transaction transaction', () => {
       const bulkTransaction = {
-        transactionIds: ['test1', 'test2', 'test3']
+        transactionIds: ['test1', 'test2', 'test3'],
       };
       const transaction = getNewTransaction('test2');
       init({
-        bulkTransactions: [bulkTransaction]
+        bulkTransactions: [bulkTransaction],
       });
       commit('deleteBulkTransactionTransaction', {
         bulkTransaction,
-        transaction
+        transaction,
       });
       expect(state.bulkTransactionTransactions[transaction.id]).toBeUndefined();
       expect(bulkTransaction.transactionIds).toEqual(['test1', 'test3']);
