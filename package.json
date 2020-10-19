@@ -60,7 +60,7 @@
   "dependencies": {
     "accounting": "^0.4.1",
     "big.js": "^5.2.2",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "crypto-random-string": "^3.0.1",
     "fs-extra": "^8.1.0",
     "moment": "^2.27.0",
