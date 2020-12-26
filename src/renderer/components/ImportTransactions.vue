@@ -65,7 +65,7 @@ import { getId } from '../util';
 
 export default {
   props: {
-    account: Object
+    account: Object,
   },
   data() {
     return {
@@ -73,42 +73,42 @@ export default {
         {
           text: 'Date',
           value: 'date',
-          width: 150
+          width: 150,
         },
         {
           text: 'Description',
-          value: 'description'
+          value: 'description',
         },
         {
           text: 'Account',
-          value: 'account'
+          value: 'account',
         },
         {
           text: 'In/Out',
           value: 'type',
-          width: 100
+          width: 100,
         },
         {
           text: 'Value',
           value: 'value',
-          width: 150
+          width: 150,
         },
         {
           text: '',
-          value: 'actions'
-        }
+          value: 'actions',
+        },
       ],
       transactions: [],
       transactionTypeItems: [
         {
           text: 'In',
-          value: 'in'
+          value: 'in',
         },
         {
           text: 'Out',
-          value: 'out'
-        }
-      ]
+          value: 'out',
+        },
+      ],
     };
   },
   computed: {
@@ -119,45 +119,48 @@ export default {
       );
       function transactionExists(transaction) {
         return !!existingTransactions.find(
-          existing =>
+          (existing) =>
             existing.description === transaction.description &&
             Number(existing.value) === transaction.value &&
             moment(existing.date).isSame(transaction.date, 'day')
         );
       }
       return this.$store.state.importedTransactions
-        .filter(item => !transactionExists(item))
-        .map(item => ({
+        .filter((item) => !transactionExists(item))
+        .map((item) => ({
           date: dateFilter(item.date),
           description: item.description,
           value: item.value.toFixed(2),
-          type: item.type
+          type: item.type,
         }));
     },
     accounts() {
       return this.$store.getters['project/accountItems'].filter(
-        account => account.value !== this.account.id
+        (account) => account.value !== this.account.id
       );
-    }
+    },
   },
   watch: {
     importedTransactions: {
       immediate: true,
       handler(value) {
         this.transactions = value;
-      }
-    }
+      },
+    },
   },
   methods: {
     completeImport() {
       const transactions = this.transactions
-        .map(uiTransaction => {
+        .map((uiTransaction) => {
+          const primaryTransactionId = getId();
+          const secondaryTransactionId = getId();
+
           const transaction = {
             description: uiTransaction.description,
             note: 'Imported',
             date: moment(uiTransaction.date, this.$dateFormat),
-            id: getId(),
-            value: uiTransaction.value
+            id: primaryTransactionId,
+            value: uiTransaction.value,
           };
 
           const transactionAccount = this.$store.getters['project/account'](
@@ -178,26 +181,28 @@ export default {
               ? {
                   ...transaction,
                   expense: uiTransaction.account,
+                  linkedTransaction: secondaryTransactionId,
                   from: inTransaction ? 'none' : this.account.id,
-                  to: inTransaction ? this.account.id : 'none'
+                  to: inTransaction ? this.account.id : 'none',
                 }
               : {
                   ...transaction,
                   from: inTransaction ? uiTransaction.account : this.account.id,
-                  to: inTransaction ? this.account.id : uiTransaction.account
+                  to: inTransaction ? this.account.id : uiTransaction.account,
                 },
             ...(isDualTransaction && {
               secondary: {
                 ...transaction,
                 expense: this.account.id,
+                linkedTransaction: primaryTransactionId,
                 from: inTransaction ? 'none' : uiTransaction.account,
                 to: inTransaction ? uiTransaction.account : 'none',
-                id: getId()
-              }
-            })
+                id: secondaryTransactionId,
+              },
+            }),
           };
         })
-        .filter(transaction => !!transaction);
+        .filter((transaction) => !!transaction);
 
       this.$store.dispatch('project/addDualTransactions', transactions);
       this.$emit('close');
@@ -215,8 +220,8 @@ export default {
     },
     removeTransaction(index) {
       this.$store.state.importedTransactions.splice(index, 1);
-    }
-  }
+    },
+  },
 };
 </script>
 
