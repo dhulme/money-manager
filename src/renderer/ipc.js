@@ -1,6 +1,4 @@
-const electron = require('electron');
-
-import { importTransactionsFormats } from './import-transactions';
+import { ipcRenderer } from 'electron';
 
 const defaultTitle = 'Money Manager';
 let stateEdited = false;
@@ -8,15 +6,15 @@ let currentTitle = '';
 
 const ipc = {
   send(channel, data) {
-    return electron.ipcRenderer.send(channel, data);
+    return ipcRenderer.send(channel, data);
   },
 
   on(channel, callback) {
-    return electron.ipcRenderer.on(channel, callback);
+    return ipcRenderer.on(channel, callback);
   },
 
   invoke(channel, data) {
-    return electron.ipcRenderer.invoke(channel, data);
+    return ipcRenderer.invoke(channel, data);
   },
 
   setTitle(title = defaultTitle) {
@@ -45,10 +43,6 @@ const ipc = {
     ipc.send('projectNew');
   },
 
-  initMenu(data) {
-    ipc.send('menuInit', data);
-  },
-
   saveProject(data) {
     ipc.send('projectSave', JSON.stringify(data));
   },
@@ -66,8 +60,7 @@ const ipc = {
   },
 
   importTransactions(format) {
-    const { extensions } = importTransactionsFormats.find(_ => _.id === format);
-    return ipc.invoke('importTransactions', { extensions, format });
+    return ipc.invoke('importTransactions', format);
   },
 
   getSettings() {
@@ -80,7 +73,11 @@ const ipc = {
 
   importBulkTransactionTransactions() {
     return ipc.invoke('importBulkTransactionTransactions');
-  }
+  },
+
+  setApplicationMenu(menuTemplate) {
+    return ipc.invoke('setApplicationMenu', menuTemplate);
+  },
 };
 
 export default ipc;

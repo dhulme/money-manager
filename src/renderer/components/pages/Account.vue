@@ -53,19 +53,20 @@
 import TransactionList from '../TransactionList';
 import TransactionEdit from '../TransactionEdit';
 import ImportTransactions from '../ImportTransactions';
+import { importTransactionsFormats } from '../../import-transactions';
 
 export default {
   components: {
     TransactionList,
     TransactionEdit,
-    ImportTransactions
+    ImportTransactions,
   },
   data() {
     return {
       editTransactionDialogVisible: false,
       importTransactionsDialogVisible: false,
       transaction: {},
-      importTransactionsActive: false
+      importTransactionsActive: false,
     };
   },
   computed: {
@@ -80,7 +81,7 @@ export default {
     },
     importedTransactions() {
       return this.$store.state.importedTransactions;
-    }
+    },
   },
   created() {
     this.$ipc.setTitle(this.account.name);
@@ -90,13 +91,13 @@ export default {
       if (value.length) {
         this.importTransactionsDialogVisible = true;
       }
-    }
+    },
   },
   methods: {
     deleteAccount() {
       this.$store.dispatch('project/deleteAccount', this.accountId);
       this.$router.push({
-        name: 'accounts'
+        name: 'accounts',
       });
     },
     addTransaction() {
@@ -115,7 +116,7 @@ export default {
       } else {
         this.$store.commit('setSearch', '');
         this.$router.push({
-          name: 'accounts'
+          name: 'accounts',
         });
       }
     },
@@ -125,8 +126,8 @@ export default {
         params: {
           accountId: this.accountId,
           accountCategory: this.$route.params.accountCategory,
-          accountType: this.$route.params.accountType
-        }
+          accountType: this.$route.params.accountType,
+        },
       });
     },
     editTransaction(transaction) {
@@ -141,10 +142,12 @@ export default {
     async importTransactions() {
       this.importTransactionsActive = true;
       await this.$ipc.importTransactions(
-        this.account.importTransactionsFormatId
+        importTransactionsFormats.find(
+          (format) => format.id === this.account.importTransactionsFormatId
+        )
       );
       this.importTransactionsActive = false;
-    }
-  }
+    },
+  },
 };
 </script>

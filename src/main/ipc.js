@@ -137,7 +137,20 @@ ipcMain.handle('importTransactions', async (event, { extensions, format }) => {
   });
 });
 
+function addApplicationMenuClickEvents(template, event) {
+  template.forEach((item) => {
+    if (item.id) {
+      item.click = () => {
+        event.sender.send('runApplicationMenuItem', item.id);
+      };
+    }
+    if (item.submenu) {
+      addApplicationMenuClickEvents(item.submenu, event);
+    }
+  });
+}
 ipcMain.handle('setApplicationMenu', async (event, menuTemplate) => {
+  addApplicationMenuClickEvents(menuTemplate, event);
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 });

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import menu from './menu';
+import { init } from './menu';
 
 import TheToolbar from './components/TheToolbar.vue';
 import TheSnackbar from './components/TheSnackbar.vue';
@@ -22,36 +22,36 @@ export default {
   components: {
     TheToolbar,
     TheSnackbar,
-    TheDialogs
+    TheDialogs,
   },
   computed: {
     development() {
       return !window.require;
-    }
+    },
   },
   mounted() {
-    menu.init({
-      newClick: () => this.$history.new(),
-      openClick: () => this.$history.open(),
-      saveClick: () => this.$history.save(),
-      undoClick: () => this.$history.undo(),
-      redoClick: () => this.$history.redo(),
-      saveAsClick: () => this.$history.saveAs(),
-      exportSummaryClick: () => this.$history.exportSummary(),
-      exportTransactionsClick: () => this.$history.exportTransactions(),
-      aboutClick: () => this.$store.commit('setDialog', 'about'),
-      settingsClick: () => this.$store.commit('setDialog', 'settings'),
-      accountCategoriesClick: () =>
+    init({
+      fileNew: () => this.$history.new(),
+      fileOpen: () => this.$history.open(),
+      fileSave: () => this.$history.save(),
+      fileSaveAs: () => this.$history.saveAs(),
+      editUndo: () => this.$history.undo(),
+      editRedo: () => this.$history.redo(),
+      exportSummary: () => this.$history.exportSummary(),
+      exportTransactions: () => this.$history.exportTransactions(),
+      helpAbout: () => this.$store.commit('setDialog', 'about'),
+      editSettings: () => this.$store.commit('setDialog', 'settings'),
+      editNewAccountCategory: () =>
         this.$router.push({
-          name: 'newAccountCategory'
-        })
+          name: 'newAccountCategory',
+        }),
     });
   },
   methods: {
     quit() {
       window.close();
-    }
-  }
+    },
+  },
 };
 </script>
 

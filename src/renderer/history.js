@@ -2,7 +2,7 @@ import { unparse } from 'papaparse';
 import moment from 'moment';
 
 import ipc from './ipc';
-import menu from './menu';
+import { setSaveEnabled, setUndoLabel, setRedoLabel } from './menu';
 
 const actionNames = {
   addTransaction: 'Add transaction',
@@ -22,7 +22,7 @@ const storePrefix = 'project/';
 
 function setEdited(edited) {
   ipc.setEdited(edited);
-  menu.setSaveEnabled(edited);
+  setSaveEnabled(edited);
 }
 
 const history = {
@@ -38,9 +38,9 @@ const history = {
 
       done.push(action);
       setEdited(true);
-      menu.setUndoLabel(actionNames[action.type.replace(storePrefix, '')]);
+      setUndoLabel(actionNames[action.type.replace(storePrefix, '')]);
       if (newAction) {
-        menu.setRedoLabel();
+        setRedoLabel();
         undone = [];
       }
     });
@@ -79,7 +79,7 @@ const history = {
 
         const toUndo = done.pop();
         undone.push(toUndo);
-        menu.setRedoLabel(actionNames[toUndo.type.replace(storePrefix, '')]);
+        setRedoLabel(actionNames[toUndo.type.replace(storePrefix, '')]);
 
         newAction = false;
         store.commit(`${storePrefix}init`, initData);
@@ -91,11 +91,11 @@ const history = {
         newAction = true;
 
         if (done.length === 0) {
-          menu.setUndoLabel();
+          setUndoLabel();
         }
 
         if (done.length === savedDoneLength) {
-          menu.setUndoLabel();
+          setUndoLabel();
         }
         setEdited(done.length !== savedDoneLength);
       },
@@ -108,11 +108,11 @@ const history = {
         newAction = true;
 
         if (undone.length === 0) {
-          menu.setRedoLabel();
+          setRedoLabel();
         }
 
         if (done.length === savedDoneLength) {
-          menu.setRedoLabel();
+          setRedoLabel();
         }
         setEdited(done.length !== savedDoneLength);
       },
