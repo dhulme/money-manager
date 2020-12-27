@@ -100,24 +100,14 @@ export default {
             .importTransactionsFormatId,
         });
       } else {
-        try {
-          this.$store.dispatch('project/addAccount', {
-            name: this.newAccount.name,
-            balance: this.newAccount.openingBalance,
-            importTransactionsFormatId: this.newAccount
-              .importTransactionsFormatId,
-            category: this.accountCategory,
-            type: this.accountType,
-          });
-        } catch (e) {
-          if (e.message.includes('Duplicate ID')) {
-            this.$store.commit(
-              'setError',
-              'There is already an account named ' + this.newAccount.name
-            );
-            return;
-          }
-        }
+        this.$store.dispatch('project/addAccount', {
+          name: this.newAccount.name,
+          balance: this.newAccount.openingBalance,
+          importTransactionsFormatId: this.newAccount
+            .importTransactionsFormatId,
+          category: this.accountCategory,
+          type: this.accountType,
+        });
       }
 
       this.resetForm();

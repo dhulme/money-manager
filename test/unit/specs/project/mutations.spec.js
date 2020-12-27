@@ -8,6 +8,11 @@ import {
   getNewAccountCategory,
 } from './utils';
 
+import cryptoRandomString from 'crypto-random-string';
+
+jest.mock('crypto-random-string');
+cryptoRandomString.mockReturnValue('0');
+
 describe('mutations', () => {
   const state = store.state.project;
 
@@ -250,15 +255,8 @@ describe('mutations', () => {
     it('should add an account', () => {
       const account = getNewAccount();
       commit('addAccount', account);
+      account.id += '-0';
       expect(state.accounts).toContainEqual(account);
-    });
-
-    it('should not allow duplicate IDs', () => {
-      const account = getNewAccount();
-      commit('addAccount', account);
-      expect(() => {
-        commit('addAccount', account);
-      }).toThrowError('Duplicate');
     });
   });
 
@@ -289,15 +287,8 @@ describe('mutations', () => {
     it('should add an account category', () => {
       const category = getNewAccountCategory();
       commit('addAccountCategory', category);
+      category.id += '-0';
       expect(state.accountCategories).toContainEqual(category);
-    });
-
-    it('should not allow duplicate IDs', () => {
-      const category = getNewAccountCategory();
-      commit('addAccountCategory', category);
-      expect(() => {
-        commit('addAccountCategory', category);
-      }).toThrowError('Duplicate');
     });
   });
 
@@ -316,15 +307,6 @@ describe('mutations', () => {
         id: 'test',
         transactionIds: [],
       });
-    });
-
-    it('should not allow duplicate IDs', () => {
-      const bulkTransaction = getNewBulkTransaction();
-      delete bulkTransaction.id;
-      commit('addBulkTransaction', bulkTransaction);
-      expect(() => {
-        commit('addBulkTransaction', bulkTransaction);
-      }).toThrowError('Duplicate');
     });
   });
 

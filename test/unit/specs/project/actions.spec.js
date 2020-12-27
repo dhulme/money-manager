@@ -8,6 +8,11 @@ import {
   getNewAccountCategory,
 } from './utils';
 
+import cryptoRandomString from 'crypto-random-string';
+
+jest.mock('crypto-random-string');
+cryptoRandomString.mockReturnValue('0');
+
 describe('actions', () => {
   const state = store.state.project;
 
@@ -226,6 +231,7 @@ describe('actions', () => {
     it('should add an account', () => {
       const account = getNewAccount();
       dispatch('addAccount', account);
+      account.id += '-0';
       expect(state.accounts).toContainEqual(account);
     });
   });
@@ -249,6 +255,7 @@ describe('actions', () => {
     it('should an account category', () => {
       const category = getNewAccountCategory();
       dispatch('addAccountCategory', category);
+      category.id += '-0';
       expect(state.accountCategories).toContainEqual(category);
     });
   });

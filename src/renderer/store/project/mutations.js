@@ -114,10 +114,9 @@ export default {
       category,
       importTransactionsFormatId,
     } = account;
-    const existingIds = state.accounts.map((_) => _.id);
     const newAccount = {
       transactionIds: [],
-      id: getFriendlyId(name, existingIds),
+      id: getFriendlyId(name),
       balance,
       type,
       category,
@@ -139,10 +138,7 @@ export default {
 
   addAccountCategory(state, category) {
     requireObjectProperties(category, ['name', 'type']);
-    const id = getFriendlyId(
-      category.name,
-      state.accountCategories.map((_) => _.id)
-    );
+    const id = getFriendlyId(category.name);
     state.accountCategories.push({
       id,
       name: category.name,
@@ -153,11 +149,10 @@ export default {
   addBulkTransaction(state, bulkTransaction) {
     requireObjectProperties(bulkTransaction, ['description', 'name']);
     const { description, name } = bulkTransaction;
-    const existingIds = state.bulkTransactions.map((_) => _.id);
     const newBulkTransaction = {
       name,
       description,
-      id: bulkTransaction.id || getFriendlyId(name, existingIds),
+      id: bulkTransaction.id || getFriendlyId(name),
       transactionIds: [],
       lastModified: bulkTransaction.lastModified || moment(),
     };

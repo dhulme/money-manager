@@ -20,16 +20,12 @@ export function requireObjectProperties(object, params) {
   }
 }
 
-export function getFriendlyId(name, existingIds) {
-  const id = name.toLowerCase().replace(/[ ]/g, '-');
-  if (existingIds.includes(id)) {
-    throw new Error(`Duplicate ID. Id ${id} has already been used`);
-  }
-  return id;
+export function getFriendlyId(name) {
+  return name.toLowerCase().replace(/[ ]/g, '-') + '-' + getId(5);
 }
 
-export function getId() {
-  return cryptoRandomString({ length: 10 });
+export function getId(length = 10) {
+  return cryptoRandomString({ length });
 }
 
 export function capitalizeFirstLetter(string) {

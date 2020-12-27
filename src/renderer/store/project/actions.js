@@ -90,8 +90,7 @@ export default {
     { commit, state, getters },
     { description, name, transactions }
   ) {
-    const existingIds = state.bulkTransactions.map((_) => _.id);
-    const id = getFriendlyId(name, existingIds);
+    const id = getFriendlyId(name);
     commit('addBulkTransaction', {
       description,
       name,
