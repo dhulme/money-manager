@@ -20,8 +20,8 @@
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "start": "npm run dev",
     "test": "npm run test:unit",
-    "test:watch": "cross-env NODE_ENV=test BABEL_ENV=test jest --config test/unit/jest.conf.js --watch",
-    "test:unit": "cross-env NODE_ENV=test BABEL_ENV=test jest --config test/unit/jest.conf.js --coverage"
+    "test:unit": "cross-env NODE_ENV=test BABEL_ENV=test jest --config test/unit/jest.conf.js --watch",
+    "test:coverage": "cross-env NODE_ENV=test BABEL_ENV=test jest --config test/unit/jest.conf.js --coverage"
   },
   "build": {
     "productName": "Money Manager",

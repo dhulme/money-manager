@@ -33,7 +33,9 @@ export default {
   },
   accountsByCategory(state, getters) {
     return (category) =>
-      getters.accounts.filter((account) => account.category === category);
+      getters.accounts
+        .filter((account) => account.category === category)
+        .sort(sortByName);
   },
   accountsByType(state, getters) {
     return (type) =>
