@@ -1,4 +1,5 @@
 import { getId } from '../../util';
+import { importTransactionsFormats } from '../../import-transactions';
 
 export default {
   computed: {
@@ -30,7 +31,7 @@ export default {
             id: getId(),
             from,
             to,
-            value: transaction.value,
+            value: transaction.value.toString(),
             note: transaction.note,
           };
           const existingTransactionIndex = this.transactions.findIndex(
@@ -76,7 +77,11 @@ export default {
   },
   methods: {
     importTransactions() {
-      this.$ipc.importTransactions('moneyManagerBulkTransactions');
+      this.$ipc.importTransactions(
+        importTransactionsFormats.find(
+          (format) => format.id === 'moneyManagerBulkTransactions'
+        )
+      );
     },
   },
 };

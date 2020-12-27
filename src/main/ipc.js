@@ -122,7 +122,7 @@ ipcMain.on('showCloseWarning', async (event, data) => {
   }
 });
 
-ipcMain.handle('importTransactions', async (event, { extensions, format }) => {
+ipcMain.handle('importTransactions', async (event, { extensions, id }) => {
   const { filePaths, canceled } = await dialog.showOpenDialog({
     filters: [{ name: 'Transaction files', extensions }],
   });
@@ -133,7 +133,7 @@ ipcMain.handle('importTransactions', async (event, { extensions, format }) => {
   const data = await fs.readFile(filePaths[0]);
   event.sender.send('importTransactionsDone', {
     data: data.toString(),
-    format,
+    id,
   });
 });
 

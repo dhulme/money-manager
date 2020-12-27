@@ -73,6 +73,16 @@ MIT
 
 Each 'project' in Money Manager is stored in a single JSON file. Local backups of your project file are made automatically each month. The most recent project file will open automatically when you start Money Manager.
 
+### Account Category
+
+```javascript
+{
+  id: String, // human readable
+  name: String,
+  type: String // one of 'asset', 'budget'
+}
+```
+
 ### Account
 
 ```javascript

@@ -59,8 +59,8 @@ const ipc = {
     ipc.send('showCloseWarning', JSON.stringify(data));
   },
 
-  importTransactions(format) {
-    return ipc.invoke('importTransactions', format);
+  importTransactions({ extensions, id }) {
+    return ipc.invoke('importTransactions', { extensions, id });
   },
 
   getSettings() {
