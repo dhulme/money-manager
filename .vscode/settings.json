@@ -8,5 +8,12 @@
     "vue-html": "html",
     "vue": "html"
   },
-  "cSpell.words": ["Subheader", "chartjs", "keyup", "prepend"]
+  "cSpell.words": [
+    "Subheader",
+    "chartjs",
+    "keyup",
+    "prepend",
+    "submenu",
+    "toggledevtools"
+  ]
 }
