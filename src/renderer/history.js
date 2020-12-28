@@ -27,7 +27,7 @@ function setEdited(edited) {
 }
 
 const history = {
-  install(Vue, { store, ready }) {
+  install(Vue, { store, router, ready }) {
     const done = [];
     let undone = [];
     let newAction = true;
@@ -53,6 +53,8 @@ const history = {
       setEdited(false);
       if (callReady) {
         ready();
+      } else {
+        router.push({ name: 'accounts' });
       }
     });
     ipc.openDefaultProject();

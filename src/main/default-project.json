@@ -22,7 +22,7 @@
     },
     {
       "balance": "0",
-      "category": "Assets",
+      "category": "assets",
       "id": "cash",
       "name": "Cash",
       "transactionIds": [],
@@ -30,7 +30,7 @@
     },
     {
       "balance": "0",
-      "category": "Assets",
+      "category": "assets",
       "id": "bank",
       "name": "Bank",
       "transactionIds": [],
@@ -38,7 +38,7 @@
     },
     {
       "balance": "0",
-      "category": "Liabilities",
+      "category": "liabilities",
       "id": "creditCard",
       "name": "Credit Card",
       "transactionIds": [],
@@ -47,7 +47,7 @@
     },
     {
       "balance": "0",
-      "category": "Budgets",
+      "category": "budgets",
       "id": "toSpend",
       "name": "To Spend",
       "transactionIds": [],

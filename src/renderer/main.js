@@ -21,67 +21,68 @@ hotkey.init({
   add: {
     name: 'n',
     code: 78,
-    ctrl: true
+    ctrl: true,
   },
   new: {
     name: 'n',
     code: 78,
     ctrl: true,
-    shift: true
+    shift: true,
   },
   close: {
     name: 'escape',
-    code: 27
+    code: 27,
   },
   save: {
     name: 's',
     code: 83,
-    ctrl: true
+    ctrl: true,
   },
   saveAs: {
     name: 's',
     code: 83,
     ctrl: true,
-    shift: true
+    shift: true,
   },
   open: {
     name: 'o',
     code: 79,
-    ctrl: true
+    ctrl: true,
   },
   undo: {
     name: 'z',
     code: 90,
-    ctrl: true
+    ctrl: true,
   },
   redo: {
     name: 'y',
     code: 89,
-    ctrl: true
+    ctrl: true,
   },
   settings: {
     name: ',',
     code: 188,
-    ctrl: true
+    ctrl: true,
   },
   quit: {
     name: 'q',
     code: 81,
-    ctrl: true
-  }
+    ctrl: true,
+  },
 });
 
 Vue.prototype.$ipc = ipc;
 
 Vue.use(history, {
   store,
+  router,
   async ready() {
     const { currencyPrefix, dateFormat } = await ipc.getSettings();
 
     Vue.prototype.$currencyPrefix = currencyPrefix;
     Vue.prototype.$dateFormat = dateFormat;
 
-    Vue.filter('currency', value => {
+    Vue.filter('currency', (value) => {
       if (value === undefined || value === null) {
         return '';
       }
@@ -91,18 +92,18 @@ Vue.use(history, {
       return accounting.formatMoney(value, currencyPrefix, 2, ',', '.');
     });
 
-    Vue.filter('date', value =>
+    Vue.filter('date', (value) =>
       value ? moment(value).format(dateFormat) : ''
     );
 
     new Vue({
       router,
       components: {
-        App
+        App,
       },
       template: '<App/>',
       store,
-      vuetify
+      vuetify,
     }).$mount('#app');
-  }
+  },
 });
