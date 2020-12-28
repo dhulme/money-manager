@@ -17,6 +17,7 @@ const actionNames = {
   addAccount: 'Add account',
   editAccount: 'Edit account',
   addAccountCategory: 'Add account category',
+  updateBulkTransaction: 'Apply bulk transaction changes',
 };
 const storePrefix = 'project/';
 

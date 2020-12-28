@@ -32,7 +32,12 @@
       />
       <VCardActions>
         <VBtn text color="primary" @click="process">Run</VBtn>
-        <VBtn text @click="save">Save</VBtn>
+        <VBtn text @click="applyChanges" :disabled="!hasChanges"
+          >Apply changes</VBtn
+        >
+        <VBtn text @click="discardChanges" :disabled="!hasChanges"
+          >Discard changes</VBtn
+        >
       </VCardActions>
     </VCard>
 
@@ -77,11 +82,25 @@ export default {
         this.$route.params.bulkTransactionId
       );
     },
+    bulkTransactionTransactions() {
+      return this.$store.getters['project/bulkTransactionTransactions'](
+        this.bulkTransaction
+      );
+    },
+    hasChanges() {
+      return (
+        JSON.stringify(this.transactions) !==
+        JSON.stringify(this.bulkTransactionTransactions)
+      );
+    },
+  },
+  watch: {
+    bulkTransactionTransactions() {
+      this.discardChanges();
+    },
   },
   created() {
-    this.transactions = this.$store.getters[
-      'project/bulkTransactionTransactions'
-    ](this.bulkTransaction);
+    this.discardChanges();
     this.$ipc.setTitle(this.bulkTransaction.name);
   },
   methods: {
@@ -134,12 +153,17 @@ export default {
         name: 'newBulkTransaction',
       });
     },
-    save() {
+    applyChanges() {
       this.$store.dispatch('project/updateBulkTransaction', {
         ...this.bulkTransaction,
         transactions: this.transactions,
       });
-      this.$store.dispatch('openSnackbar', 'Saved bulk transaction');
+      this.$store.dispatch('openSnackbar', 'Applied bulk transaction changes');
+    },
+    discardChanges() {
+      this.transactions = JSON.parse(
+        JSON.stringify(this.bulkTransactionTransactions)
+      );
     },
   },
 };
