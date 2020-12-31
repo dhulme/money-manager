@@ -41,17 +41,18 @@ export default {
       },
       set() {
         this.$store.commit('setError', '');
-      }
+      },
     },
     error() {
       return this.$store.state.error;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .alert {
   margin-bottom: 0;
+  padding: 0.75rem 1rem;
 }
 </style>

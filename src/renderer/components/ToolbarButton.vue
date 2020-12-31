@@ -1,5 +1,5 @@
 <template>
-  <VBtn :color="color" :text="text" @click="click">
+  <VBtn :color="color" :text="text" @click="click" class="mr-3">
     <slot />
   </VBtn>
 </template>
@@ -10,8 +10,8 @@ export default {
     routeName: String,
     childRouteNames: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   computed: {
     active() {
@@ -23,15 +23,15 @@ export default {
     },
     text() {
       return !this.active;
-    }
+    },
   },
   methods: {
     click() {
       this.$store.commit('setSearch', '');
       this.$router.push({
-        name: this.routeName
+        name: this.routeName,
       });
-    }
-  }
+    },
+  },
 };
 </script>

@@ -1,26 +1,20 @@
 <template>
   <div>
     <VAutocomplete v-model="accountId" :items="accounts" label="Account" />
-    <!-- <VCard class="mb-4">
-			<VCardTitle>Account category value over time ({{ account.category }})</VCardTitle>
-			<AccountCategoryValueOverTime 
-				:category="account.category"
-				:height="200" />
-		</VCard> -->
-    <VRow>
+    <VRow class="mb-2">
       <VCol md="6">
         <VCard>
-          <VCardTitle>Monthly spending over time</VCardTitle>
+          <VCardTitle>Account spending over time</VCardTitle>
           <VCardText
-            ><AccountSpendingOverTime :account="account" :height="200"
+            ><AccountSpendingOverTime :account="account" :height="140"
           /></VCardText>
         </VCard>
       </VCol>
       <VCol md="6">
         <VCard>
-          <VCardTitle>Spending last month</VCardTitle>
+          <VCardTitle>Total spending last month</VCardTitle>
           <VCardText
-            ><SpendingPerMonth :date="monthDate" :height="200"
+            ><SpendingPerMonth :date="monthDate" :height="140"
           /></VCardText>
         </VCard>
       </VCol>
@@ -38,7 +32,6 @@
 import moment from 'moment';
 
 import AccountValueOverTime from '../charts/AccountValueOverTime.vue';
-// import AccountCategoryValueOverTime from '../charts/AccountCategoryValueOverTime.vue';
 import AccountSpendingOverTime from '../charts/AccountSpendingOverTime.vue';
 import SpendingPerMonth from '../charts/SpendingPerMonth.vue';
 
@@ -46,11 +39,11 @@ export default {
   components: {
     AccountValueOverTime,
     AccountSpendingOverTime,
-    SpendingPerMonth
+    SpendingPerMonth,
   },
   data() {
     return {
-      accountId: null
+      accountId: null,
     };
   },
   created() {
@@ -65,7 +58,7 @@ export default {
     },
     monthDate() {
       return moment().subtract(1, 'months');
-    }
-  }
+    },
+  },
 };
 </script>

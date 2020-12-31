@@ -89,12 +89,12 @@ export default {
   props: {
     transaction: {
       type: Object,
-      default: null
+      default: null,
     },
     account: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -113,20 +113,21 @@ export default {
             return 'A value for in or out is required';
           }
           return validateInputValue(value);
-        }
+        },
       ],
       dateValidationRules: [
-        value => this.formClean || !!value || 'Transaction date is required'
+        (value) => this.formClean || !!value || 'Transaction date is required',
       ],
       descriptionValidationRules: [
-        value =>
-          this.formClean || !!value || 'Transaction description is required'
+        (value) =>
+          this.formClean || !!value || 'Transaction description is required',
       ],
       accountValidationRules: [
-        value => this.formClean || !!value || 'Transaction account is required'
+        (value) =>
+          this.formClean || !!value || 'Transaction account is required',
       ],
       date: moment().format('YYYY-MM-DD'),
-      prettyDate: moment().format(this.$dateFormat)
+      prettyDate: moment().format(this.$dateFormat),
     };
   },
   computed: {
@@ -135,12 +136,12 @@ export default {
     },
     accounts() {
       return this.$store.getters['project/accountItems'].filter(
-        account => account.value !== this.account.id
+        (account) => account.value !== this.account.id
       );
     },
     isFromTransaction() {
       return this.transaction.from === this.account.id;
-    }
+    },
   },
   watch: {
     transaction: {
@@ -153,7 +154,9 @@ export default {
         this.date = moment(transaction.date).format('YYYY-MM-DD');
         this.$nextTick(() => {
           this.prettyDate = moment(transaction.date).format(this.$dateFormat);
-          this.$refs.description.focus();
+          this.$nextTick(() => {
+            this.$refs.description.focus();
+          });
         });
         const isFromTransaction = transaction.from === this.account.id;
         this.newTransaction = {
@@ -164,15 +167,15 @@ export default {
             ? transaction.to
             : transaction.from,
           ...(isFromTransaction && { valueOut: transaction.value }),
-          ...(!isFromTransaction && { valueIn: transaction.value })
+          ...(!isFromTransaction && { valueIn: transaction.value }),
         };
-      }
+      },
     },
     date: {
       handler(date) {
         this.prettyDate = moment(date, 'YYYY-MM-DD').format(this.$dateFormat);
-      }
-    }
+      },
+    },
   },
   methods: {
     save() {
@@ -195,11 +198,11 @@ export default {
           .set({
             year: date.year(),
             month: date.month(),
-            date: date.date()
+            date: date.date(),
           })
           .toDate(),
         id: uiTransaction.id || getId(),
-        value: uiTransaction.valueIn || uiTransaction.valueOut
+        value: uiTransaction.valueIn || uiTransaction.valueOut,
       };
     },
     update() {
@@ -213,11 +216,11 @@ export default {
         note: uiTransaction.note,
         value: uiTransaction.value,
         date: uiTransaction.date,
-        highlighted: uiTransaction.highlighted
+        highlighted: uiTransaction.highlighted,
       };
       const updatedTransaction = {
         ...transaction,
-        ...updates
+        ...updates,
       };
 
       if (transaction.linkedTransaction) {
@@ -229,8 +232,8 @@ export default {
           primary: updatedTransaction,
           secondary: {
             ...linkedTransaction,
-            ...updates
-          }
+            ...updates,
+          },
         });
       } else {
         this.$store.dispatch('project/updateTransaction', updatedTransaction);
@@ -282,7 +285,7 @@ export default {
           ...transaction,
           expense: this.account.id,
           id: getId(),
-          linkedTransaction: transaction.id
+          linkedTransaction: transaction.id,
         };
         transaction.linkedTransaction = secondaryTransaction.id;
         if (uiTransaction.valueIn) {
@@ -293,8 +296,8 @@ export default {
             secondary: {
               ...secondaryTransaction,
               from: 'none',
-              to: uiTransaction.account
-            }
+              to: uiTransaction.account,
+            },
           });
         } else {
           transaction.from = this.account.id;
@@ -304,8 +307,8 @@ export default {
             secondary: {
               ...secondaryTransaction,
               to: 'none',
-              from: uiTransaction.account
-            }
+              from: uiTransaction.account,
+            },
           });
         }
       }
@@ -314,7 +317,7 @@ export default {
     },
     close() {
       this.$emit('close');
-    }
-  }
+    },
+  },
 };
 </script>

@@ -8,8 +8,8 @@ export default {
   props: {
     account: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   computed: {
     data() {
@@ -31,10 +31,10 @@ export default {
         },
         {}
       );
-    }
+    },
   },
   watch: {
-    data: 'render'
+    data: 'render',
   },
   mounted() {
     this.render();
@@ -43,60 +43,58 @@ export default {
     render() {
       this.renderChart(
         {
-          labels: Object.keys(this.data).map(_ =>
+          labels: Object.keys(this.data).map((_) =>
             moment(_, 'YYYY-MM').toDate()
           ),
           datasets: [
             {
-              data: Object.values(this.data).map(_ => Number(_)),
+              data: Object.values(this.data).map((_) => Number(_)),
               backgroundColor: '#1976d2',
-              borderColor: '#1976d2'
-            }
-          ]
+              borderColor: '#1976d2',
+            },
+          ],
         },
         {
           responsive: true,
           legend: {
-            display: false
+            display: false,
           },
           tooltips: {
             displayColors: false,
             callbacks: {
               title: ([point], config) => {
-                const datum =
-                  config.datasets[point.datasetIndex].data[point.index];
-                return moment(datum.x).format(this.$dateFormat);
+                return moment(point.label).format(this.$dateFormat);
               },
-              label: point => {
+              label: (point) => {
                 return this.$currencyPrefix + point.yLabel;
-              }
-            }
+              },
+            },
           },
           scales: {
             xAxes: [
               {
                 type: 'time',
                 scaleLabel: {
-                  labelString: 'Time'
+                  labelString: 'Time',
                 },
                 time: {
-                  unit: 'month'
-                }
-              }
+                  unit: 'month',
+                },
+              },
             ],
             yAxes: [
               {
                 ticks: {
-                  callback: value => {
+                  callback: (value) => {
                     return this.$currencyPrefix + value;
-                  }
-                }
-              }
-            ]
-          }
+                  },
+                },
+              },
+            ],
+          },
         }
       );
-    }
-  }
+    },
+  },
 };
 </script>
