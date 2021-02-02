@@ -10,6 +10,43 @@
           @click="addTransaction"
           >Add</VBtn
         >
+        <VBtn text @click="toggleFilters">{{
+          showFilters ? 'Clear' : 'Filter'
+        }}</VBtn>
+        <template v-if="showFilters">
+          <VMenu
+            ref="dateRangeMenu"
+            v-model="dateRangeMenu"
+            :close-on-content-click="false"
+            :return-value.sync="dateRange"
+            transition="scale-transition"
+            offset-y
+            min-width="auto"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <VTextField
+                v-model="dateRangeText"
+                label="Date range"
+                prepend-icon="mdi-calendar"
+                readonly
+                hide-details
+                single-line
+                v-on="on"
+                v-bind="attrs"
+                class="input mr-3"
+              />
+            </template>
+            <VDatePicker v-model="dateRange" range no-title />
+          </VMenu>
+          <VSelect
+            v-model="direction"
+            :items="['Both', 'In', 'Out']"
+            label="In/Out"
+            single-line
+            hide-details
+            class="input"
+          />
+        </template>
         <VSpacer />
         <VTextField
           v-model="search"
@@ -18,11 +55,12 @@
           single-line
           hide-details
           autofocus
+          class="input"
         />
       </VCardTitle>
       <VDataTable
         :headers="headers"
-        :items="prettyTransactions"
+        :items="filteredTransactions"
         :search="search"
         :custom-filter="customFilter"
         :footer-props="footerProps"
@@ -39,7 +77,10 @@
             <td>{{ props.item.accountName }}</td>
             <td>{{ transactionIn(props.item) | currency }}</td>
             <td>{{ transactionOut(props.item) | currency }}</td>
-            <td>{{ accountBalance(props.item) | currency }}</td>
+            <td v-if="!hasFilter">
+              {{ accountBalance(props.item) | currency }}
+            </td>
+            <td v-else />
           </tr>
         </template>
         <template v-slot:body.append>
@@ -51,10 +92,16 @@
             <td />
             <td />
             <td
-              :class="{ 'red--text': parseFloat(account.balance) < 0 }"
+              :class="{
+                'red--text': !hasFilter && parseFloat(account.balance) < 0,
+              }"
               class="balance"
             >
-              {{ account.balance | currency }}
+              {{
+                hasFilter
+                  ? filteredTransactionsTotal
+                  : account.balance | currency
+              }}
             </td>
           </tr>
         </template>
@@ -66,6 +113,8 @@
 <script>
 import moment from 'moment';
 import accounting from 'accounting';
+import { isAfter, isBefore, parseISO, parse } from 'date-fns';
+import Big from 'big.js';
 
 const defaultTransaction = {
   date: moment(),
@@ -73,91 +122,138 @@ const defaultTransaction = {
   valueIn: '',
   valueOut: '',
   account: 'none',
-  note: ''
+  note: '',
 };
 
 export default {
   props: {
     account: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     transactions: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   data() {
     return {
       transaction: {
-        ...defaultTransaction
+        ...defaultTransaction,
       },
       search: '',
-      headers: [
+      footerProps: {
+        itemsPerPageOptions: [10, -1],
+      },
+      page: 1,
+      dateRange: [],
+      dateRangeMenu: false,
+      today: new Date(),
+      direction: '',
+      showFilters: false,
+    };
+  },
+  computed: {
+    headers() {
+      return [
         {
           text: 'Date',
           value: 'date',
-          align: 'left'
+          align: 'left',
         },
         {
           text: 'Description',
           value: 'description',
-          align: 'left'
+          align: 'left',
         },
         {
           text: 'Note',
           value: 'note',
-          align: 'left'
+          align: 'left',
         },
         {
           text: 'Account',
           value: 'accountName',
-          align: 'left'
+          align: 'left',
         },
         {
           text: 'In',
           value: 'value',
-          align: 'left'
+          align: 'left',
         },
         {
           text: 'Out',
           value: 'value',
-          align: 'left'
+          align: 'left',
         },
         {
-          text: 'Balance',
-          align: 'left'
-        }
-      ],
-      footerProps: {
-        itemsPerPageOptions: [10, -1]
-      },
-      page: 1
-    };
-  },
-  computed: {
-    prettyTransactions() {
-      return [...this.transactions].reverse().map(transaction => ({
-        ...transaction,
-        accountName: this.transactionAccountName(transaction)
-      }));
+          text: this.hasFilter ? 'Total' : 'Balance',
+          align: 'left',
+        },
+      ];
+    },
+    hasFilter() {
+      return this.dateRangeParsed.length === 2 || this.direction;
+    },
+    filteredTransactions() {
+      return this.transactions
+        .filter((transaction) => {
+          if (this.dateRangeParsed.length === 2) {
+            const date = parseISO(transaction.date);
+            if (
+              isBefore(date, this.dateRangeParsed[0]) ||
+              isAfter(date, this.dateRangeParsed[1])
+            )
+              return false;
+          }
+          if (this.direction && this.direction !== 'Both') {
+            if (this.direction === 'In' && !this.transactionIn(transaction))
+              return false;
+            if (this.direction === 'Out' && !this.transactionOut(transaction))
+              return false;
+          }
+          return true;
+        })
+        .reverse()
+        .map((transaction) => ({
+          ...transaction,
+          accountName: this.transactionAccountName(transaction),
+        }));
+    },
+    filteredTransactionsTotal() {
+      return this.filteredTransactions.reduce((sum, transaction) => {
+        return transaction.to === this.account.id
+          ? sum.plus(transaction.value)
+          : sum.minus(transaction.value);
+      }, new Big(0));
     },
     searchFormatted() {
       return {
         currency: accounting.unformat(this.search),
-        date: moment(this.search, this.$dateFormat).format('YYYY-MM-DD')
+        date: moment(this.search, this.$dateFormat).format('YYYY-MM-DD'),
       };
-    }
+    },
+    dateRangeParsed() {
+      return this.dateRange.map((dateString) =>
+        parse(dateString, 'yyyy-MM-dd', this.today)
+      );
+    },
+    dateRangeText() {
+      return this.dateRange.join(' - ');
+    },
   },
   watch: {
     search() {
       this.page = 1;
-    }
+    },
+    dateRangeMenu(open) {
+      if (!open) this.$refs.dateRangeMenu.save(this.dateRange);
+    },
   },
   methods: {
     resetForm() {
       this.transaction = {
-        ...defaultTransaction
+        ...defaultTransaction,
       };
     },
     transactionIn(transaction) {
@@ -209,8 +305,16 @@ export default {
       if (date && value.includes(date)) return true;
 
       return false;
-    }
-  }
+    },
+    toggleFilters() {
+      this.showFilters = !this.showFilters;
+
+      if (!this.showFilters) {
+        this.direction = '';
+        this.dateRange = [];
+      }
+    },
+  },
 };
 </script>
 
@@ -220,5 +324,9 @@ export default {
   height: 48px;
   padding: 0 1rem;
   font-weight: 500;
+}
+.input {
+  padding-top: 0;
+  margin-top: 0;
 }
 </style>
