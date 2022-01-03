@@ -11,6 +11,7 @@
         :footer-props="{ showFirstLastPage: true }"
         :page.sync="page"
         :items-per-page="itemsPerPage"
+        no-data-text="No new transactions found"
       >
         <template v-slot:item="props">
           <tr>
