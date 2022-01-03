@@ -9,6 +9,8 @@
         :headers="headers"
         class="import-transactions-table"
         :footer-props="{ showFirstLastPage: true }"
+        :page.sync="page"
+        :items-per-page="itemsPerPage"
       >
         <template v-slot:item="props">
           <tr>
@@ -109,6 +111,8 @@ export default {
           value: 'out',
         },
       ],
+      page: 1,
+      itemsPerPage: 10,
     };
   },
   computed: {
@@ -216,6 +220,12 @@ export default {
       if (nextAccountSelect) {
         nextAccountSelect.focus();
         nextAccountSelect.activateMenu();
+      } else if (this.page * this.itemsPerPage < this.transactions.length) {
+        this.$nextTick(() => {
+          this.page++;
+          this.$refs.account0.focus();
+          this.$refs.account0.activateMenu();
+        });
       }
     },
     removeTransaction(index) {
