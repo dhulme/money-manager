@@ -31,7 +31,9 @@
         @transaction-click="editTransaction"
       />
       <VCardActions>
-        <VBtn text color="primary" @click="process">Run</VBtn>
+        <VBtn text color="primary" @click="process" :disabled="hasChanges"
+          >Run</VBtn
+        >
         <VBtn text @click="applyChanges" :disabled="!hasChanges"
           >Apply changes</VBtn
         >
