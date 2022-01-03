@@ -115,6 +115,28 @@ export const importTransactionsFormats = [
           }));
     },
   },
+  {
+    id: 'lloyds',
+    name: 'Lloyds',
+    type: 'account',
+    extensions: ['csv'],
+    toTransactions(csvData) {
+      console.log('csvData', csvData);
+      const { data, errors } = parse(csvData, {
+        header: true,
+        skipEmptyLines: true,
+      });
+
+      return errors.length
+        ? handleCsvErrors(errors)
+        : data.map((row) => ({
+            date: moment(row.Date, 'DD/MM/YYYY'),
+            description: capitalizeFirstLetter(row.Description.toLowerCase()),
+            value: Math.abs(row.Amount),
+            type: Number(row.Amount) < 0 ? 'in' : 'out',
+          }));
+    },
+  },
 ];
 
 export const importAccountTransactionsFormatItems = importTransactionsFormats
