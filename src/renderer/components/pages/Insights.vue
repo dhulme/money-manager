@@ -1,63 +1,75 @@
 <template>
   <div>
     <VAutocomplete v-model="accountId" :items="accounts" label="Account" />
-    <VRow class="mb-2">
-      <VCol md="6">
-        <VCard>
-          <VCardTitle>Account spending over time</VCardTitle>
-          <VCardText
-            ><AccountSpendingOverTime :account="account" :height="140"
-          /></VCardText>
-        </VCard>
-      </VCol>
-      <VCol md="6">
-        <VCard>
-          <VCardTitle>Total spending last month</VCardTitle>
-          <VCardText
-            ><SpendingPerMonth :date="monthDate" :height="140"
-          /></VCardText>
-        </VCard>
-      </VCol>
-    </VRow>
-    <VCard>
-      <VCardTitle>Account value over time</VCardTitle>
+    <DateRange @dateRange="dateRange = $event" type="month" />
+
+    <VCard v-if="!accountId">
+      <VCardTitle>Spending for {{ formattedMonth }}</VCardTitle>
       <VCardText
-        ><AccountValueOverTime :account="account" :height="120"
+        ><SpendingPerMonth :date="monthDate" :height="140"
       /></VCardText>
     </VCard>
+    <template v-else>
+      <VCard class="mb-3">
+        <VCardTitle>Account spending over time</VCardTitle>
+        <VCardText
+          ><AccountSpendingOverTime
+            :account="account"
+            :date-range="dateRange"
+            :height="140"
+        /></VCardText>
+      </VCard>
+      <VCard>
+        <VCardTitle>Account value over time</VCardTitle>
+        <VCardText
+          ><AccountValueOverTime
+            :account="account"
+            :date-range="dateRange"
+            :height="120"
+        /></VCardText>
+      </VCard>
+    </template>
   </div>
 </template>
 
 <script>
-import moment from 'moment';
-
 import AccountValueOverTime from '../charts/AccountValueOverTime.vue';
 import AccountSpendingOverTime from '../charts/AccountSpendingOverTime.vue';
 import SpendingPerMonth from '../charts/SpendingPerMonth.vue';
+import DateRange from '../DateRange.vue';
+import { subMonths, format } from 'date-fns';
 
 export default {
   components: {
     AccountValueOverTime,
     AccountSpendingOverTime,
     SpendingPerMonth,
+    DateRange,
   },
   data() {
     return {
-      accountId: null,
+      accountId: this.$route.params.accountId || null,
+      dateRange: [],
     };
-  },
-  created() {
-    this.accountId = this.accounts[0].value;
   },
   computed: {
     account() {
       return this.$store.getters['project/account'](this.accountId);
     },
     accounts() {
-      return this.$store.getters['project/accountItems'];
+      return [
+        {
+          text: 'All',
+          value: null,
+        },
+        ...this.$store.getters['project/accountItems'],
+      ];
     },
     monthDate() {
-      return moment().subtract(1, 'months');
+      return this.dateRange[0] || subMonths(new Date(), 1);
+    },
+    formattedMonth() {
+      return format(this.monthDate, 'MMMM yyyy');
     },
   },
 };

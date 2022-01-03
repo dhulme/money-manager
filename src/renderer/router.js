@@ -16,47 +16,47 @@ export default new Router({
     {
       path: '/',
       name: 'accounts',
-      component: Accounts
+      component: Accounts,
     },
     {
       path: '/bulk-transactions/new',
       name: 'newBulkTransaction',
-      component: NewBulkTransaction
+      component: NewBulkTransaction,
     },
     {
       path: '/bulk-transactions',
       name: 'bulkTransactions',
-      component: BulkTransactions
+      component: BulkTransactions,
     },
     {
       path: '/bulk-transactions/:bulkTransactionId',
       name: 'bulkTransaction',
-      component: BulkTransaction
+      component: BulkTransaction,
     },
     {
       path: '/newAccountCategory',
       name: 'newAccountCategory',
-      component: EditAccountCategory
+      component: EditAccountCategory,
     },
     {
       path: '/:accountType/:accountCategory/new',
       name: 'newAccount',
-      component: EditAccount
+      component: EditAccount,
     },
     {
       path: '/:accountType/:accountCategory/:accountId',
       name: 'account',
-      component: Account
+      component: Account,
     },
     {
       path: '/:accountType/:accountCategory/:accountId/edit',
       name: 'editAccount',
-      component: EditAccount
+      component: EditAccount,
     },
     {
-      path: '/insights',
+      path: '/insights/:accountId',
       name: 'insights',
-      component: Insights
-    }
-  ]
+      component: Insights,
+    },
+  ],
 });

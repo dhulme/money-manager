@@ -14,30 +14,7 @@
           showFilters ? 'Clear' : 'Filter'
         }}</VBtn>
         <template v-if="showFilters">
-          <VMenu
-            ref="dateRangeMenu"
-            v-model="dateRangeMenu"
-            :close-on-content-click="false"
-            :return-value.sync="dateRange"
-            transition="scale-transition"
-            offset-y
-            min-width="auto"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <VTextField
-                v-model="dateRangeText"
-                label="Date range"
-                prepend-icon="mdi-calendar"
-                readonly
-                hide-details
-                single-line
-                v-on="on"
-                v-bind="attrs"
-                class="input mr-3"
-              />
-            </template>
-            <VDatePicker v-model="dateRange" range no-title />
-          </VMenu>
+          <DateRange @dateRange="dateRange = $event" slim />
           <VSelect
             v-model="direction"
             :items="['Both', 'In', 'Out']"
@@ -113,8 +90,9 @@
 <script>
 import moment from 'moment';
 import accounting from 'accounting';
-import { isAfter, isBefore, parseISO, parse, isSameDay } from 'date-fns';
+import { isAfter, isBefore, parseISO, isSameDay } from 'date-fns';
 import Big from 'big.js';
+import DateRange from './DateRange.vue';
 
 const defaultTransaction = {
   date: moment(),
@@ -126,6 +104,9 @@ const defaultTransaction = {
 };
 
 export default {
+  components: {
+    DateRange,
+  },
   props: {
     account: {
       type: Object,
@@ -147,8 +128,6 @@ export default {
       },
       page: 1,
       dateRange: [],
-      dateRangeMenu: false,
-      today: new Date(),
       direction: '',
       showFilters: false,
     };
@@ -193,19 +172,19 @@ export default {
       ];
     },
     hasFilter() {
-      return this.dateRangeParsed.length || this.direction;
+      return this.dateRange.length || this.direction;
     },
     filteredTransactions() {
       return this.transactions
         .filter((transaction) => {
           const date = parseISO(transaction.date);
-          if (this.dateRangeParsed.length === 1) {
-            if (!isSameDay(date, this.dateRangeParsed[0])) return false;
+          if (this.dateRange.length === 1) {
+            if (!isSameDay(date, this.dateRange[0])) return false;
           }
-          if (this.dateRangeParsed.length === 2) {
+          if (this.dateRange.length === 2) {
             if (
-              isBefore(date, this.dateRangeParsed[0]) ||
-              isAfter(date, this.dateRangeParsed[1])
+              isBefore(date, this.dateRange[0]) ||
+              isAfter(date, this.dateRange[1])
             )
               return false;
           }
@@ -236,21 +215,10 @@ export default {
         date: moment(this.search, this.$dateFormat).format('YYYY-MM-DD'),
       };
     },
-    dateRangeParsed() {
-      return this.dateRange.map((dateString) =>
-        parse(dateString, 'yyyy-MM-dd', this.today)
-      );
-    },
-    dateRangeText() {
-      return this.dateRange.join(' - ');
-    },
   },
   watch: {
     search() {
       this.page = 1;
-    },
-    dateRangeMenu(open) {
-      if (!open) this.$refs.dateRangeMenu.save(this.dateRange);
     },
   },
   methods: {

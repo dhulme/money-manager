@@ -2,6 +2,7 @@
 import { Bar } from 'vue-chartjs';
 import moment from 'moment';
 import Big from 'big.js';
+import { isAfter, isBefore, parseISO, isSameDay } from 'date-fns';
 
 export default {
   extends: Bar,
@@ -10,6 +11,7 @@ export default {
       type: Object,
       default: null,
     },
+    dateRange: Array,
   },
   computed: {
     data() {
@@ -19,10 +21,21 @@ export default {
 
       return this.account.transactionIds.reduce(
         (monthlyTotals, transactionId) => {
-          const transaction = this.$store.getters['project/transaction'](
-            transactionId
-          );
+          const transaction =
+            this.$store.getters['project/transaction'](transactionId);
+
           if (transaction.date && transaction.from === this.account.id) {
+            const date = parseISO(transaction.date);
+            if (this.dateRange.length === 1) {
+              if (!isSameDay(date, this.dateRange[0])) return monthlyTotals;
+            }
+            if (this.dateRange.length === 2) {
+              if (
+                isBefore(date, this.dateRange[0]) ||
+                isAfter(date, this.dateRange[1])
+              )
+                return monthlyTotals;
+            }
             const dateKey = transaction.date.substring(0, 7);
             const total = monthlyTotals[dateKey] || new Big(0);
             monthlyTotals[dateKey] = total.plus(transaction.value);

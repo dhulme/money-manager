@@ -5,6 +5,7 @@
       <VCardActions>
         <VBtn text color="error" @click="deleteAccount">Delete</VBtn>
         <VBtn text @click="goToEditAccount">Edit</VBtn>
+        <VBtn text @click="goToInsights">Insights</VBtn>
         <VBtn
           v-if="account.importTransactionsFormatId"
           text
@@ -127,6 +128,14 @@ export default {
           accountId: this.accountId,
           accountCategory: this.$route.params.accountCategory,
           accountType: this.$route.params.accountType,
+        },
+      });
+    },
+    goToInsights() {
+      this.$router.push({
+        name: 'insights',
+        params: {
+          accountId: this.accountId,
         },
       });
     },

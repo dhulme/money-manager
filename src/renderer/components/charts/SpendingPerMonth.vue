@@ -7,7 +7,7 @@ import colors from 'vuetify/lib/util/colors';
 export default {
   extends: Pie,
   props: {
-    date: Object
+    date: Date,
   },
   computed: {
     accounts() {
@@ -21,12 +21,11 @@ export default {
       const startMonth = moment(this.date).startOf('month');
       const endMonth = moment(this.date).endOf('month');
 
-      return this.accounts.map(account => {
+      return this.accounts.map((account) => {
         return Number(
           account.transactionIds.reduce((total, transactionId) => {
-            const transaction = this.$store.getters['project/transaction'](
-              transactionId
-            );
+            const transaction =
+              this.$store.getters['project/transaction'](transactionId);
             if (
               transaction.date &&
               transaction.from === account.id &&
@@ -46,10 +45,10 @@ export default {
           new Big(0)
         )
       );
-    }
+    },
   },
   watch: {
-    data: 'render'
+    data: 'render',
   },
   mounted() {
     this.render();
@@ -58,7 +57,7 @@ export default {
     render() {
       this.renderChart(
         {
-          labels: this.accounts.map(account => account.name),
+          labels: this.accounts.map((account) => account.name),
           datasets: [
             {
               data: this.data,
@@ -67,15 +66,15 @@ export default {
                 Object.values(colors.cyan),
                 Object.values(colors.teal),
                 Object.values(colors.lightGreen),
-                Object.values(colors.lime)
-              ].flat()
-            }
-          ]
+                Object.values(colors.lime),
+              ].flat(),
+            },
+          ],
         },
         {
           responsive: true,
           legend: {
-            display: false
+            display: false,
           },
           tooltips: {
             callbacks: {
@@ -88,12 +87,12 @@ export default {
               },
               title([point], data) {
                 return data.labels[point.index];
-              }
-            }
-          }
+              },
+            },
+          },
         }
       );
-    }
-  }
+    },
+  },
 };
 </script>
