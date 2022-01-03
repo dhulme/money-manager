@@ -89,7 +89,6 @@
 
 <script>
 import moment from 'moment';
-import accounting from 'accounting';
 import { isAfter, isBefore, parseISO, isSameDay } from 'date-fns';
 import Big from 'big.js';
 import DateRange from './DateRange.vue';
@@ -209,12 +208,6 @@ export default {
           : sum.minus(transaction.value);
       }, new Big(0));
     },
-    searchFormatted() {
-      return {
-        currency: accounting.unformat(this.search),
-        date: moment(this.search, this.$dateFormat).format('YYYY-MM-DD'),
-      };
-    },
   },
   watch: {
     search() {
@@ -271,8 +264,7 @@ export default {
       if (value.toLowerCase().includes(rawSearch.toLowerCase())) return true;
 
       // Then do currency and date
-      const { currency, date } = this.searchFormatted;
-      if (currency && value.includes(currency.toString())) return true;
+      const date = moment(this.search, this.$dateFormat).format('YYYY-MM-DD');
       if (date && value.includes(date)) return true;
 
       return false;

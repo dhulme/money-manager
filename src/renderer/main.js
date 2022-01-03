@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import accounting from 'accounting';
 import moment from 'moment';
 
 import vuetify from './plugins/vuetify';
@@ -82,6 +81,11 @@ Vue.use(history, {
     Vue.prototype.$currencyPrefix = currencyPrefix;
     Vue.prototype.$dateFormat = dateFormat;
 
+    const numberFormat = new Intl.NumberFormat('en-GB', {
+      style: 'currency',
+      currency: 'GBP',
+    });
+
     Vue.filter('currency', (value) => {
       if (value === undefined || value === null) {
         return '';
@@ -89,7 +93,11 @@ Vue.use(history, {
       if (value === 0 && Object.is(value, -0)) {
         value = 0;
       }
-      return accounting.formatMoney(value, currencyPrefix, 2, ',', '.');
+      const formatted = numberFormat.format(value);
+
+      return currencyPrefix === '£'
+        ? formatted
+        : formatted.replace('£', currencyPrefix);
     });
 
     Vue.filter('date', (value) =>

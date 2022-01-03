@@ -58,7 +58,6 @@
     }
   },
   "dependencies": {
-    "accounting": "^0.4.1",
     "big.js": "^6.1.1",
     "chart.js": "^2.9.4",
     "crypto-random-string": "^3.3.1",
