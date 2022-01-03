@@ -10,7 +10,7 @@
           @click="addTransaction"
           >Add</VBtn
         >
-        <VBtn text @click="toggleFilters">{{
+        <VBtn text @click="toggleFilters" class="toggle-filters">{{
           showFilters ? 'Clear' : 'Filter'
         }}</VBtn>
         <template v-if="showFilters">
@@ -113,7 +113,7 @@
 <script>
 import moment from 'moment';
 import accounting from 'accounting';
-import { isAfter, isBefore, parseISO, parse } from 'date-fns';
+import { isAfter, isBefore, parseISO, parse, isSameDay } from 'date-fns';
 import Big from 'big.js';
 
 const defaultTransaction = {
@@ -193,13 +193,16 @@ export default {
       ];
     },
     hasFilter() {
-      return this.dateRangeParsed.length === 2 || this.direction;
+      return this.dateRangeParsed.length || this.direction;
     },
     filteredTransactions() {
       return this.transactions
         .filter((transaction) => {
+          const date = parseISO(transaction.date);
+          if (this.dateRangeParsed.length === 1) {
+            if (!isSameDay(date, this.dateRangeParsed[0])) return false;
+          }
           if (this.dateRangeParsed.length === 2) {
-            const date = parseISO(transaction.date);
             if (
               isBefore(date, this.dateRangeParsed[0]) ||
               isAfter(date, this.dateRangeParsed[1])
@@ -328,5 +331,8 @@ export default {
 .input {
   padding-top: 0;
   margin-top: 0;
+}
+.toggle-filters {
+  margin-right: 0.5rem;
 }
 </style>
