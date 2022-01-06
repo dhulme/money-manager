@@ -171,14 +171,18 @@ Salary	Mortgage		 £1.00
 Salary	Food		 £1.00
 ```
 
-### Midata
+### Midata Transactions
 
 A UK standard for financial data.
 
-### Capital One
+### Capital One Transactions
 
 Used by Capital One UK.
 
-### Santander
+### Santander Transactions
 
 Used by Satander UK.
+
+### Lloyds Transactions
+
+Used by Lloyds Bank.
