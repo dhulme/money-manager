@@ -1,6 +1,11 @@
 <template>
   <div>
-    <VAutocomplete v-model="accountId" :items="accounts" label="Account" />
+    <VAutocomplete
+      v-model="accountId"
+      :items="accounts"
+      label="Account"
+      auto-select-first
+    />
     <DateRange @dateRange="dateRange = $event" type="month" />
 
     <VCard v-if="!accountId">

@@ -29,6 +29,7 @@
                 hide-details
                 :ref="'account' + props.index"
                 @change="accountChange(props.index)"
+                auto-select-first
               />
             </td>
             <td>

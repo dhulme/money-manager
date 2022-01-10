@@ -19,6 +19,7 @@
           prepend-icon="account_balance"
           class="required"
           :rules="fromRules"
+          auto-select-first
         />
         <VAutocomplete
           :items="accounts"
@@ -27,6 +28,7 @@
           prepend-icon="account_balance"
           class="required"
           :rules="toRules"
+          auto-select-first
         />
         <VTextField
           v-model="newTransaction.note"

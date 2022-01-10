@@ -49,6 +49,7 @@
           prepend-icon="account_balance"
           class="required"
           :disabled="!isNewTransaction"
+          auto-select-first
         />
         <VTextField
           v-model="newTransaction.valueIn"

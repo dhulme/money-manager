@@ -42,6 +42,7 @@
             label="From"
             class="required"
             :rules="newTransactionValueFromRules"
+            auto-select-first
           />
 
           <VAutocomplete
@@ -50,6 +51,7 @@
             label="To"
             class="required"
             :rules="newTransactionValueToRules"
+            auto-select-first
           />
 
           <VTextField v-model="newTransaction.note" placeholder="Note" />
@@ -95,11 +97,8 @@ export default {
   },
   mixins: [importBulkTransactions],
   data() {
-    const {
-      name,
-      description,
-      transactions,
-    } = this.$store.state.newBulkTransaction;
+    const { name, description, transactions } =
+      this.$store.state.newBulkTransaction;
     return {
       name,
       description,
