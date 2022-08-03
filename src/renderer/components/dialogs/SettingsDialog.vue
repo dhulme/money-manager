@@ -7,6 +7,7 @@
           <p>
             Note: These changes will only be visible when the app is restarted.
           </p>
+          <div class="text-h6">Formats</div>
           <VTextField
             label="Currency format"
             v-model="settings.currencyPrefix"
@@ -19,7 +20,17 @@
             class="required"
             :rules="dateFormatRules"
           />
-          <VLabel>Example date: {{ exampleDate }}</VLabel>
+          <div class="text-caption">Example date: {{ exampleDate }}</div>
+
+          <div class="text-h6 mt-8">Import transactions</div>
+          <VCombobox
+            multiple
+            clearable
+            deletable-chips
+            chips
+            label="Transactions descriptions with Gift Aid"
+            v-model="settings.importTransactionsDescriptionsGiftAided"
+          />
         </VCardText>
         <VCardActions>
           <VBtn type="submit" text color="primary">Ok</VBtn>
@@ -37,9 +48,11 @@ export default {
   data() {
     return {
       settings: {},
-      currencyPrefixRules: [value => !!value || 'Currency format is required'],
-      dateFormatRules: [value => !!value || 'Date format is required'],
-      valid: true
+      currencyPrefixRules: [
+        (value) => !!value || 'Currency format is required',
+      ],
+      dateFormatRules: [(value) => !!value || 'Date format is required'],
+      valid: true,
     };
   },
   async created() {
@@ -52,13 +65,13 @@ export default {
       },
       set(value) {
         return this.$store.commit('setDialog', value ? 'settings' : null);
-      }
+      },
     },
     exampleDate() {
       return (
         this.settings.dateFormat && moment().format(this.settings.dateFormat)
       );
-    }
+    },
   },
   methods: {
     save() {
@@ -66,7 +79,7 @@ export default {
         this.$ipc.saveSettings(this.settings);
         this.dialog = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>

@@ -45,6 +45,7 @@
       <ImportTransactions
         :account="account"
         @close="importTransactionsDialogVisible = false"
+        :visible="importTransactionsDialogVisible"
       />
     </VDialog>
   </div>

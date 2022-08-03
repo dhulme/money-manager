@@ -2,7 +2,6 @@
   <VCard>
     <VCardTitle class="headline">Import transactions</VCardTitle>
     <VCardText>
-      <p>Only transactions with an account selected will be imported</p>
       <VDataTable
         dense
         :items="transactions"
@@ -46,7 +45,10 @@
                 :prefix="$currencyPrefix"
               />
             </td>
-            <td class="pa-0 pt-3">
+            <td class="pr-0">
+              <VCheckbox hide-details v-model="props.item.giftAided" dense />
+            </td>
+            <td class="pa-0 pt-2">
               <VBtn icon @click="removeTransaction(props.index)"
                 ><VIcon>delete</VIcon></VBtn
               >
@@ -66,10 +68,12 @@
 import Vue from 'vue';
 import moment from 'moment';
 import { getId } from '../util';
+import ipc from '../ipc';
 
 export default {
   props: {
     account: Object,
+    visible: Boolean,
   },
   data() {
     return {
@@ -98,8 +102,14 @@ export default {
           width: 150,
         },
         {
+          text: 'Gift Aided',
+          value: 'giftAided',
+          width: 100,
+        },
+        {
           text: '',
           value: 'actions',
+          width: 50,
         },
       ],
       transactions: [],
@@ -115,6 +125,7 @@ export default {
       ],
       page: 1,
       itemsPerPage: 10,
+      importTransactionsDescriptionsGiftAided: [],
     };
   },
   computed: {
@@ -138,6 +149,10 @@ export default {
           description: item.description,
           value: item.value.toFixed(2),
           type: item.type,
+          giftAided: this.importTransactionsDescriptionsGiftAided.some(
+            (description) =>
+              item.description.toLowerCase().includes(description.toLowerCase())
+          ),
         }));
     },
     accounts() {
@@ -153,6 +168,14 @@ export default {
         this.transactions = value;
       },
     },
+    async visible(value) {
+      if (value) {
+        const { importTransactionsDescriptionsGiftAided } =
+          await ipc.getSettings();
+        this.importTransactionsDescriptionsGiftAided =
+          importTransactionsDescriptionsGiftAided;
+      }
+    },
   },
   methods: {
     completeImport() {
@@ -167,6 +190,7 @@ export default {
             date: moment(uiTransaction.date, this.$dateFormat),
             id: primaryTransactionId,
             value: uiTransaction.value,
+            giftAided: uiTransaction.giftAided,
           };
 
           const transactionAccount = this.$store.getters['project/account'](
