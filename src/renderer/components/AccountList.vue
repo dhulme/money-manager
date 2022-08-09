@@ -3,6 +3,7 @@
     <VCardTitle>
       <span class="headline">{{ accountCategory }}</span>
       <VSpacer />
+      <VSwitch class="mr-4" v-model="showPositive" label="Show positive" dense />
       <VBtn v-hotkey.add="newAccount" text color="primary" @click="newAccount"
         >Add</VBtn
       >
@@ -58,7 +59,8 @@ export default {
           value: 'balance',
           align: 'right'
         }
-      ]
+      ],
+      showPositive: true
     };
   },
   computed: {
@@ -67,7 +69,7 @@ export default {
         this.accountCategory
       );
       return accounts.filter(account =>
-        account.name.toLowerCase().includes(this.search.toLowerCase())
+        account.name.toLowerCase().includes(this.search.toLowerCase()) && (this.showPositive || account.balance < 0)
       );
     },
     total() {

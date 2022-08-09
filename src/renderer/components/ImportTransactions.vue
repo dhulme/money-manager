@@ -168,14 +168,17 @@ export default {
         this.transactions = value;
       },
     },
-    async visible(value) {
-      if (value) {
-        const { importTransactionsDescriptionsGiftAided } =
+    visible: {
+      async handler(value) {
+        if (value) {
+          const { importTransactionsDescriptionsGiftAided } =
           await ipc.getSettings();
         this.importTransactionsDescriptionsGiftAided =
           importTransactionsDescriptionsGiftAided;
-      }
-    },
+        }
+      },
+      immediate: true,
+    }
   },
   methods: {
     completeImport() {
