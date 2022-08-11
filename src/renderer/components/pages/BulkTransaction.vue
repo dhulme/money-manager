@@ -52,6 +52,19 @@
         @close="dialogVisible = false"
       />
     </VDialog>
+
+    <VDialog v-model="unappliedChangesDialogVisible">
+      <VCard>
+        <VCardTitle>Unapplied changes</VCardTitle>
+        <VCardText>
+          Do you want to apply the changes you have made?
+        </VCardText>
+        <VCardActions>
+          <VBtn text @click="confirmDiscardChanges">Don't apply</VBtn>
+          <VBtn text color="primary" @click="confirmApplyChanges">Apply</VBtn>
+        </VCardActions>
+      </VCard>
+    </VDialog>
   </div>
 </template>
 
@@ -76,6 +89,8 @@ export default {
       dialogVisible: false,
       transaction: {},
       transactions: [],
+      unappliedChangesDialogVisible: false,
+      toLocation: null
     };
   },
   computed: {
@@ -155,19 +170,40 @@ export default {
         name: 'newBulkTransaction',
       });
     },
-    applyChanges() {
-      this.$store.dispatch('project/updateBulkTransaction', {
+    async applyChanges() {
+      await this.$store.dispatch('project/updateBulkTransaction', {
         ...this.bulkTransaction,
         transactions: this.transactions,
       });
-      this.$store.dispatch('openSnackbar', 'Applied bulk transaction changes');
+      await this.$store.dispatch('openSnackbar', 'Applied bulk transaction changes');
     },
     discardChanges() {
       this.transactions = JSON.parse(
         JSON.stringify(this.bulkTransactionTransactions)
       );
     },
+    async confirmApplyChanges() {
+      console.log('this.toLocation', this.toLocation);
+      await this.applyChanges();
+      this.$router.push({ name: this.toLocation.name });
+    },
+    async confirmDiscardChanges() {
+      this.discardChanges();
+      this.$router.push({ name: this.toLocation.name });
+    }
   },
+  beforeRouteLeave(to, from, next) {
+    try {
+      if (!this.unappliedChangesDialogVisible && this.hasChanges) {
+        this.unappliedChangesDialogVisible = true;
+        this.toLocation = to;
+      } else {
+        next();
+      }
+    } catch {
+      next();
+    }
+  }
 };
 </script>
 
