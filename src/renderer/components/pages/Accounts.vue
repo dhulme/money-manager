@@ -1,15 +1,18 @@
 <template>
   <div>
+    <VRow class="mb-2 mr-1 ml-1">
     <VTextField
       autofocus
       v-model="search"
-      class="mb-4"
+      class="mr-6"
       append-icon="search"
       label="Search"
       single-line
       hide-details
       @keyup.enter="openSearchedAccount"
     />
+    <VSwitch  v-model="showPositive" label="Show positive" dense />
+    </VRow>
 
     <AccountList
       v-for="category in $store.getters['project/accountCategories']"
@@ -19,6 +22,7 @@
       :hide-on-empty="!!search"
       @accounts="searched[category.id] = $event"
       :key="category.id"
+      :showPositive="showPositive"
     />
 
     <VBtn text @click="restoreDeletedAccountsDialogVisible = true"
@@ -49,7 +53,8 @@ export default {
         liabilities: [],
         budgets: []
       },
-      restoreDeletedAccountsDialogVisible: false
+      restoreDeletedAccountsDialogVisible: false,
+      showPositive: true
     };
   },
   created() {

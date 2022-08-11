@@ -3,7 +3,6 @@
     <VCardTitle>
       <span class="headline">{{ accountCategory }}</span>
       <VSpacer />
-      <VSwitch class="mr-4" v-model="showPositive" label="Show positive" dense />
       <VBtn v-hotkey.add="newAccount" text color="primary" @click="newAccount"
         >Add</VBtn
       >
@@ -44,7 +43,8 @@ export default {
     accountCategory: String,
     accountType: String,
     search: String,
-    hideOnEmpty: Boolean
+    hideOnEmpty: Boolean,
+    showPositive: Boolean
   },
   data() {
     return {
@@ -60,7 +60,6 @@ export default {
           align: 'right'
         }
       ],
-      showPositive: true
     };
   },
   computed: {
