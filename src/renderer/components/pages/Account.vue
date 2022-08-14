@@ -48,10 +48,28 @@
         :visible="importTransactionsDialogVisible"
       />
     </VDialog>
+
+    <VDialog v-model="cannotDeleteAccountDialogVisible" max-width="400">
+      <VCard>
+        <VCardTitle>Cannot delete account</VCardTitle>
+        <VCardText
+          >You can only delete an account if the balance is zero.</VCardText
+        >
+        <VCardActions>
+          <VBtn
+            text
+            color="primary"
+            @click="cannotDeleteAccountDialogVisible = false"
+            >Ok</VBtn
+          >
+        </VCardActions>
+      </VCard>
+    </VDialog>
   </div>
 </template>
 
 <script>
+import Big from 'big.js';
 import TransactionList from '../TransactionList';
 import TransactionEdit from '../TransactionEdit';
 import ImportTransactions from '../ImportTransactions';
@@ -69,6 +87,7 @@ export default {
       importTransactionsDialogVisible: false,
       transaction: {},
       importTransactionsActive: false,
+      cannotDeleteAccountDialogVisible: false,
     };
   },
   computed: {
@@ -97,10 +116,12 @@ export default {
   },
   methods: {
     deleteAccount() {
-      this.$store.dispatch('project/deleteAccount', this.accountId);
-      this.$router.push({
-        name: 'accounts',
-      });
+      if (new Big(this.account.balance).eq(0)) {
+        this.$store.dispatch('project/deleteAccount', this.accountId);
+        this.$router.push({ name: 'accounts' });
+      } else {
+        this.cannotDeleteAccountDialogVisible = true;
+      }
     },
     addTransaction() {
       this.transaction = {};

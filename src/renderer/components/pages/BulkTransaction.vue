@@ -53,12 +53,10 @@
       />
     </VDialog>
 
-    <VDialog v-model="unappliedChangesDialogVisible">
+    <VDialog v-model="unappliedChangesDialogVisible" max-width="400">
       <VCard>
         <VCardTitle>Unapplied changes</VCardTitle>
-        <VCardText>
-          Do you want to apply the changes you have made?
-        </VCardText>
+        <VCardText>Do you want to apply the changes you have made?</VCardText>
         <VCardActions>
           <VBtn text @click="confirmDiscardChanges">Don't apply</VBtn>
           <VBtn text color="primary" @click="confirmApplyChanges">Apply</VBtn>
@@ -90,7 +88,7 @@ export default {
       transaction: {},
       transactions: [],
       unappliedChangesDialogVisible: false,
-      toLocation: null
+      toLocation: null,
     };
   },
   computed: {
@@ -175,7 +173,10 @@ export default {
         ...this.bulkTransaction,
         transactions: this.transactions,
       });
-      await this.$store.dispatch('openSnackbar', 'Applied bulk transaction changes');
+      await this.$store.dispatch(
+        'openSnackbar',
+        'Applied bulk transaction changes'
+      );
     },
     discardChanges() {
       this.transactions = JSON.parse(
@@ -190,7 +191,7 @@ export default {
     async confirmDiscardChanges() {
       this.discardChanges();
       this.$router.push({ name: this.toLocation.name });
-    }
+    },
   },
   beforeRouteLeave(to, from, next) {
     try {
@@ -203,7 +204,7 @@ export default {
     } catch {
       next();
     }
-  }
+  },
 };
 </script>
 
