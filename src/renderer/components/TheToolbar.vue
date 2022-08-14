@@ -5,7 +5,7 @@
         'account',
         'newAccount',
         'editAccount',
-        'newAccountCategory'
+        'newAccountCategory',
       ]"
       route-name="accounts"
       >Accounts</ToolbarButton
@@ -19,6 +19,10 @@
 
     <ToolbarButton route-name="insights">Insights</ToolbarButton>
 
+    <ToolbarButton route-name="reports" :child-route-names="['report']"
+      >Reports</ToolbarButton
+    >
+
     <VSpacer />
     <TheAlerts />
   </VAppBar>
@@ -31,7 +35,7 @@ import ToolbarButton from '@/components/ToolbarButton';
 export default {
   components: {
     TheAlerts,
-    ToolbarButton
-  }
+    ToolbarButton,
+  },
 };
 </script>

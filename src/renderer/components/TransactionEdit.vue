@@ -71,6 +71,12 @@
           v-if="!isNewTransaction"
           v-model="newTransaction.highlighted"
           label="Highlighted"
+          dense
+        />
+        <VCheckbox
+          v-model="newTransaction.giftAided"
+          label="Gift Aided"
+          dense
         />
       </VForm>
     </VCardText>
@@ -218,6 +224,7 @@ export default {
         value: uiTransaction.value,
         date: uiTransaction.date,
         highlighted: uiTransaction.highlighted,
+        giftAided: uiTransaction.giftAided,
       };
       const updatedTransaction = {
         ...transaction,

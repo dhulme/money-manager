@@ -8,6 +8,8 @@ import BulkTransactions from '@/components/pages/BulkTransactions';
 import BulkTransaction from '@/components/pages/BulkTransaction';
 import Insights from '@/components/pages/Insights';
 import EditAccountCategory from '@/components/pages/EditAccountCategory';
+import Reports from '@/components/pages/Reports';
+import Report from '@/components/pages/Report';
 
 Vue.use(Router);
 
@@ -57,6 +59,16 @@ export default new Router({
       path: '/insights/:accountId',
       name: 'insights',
       component: Insights,
+    },
+    {
+      path: '/reports',
+      name: 'reports',
+      component: Reports,
+    },
+    {
+      path: '/reports/:reportId',
+      name: 'report',
+      component: Report,
     },
   ],
 });

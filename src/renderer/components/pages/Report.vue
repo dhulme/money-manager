@@ -1,6 +1,10 @@
 <template>
   <VCard v-if="reportId === 'giftAid'">
-    <VCardTitle>Gift Aid</VCardTitle>
+    <VCardTitle>
+      Gift Aid
+      <VSpacer />
+      <VBtn text @click="exportCsv">Export as CSV</VBtn>
+    </VCardTitle>
     <VCardText>
       <VSelect :items="years" label="Tax Year" v-model="dateRange" />
 
@@ -32,6 +36,11 @@
 <script>
 import Big from 'big.js';
 import { addYears, set, format, parseISO } from 'date-fns';
+import ipc from '@/ipc';
+import { uniq } from 'lodash';
+import { unparse } from 'papaparse';
+import moment from 'moment';
+
 const dateFormat = 'do MMMM yyyy';
 const today = new Date();
 
@@ -73,8 +82,9 @@ export default {
     },
     transactions() {
       const getTransaction = this.$store.getters['project/transaction'];
-      const transactions = this.accounts
-        .flatMap((account) => account.transactionIds)
+      const transactions = uniq(
+        this.accounts.flatMap((account) => account.transactionIds)
+      )
         .map((transactionId) => getTransaction(transactionId))
         .filter((transaction) => {
           const date = parseISO(transaction.date);
@@ -85,6 +95,7 @@ export default {
             transaction.giftAided
           );
         });
+      console.log('transactions', transactions);
       return transactions;
     },
     total() {
@@ -110,6 +121,20 @@ export default {
           align: 'left',
         },
       ];
+    },
+  },
+  methods: {
+    exportCsv() {
+      ipc.exportCsv(
+        'transactions',
+        unparse(
+          this.transactions.map((transaction) => ({
+            Date: moment(transaction.date).format(this.$dateFormat),
+            Description: transaction.description,
+            Amount: transaction.value,
+          }))
+        )
+      );
     },
   },
 };
