@@ -1,6 +1,5 @@
 .DS_Store
-dist/electron/*
-dist/web/*
+dist
 build/*
 !build/icons
 node_modules/
@@ -9,3 +8,4 @@ npm-debug.log.*
 thumbs.db
 !.gitkeep
 /test/unit/coverage/
+build-archive

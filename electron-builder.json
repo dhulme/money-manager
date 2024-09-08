@@ -1,0 +1,56 @@
+{
+  "appId": "uk.co.dhulme.money-manager",
+  "directories": {
+    "output": "dist"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "shortcutName": "Money Manager"
+  },
+  "win": {
+    "target": "nsis",
+    "icon": "logo.png"
+  },
+  "linux": {
+    "target": ["snap"],
+    "icon": "logo.png"
+  },
+  "mac": {
+    "target": ["dmg"],
+    "icon": "logo.png"
+  },
+  "files": [
+    {
+      "from": "build/main",
+      "to": "main",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "build/renderer",
+      "to": "renderer",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "src/main/static",
+      "to": "static",
+      "filter": ["**/*"]
+    },
+    "!build",
+    "!dist",
+    "!scripts",
+    "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+    "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+    "!**/node_modules/*.d.ts",
+    "!**/node_modules/.bin",
+    "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+    "!.editorconfig",
+    "!**/._*",
+    "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+    "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+    "!**/{appveyor.yml,.travis.yml,circle.yml}",
+    "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+    "package.json"
+  ]
+}

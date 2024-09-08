@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <VApp>
     <TheToolbar />
     <main>
@@ -72,4 +72,10 @@ export default {
 .required label::after {
   content: '*';
 }
-</style>
+</style> -->
+
+<script setup lang="ts">
+window.electronAPI.sendMessage('Hello from App.vue!');
+</script>
+
+<template>Hello</template>
