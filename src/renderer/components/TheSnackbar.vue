@@ -1,21 +1,25 @@
 <template>
   <VSnackbar v-model="active" :timeout="4000" bottom>
-    {{ $store.state.snackbar.message }}
+    {{ appStore.snackbar.message }}
     <VBtn text @click.native="active = false">Close</VBtn>
   </VSnackbar>
 </template>
 
 <script>
+import { mapStores } from 'pinia';
+import { appStore } from '../store/app';
+
 export default {
   computed: {
+    ...mapStores(appStore),
     active: {
       get() {
-        return this.$store.state.snackbar.active;
+        return this.appStore.snackbar.active;
       },
       set(value) {
-        this.$store.commit('setSnackbarActive', value);
-      }
-    }
-  }
+        this.appStore.setSnackbarActive(value);
+      },
+    },
+  },
 };
 </script>

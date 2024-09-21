@@ -1,4 +1,5 @@
 import ipc from './ipc';
+import { MenuItemConstructorOptions } from 'electron';
 
 const undoMenuItemTemplate = {
   label: 'Undo',
@@ -21,7 +22,7 @@ const saveMenuItemTemplate = {
   id: 'fileSave',
 };
 
-const menuTemplate = [
+const menuTemplate: MenuItemConstructorOptions[] = [
   {
     label: 'File',
     submenu: [
@@ -88,37 +89,37 @@ const menuTemplate = [
     ],
   },
 ];
-if (process.env.NODE_ENV !== 'production') {
+if (import.meta.env.DEV) {
   menuTemplate.push({
     label: 'Development',
     submenu: [
       {
         label: 'Toggle dev tools',
-        role: 'toggledevtools',
+        role: 'toggleDevTools',
       },
     ],
   });
 }
 
-export function init(clickHandlers) {
-  ipc.on('runApplicationMenuItem', (event, id) => {
+export function init(clickHandlers: Record<string, () => void>) {
+  ipc.on('runApplicationMenuItem', (event: string, id: string) => {
     clickHandlers[id]?.();
   });
 }
 
-export function setUndoLabel(label) {
+export function setUndoLabel(label?: string) {
   undoMenuItemTemplate.label = label ? `Undo '${label}'` : 'Undo';
   undoMenuItemTemplate.enabled = Boolean(label);
   ipc.setApplicationMenu(menuTemplate);
 }
 
-export function setRedoLabel(label) {
+export function setRedoLabel(label?: string) {
   redoMenuItemTemplate.label = label ? `Redo '${label}'` : 'Redo';
   redoMenuItemTemplate.enabled = Boolean(label);
   ipc.setApplicationMenu(menuTemplate);
 }
 
-export function setSaveEnabled(enabled) {
+export function setSaveEnabled(enabled: boolean) {
   saveMenuItemTemplate.enabled = enabled;
   ipc.setApplicationMenu(menuTemplate);
 }

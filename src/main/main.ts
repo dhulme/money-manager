@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, session } from 'electron';
 import { join } from 'path';
+import './ipc';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -11,6 +12,7 @@ function createWindow() {
       contextIsolation: true,
     },
   });
+  mainWindow.maximize();
 
   if (process.env.NODE_ENV === 'development') {
     const rendererPort = process.argv[2];
@@ -18,6 +20,10 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(app.getAppPath(), 'renderer', 'index.html'));
   }
+
+  ipcMain.on('setWindowTitle', (event, title) => {
+    mainWindow.setTitle(title);
+  });
 }
 
 app.whenReady().then(() => {

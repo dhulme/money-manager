@@ -1,19 +1,17 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Accounts from '@/components/pages/Accounts';
-import Account from '@/components/pages/Account';
-import EditAccount from '@/components/pages/EditAccount';
-import NewBulkTransaction from '@/components/pages/NewBulkTransaction';
-import BulkTransactions from '@/components/pages/BulkTransactions';
-import BulkTransaction from '@/components/pages/BulkTransaction';
-import Insights from '@/components/pages/Insights';
-import EditAccountCategory from '@/components/pages/EditAccountCategory';
-import Reports from '@/components/pages/Reports';
-import Report from '@/components/pages/Report';
+import { createMemoryHistory, createRouter } from 'vue-router';
+import Accounts from './components/pages/Accounts.vue';
+import Account from './components/pages/Account.vue';
+import EditAccount from './components/pages/EditAccount.vue';
+import NewBulkTransaction from './components/pages/NewBulkTransaction.vue';
+import BulkTransactions from './components/pages/BulkTransactions.vue';
+import BulkTransaction from './components/pages/BulkTransaction.vue';
+import Insights from './components/pages/Insights.vue';
+import EditAccountCategory from './components/pages/EditAccountCategory.vue';
+import Reports from './components/pages/Reports.vue';
+import Report from './components/pages/Report.vue';
 
-Vue.use(Router);
-
-export default new Router({
+export default createRouter({
+  history: createMemoryHistory(),
   routes: [
     {
       path: '/',

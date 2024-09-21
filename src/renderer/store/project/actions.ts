@@ -62,7 +62,7 @@ export default {
 
   runBulkTransactionTransactions(
     { commit },
-    { bulkTransaction, transactions }
+    { bulkTransaction, transactions },
   ) {
     transactions.forEach((transaction) => {
       commit(
@@ -71,14 +71,14 @@ export default {
           ...transaction,
           description: `Bulk Transaction (${bulkTransaction.name})`,
           note: transaction.note,
-        })
+        }),
       );
     });
   },
 
   deleteBulkTransactionTransaction(
     { commit },
-    { bulkTransaction, transaction }
+    { bulkTransaction, transaction },
   ) {
     commit('deleteBulkTransactionTransaction', {
       bulkTransaction,
@@ -88,7 +88,7 @@ export default {
 
   addBulkTransaction(
     { commit, state, getters },
-    { description, name, transactions }
+    { description, name, transactions },
   ) {
     const id = getFriendlyId(name);
     commit('addBulkTransaction', {
@@ -101,13 +101,13 @@ export default {
       commit('addUpdateBulkTransactionTransaction', {
         bulkTransaction,
         transaction,
-      })
+      }),
     );
   },
 
   updateBulkTransaction(
     { commit, getters },
-    { id, description, name, transactions }
+    { id, description, name, transactions },
   ) {
     commit('updateBulkTransaction', {
       id,
@@ -121,14 +121,14 @@ export default {
         commit('addUpdateBulkTransactionTransaction', {
           bulkTransaction,
           transaction,
-        })
+        }),
       );
     }
   },
 
   addAccount(
     { commit },
-    { name, balance, type, category, importTransactionsFormatId }
+    { name, balance, type, category, importTransactionsFormatId },
   ) {
     commit('addAccount', {
       name,

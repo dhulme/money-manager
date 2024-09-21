@@ -29,8 +29,8 @@
 </template>
 
 <script>
-import TheAlerts from '@/components/TheAlerts';
-import ToolbarButton from '@/components/ToolbarButton';
+import TheAlerts from './TheAlerts.vue';
+import ToolbarButton from './ToolbarButton.vue';
 
 export default {
   components: {

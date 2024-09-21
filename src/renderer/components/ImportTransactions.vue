@@ -65,7 +65,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import moment from 'moment';
 import { getId } from '../util';
 import ipc from '../ipc';
@@ -132,14 +131,14 @@ export default {
     importedTransactions() {
       const dateFilter = Vue.filter('date');
       const existingTransactions = this.$store.getters['project/transactions'](
-        this.account
+        this.account,
       );
       function transactionExists(transaction) {
         return !!existingTransactions.find(
           (existing) =>
             existing.description === transaction.description &&
             Number(existing.value) === transaction.value &&
-            moment(existing.date).isSame(transaction.date, 'day')
+            moment(existing.date).isSame(transaction.date, 'day'),
         );
       }
       return this.$store.state.importedTransactions
@@ -151,13 +150,15 @@ export default {
           type: item.type,
           giftAided: this.importTransactionsDescriptionsGiftAided.some(
             (description) =>
-              item.description.toLowerCase().includes(description.toLowerCase())
+              item.description
+                .toLowerCase()
+                .includes(description.toLowerCase()),
           ),
         }));
     },
     accounts() {
       return this.$store.getters['project/accountItems'].filter(
-        (account) => account.value !== this.account.id
+        (account) => account.value !== this.account.id,
       );
     },
   },
@@ -172,13 +173,13 @@ export default {
       async handler(value) {
         if (value) {
           const { importTransactionsDescriptionsGiftAided } =
-          await ipc.getSettings();
-        this.importTransactionsDescriptionsGiftAided =
-          importTransactionsDescriptionsGiftAided;
+            await ipc.getSettings();
+          this.importTransactionsDescriptionsGiftAided =
+            importTransactionsDescriptionsGiftAided;
         }
       },
       immediate: true,
-    }
+    },
   },
   methods: {
     completeImport() {
@@ -197,7 +198,7 @@ export default {
           };
 
           const transactionAccount = this.$store.getters['project/account'](
-            uiTransaction.account
+            uiTransaction.account,
           );
 
           // If no account given, skip this transaction
@@ -241,7 +242,7 @@ export default {
       this.$emit('close');
       this.$store.dispatch(
         'openSnackbar',
-        `${transactions.length || 'No'} transactions imported`
+        `${transactions.length || 'No'} transactions imported`,
       );
     },
     accountChange(index) {

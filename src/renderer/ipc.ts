@@ -1,20 +1,22 @@
-import { ipcRenderer } from 'electron';
+// import { ipcRenderer } from 'electron';
+
+import { Project, Settings } from '../types';
 
 const defaultTitle = 'Money Manager';
 let stateEdited = false;
 let currentTitle = '';
 
 const ipc = {
-  send(channel, data) {
-    return ipcRenderer.send(channel, data);
+  send(channel: string, data?: any) {
+    return window.electronAPI.send(channel, data);
   },
 
-  on(channel, callback) {
-    return ipcRenderer.on(channel, callback);
+  on(channel: string, callback: any) {
+    return window.electronAPI.on(channel, callback);
   },
 
-  invoke(channel, data) {
-    return ipcRenderer.invoke(channel, data);
+  invoke(channel: string, data?: any) {
+    return window.electronAPI.invoke(channel, data);
   },
 
   setTitle(title = defaultTitle) {
@@ -26,7 +28,7 @@ const ipc = {
     ipc.send('setWindowTitle', stateEdited ? `${currentTitle}*` : currentTitle);
   },
 
-  setEdited(edited) {
+  setEdited(edited: boolean) {
     stateEdited = edited;
     ipc.updateTitle();
   },
@@ -43,31 +45,31 @@ const ipc = {
     ipc.send('projectNew');
   },
 
-  saveProject(data) {
+  saveProject(data: any) {
     ipc.send('projectSave', JSON.stringify(data));
   },
 
-  saveProjectAs(data) {
+  saveProjectAs(data: any) {
     ipc.send('projectSaveAs', JSON.stringify(data));
   },
 
-  exportCsv(type, data) {
+  exportCsv(type: any, data: any) {
     ipc.send('exportCsv', { type, data });
   },
 
-  showCloseWarning(data) {
+  showCloseWarning(data: any) {
     ipc.send('showCloseWarning', JSON.stringify(data));
   },
 
-  importTransactions({ extensions, id }) {
+  importTransactions({ extensions, id }: { extensions: string[]; id: string }) {
     return ipc.invoke('importTransactions', { extensions, id });
   },
 
-  getSettings() {
+  getSettings(): Settings {
     return ipc.invoke('getSettings');
   },
 
-  saveSettings(data) {
+  saveSettings(data: any) {
     return ipc.invoke('saveSettings', data);
   },
 
@@ -75,8 +77,12 @@ const ipc = {
     return ipc.invoke('importBulkTransactionTransactions');
   },
 
-  setApplicationMenu(menuTemplate) {
+  setApplicationMenu(menuTemplate: any) {
     return ipc.invoke('setApplicationMenu', menuTemplate);
+  },
+
+  onProjectOpened(callback: (project: Project) => void) {
+    ipc.on('projectOpened', (event: any, data: Project) => callback(data));
   },
 };
 

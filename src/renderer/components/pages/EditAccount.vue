@@ -41,6 +41,7 @@
 
 <script>
 import { importAccountTransactionsFormatItems } from '../../import-transactions';
+import ipc from '../../ipc';
 export default {
   data() {
     return {
@@ -80,11 +81,11 @@ export default {
   },
   watch: {
     'newAccount.name'(name) {
-      this.$ipc.setTitle(name);
+      ipc.setTitle(name);
     },
   },
   created() {
-    this.$ipc.setTitle();
+    ipc.setTitle();
   },
   methods: {
     save() {
@@ -96,15 +97,15 @@ export default {
         this.$store.dispatch('project/editAccount', {
           id: this.newAccount.id,
           name: this.newAccount.name,
-          importTransactionsFormatId: this.newAccount
-            .importTransactionsFormatId,
+          importTransactionsFormatId:
+            this.newAccount.importTransactionsFormatId,
         });
       } else {
         this.$store.dispatch('project/addAccount', {
           name: this.newAccount.name,
           balance: this.newAccount.openingBalance,
-          importTransactionsFormatId: this.newAccount
-            .importTransactionsFormatId,
+          importTransactionsFormatId:
+            this.newAccount.importTransactionsFormatId,
           category: this.accountCategory,
           type: this.accountType,
         });

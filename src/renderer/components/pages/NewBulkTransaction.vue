@@ -89,6 +89,7 @@ import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 import importBulkTransactions from './importBulkTransactions';
 
 import { getId, validateInputValue } from '../../util';
+import ipc from '../../ipc';
 
 export default {
   components: {
@@ -146,7 +147,7 @@ export default {
   },
   watch: {
     name(name) {
-      this.$ipc.setTitle(name);
+      ipc.setTitle(name);
     },
   },
   methods: {

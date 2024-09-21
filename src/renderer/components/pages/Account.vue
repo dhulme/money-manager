@@ -70,10 +70,11 @@
 
 <script>
 import Big from 'big.js';
-import TransactionList from '../TransactionList';
-import TransactionEdit from '../TransactionEdit';
-import ImportTransactions from '../ImportTransactions';
+import TransactionList from '../TransactionList.vue';
+import TransactionEdit from '../TransactionEdit.vue';
+import ImportTransactions from '../ImportTransactions.vue';
 import { importTransactionsFormats } from '../../import-transactions';
+import ipc from '../../ipc';
 
 export default {
   components: {
@@ -105,7 +106,7 @@ export default {
     },
   },
   created() {
-    this.$ipc.setTitle(this.account.name);
+    ipc.setTitle(this.account.name);
   },
   watch: {
     importedTransactions(value) {
@@ -172,10 +173,10 @@ export default {
     },
     async importTransactions() {
       this.importTransactionsActive = true;
-      await this.$ipc.importTransactions(
+      await ipc.importTransactions(
         importTransactionsFormats.find(
-          (format) => format.id === this.account.importTransactionsFormatId
-        )
+          (format) => format.id === this.account.importTransactionsFormatId,
+        ),
       );
       this.importTransactionsActive = false;
     },

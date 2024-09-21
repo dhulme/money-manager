@@ -43,6 +43,9 @@
 
 <script>
 import moment from 'moment';
+import { mapStores } from 'pinia';
+import { appStore } from '../../store/app';
+import ipc from '../../ipc';
 
 export default {
   data() {
@@ -56,15 +59,17 @@ export default {
     };
   },
   async created() {
-    this.settings = await this.$ipc.getSettings();
+    this.settings = await ipc.getSettings();
+    console.log(`this.settings`, this.settings);
   },
   computed: {
+    ...mapStores(appStore),
     dialog: {
       get() {
-        return this.$store.state.dialog === 'settings';
+        return this.appStore.dialog === 'settings';
       },
       set(value) {
-        return this.$store.commit('setDialog', value ? 'settings' : null);
+        return this.appStore.setDialog(value ? 'settings' : null);
       },
     },
     exampleDate() {
@@ -76,7 +81,7 @@ export default {
   methods: {
     save() {
       if (this.$refs.form.validate()) {
-        this.$ipc.saveSettings(this.settings);
+        ipc.saveSettings(this.settings);
         this.dialog = false;
       }
     },

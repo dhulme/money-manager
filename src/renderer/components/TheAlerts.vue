@@ -16,35 +16,38 @@
       icon="info"
       class="alert caption"
     >
-      Your budget and accounts are different by {{ summaryBalance | currency }}!
+      Your budget and accounts are different by
+      {{ $filters.currency(summaryBalance) }}!
     </VAlert>
   </div>
 </template>
 
 <script>
+import { mapStores } from 'pinia';
+import { useProjectStore } from '../store/project';
+
 export default {
   computed: {
+    ...mapStores(useProjectStore),
     summaryBalance() {
-      return this.$store.getters['project/summaryBalance'];
+      return this.projectStore.summaryBalance;
     },
     showBudgetWarning() {
-      return (
-        !this.error && !this.$store.getters['project/summaryBalanceEqualsZero']
-      );
+      return !this.error && !this.projectStore.summaryBalanceEqualsZero;
     },
     color() {
       return parseFloat(this.summaryBalance) >= 0 ? 'info' : 'error';
     },
     hasError: {
       get() {
-        return !!this.$store.state.error;
+        return !!this.projectStore.error;
       },
       set() {
-        this.$store.commit('setError', '');
+        this.projectStore.setError('');
       },
     },
     error() {
-      return this.$store.state.error;
+      return this.projectStore.error;
     },
   },
 };

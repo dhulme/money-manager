@@ -9,6 +9,8 @@
     "outDir": "../../build/main",
     "allowJs": true,
     "noImplicitAny": false,
+    "resolveJsonModule": true
   },
-  "exclude": ["static"]
+  "exclude": ["static"],
+  "include": ["../types.ts"]
 }

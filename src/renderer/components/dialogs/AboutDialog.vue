@@ -21,21 +21,25 @@
 </template>
 
 <script>
+import { mapStores } from 'pinia';
+import { appStore } from '../../store/app';
+
 export default {
   data() {
     return {
-      version: process.env.PACKAGE_VERSION
+      version: 1, //process.env.PACKAGE_VERSION
     };
   },
   computed: {
+    ...mapStores(appStore),
     dialog: {
       get() {
-        return this.$store.state.dialog === 'about';
+        return this.appStore.dialog === 'about';
       },
       set(value) {
-        return this.$store.commit('setDialog', value ? 'about' : null);
-      }
-    }
-  }
+        return this.appStore.setDialog(value ? 'about' : null);
+      },
+    },
+  },
 };
 </script>

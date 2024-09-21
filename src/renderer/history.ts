@@ -3,6 +3,9 @@ import moment from 'moment';
 
 import ipc from './ipc';
 import { setSaveEnabled, setUndoLabel, setRedoLabel } from './menu';
+import { Plugin } from 'vue';
+import { useProjectStore } from './store/project';
+import { Project } from '../types';
 
 const actionNames = {
   addTransaction: 'Add transaction',
@@ -21,22 +24,23 @@ const actionNames = {
 };
 const storePrefix = 'project/';
 
-function setEdited(edited) {
+function setEdited(edited: boolean) {
   ipc.setEdited(edited);
   setSaveEnabled(edited);
 }
 
-const history = {
-  install(Vue, { store, router, ready }) {
+const history: Plugin = {
+  install(app, { router, ready } = {}) {
+    const projectStore = useProjectStore();
+
     const done = [];
     let undone = [];
     let newAction = true;
-    let initData;
+    let initData: Project | undefined;
     let savedDoneLength = 0;
 
-    store.subscribeAction((action) => {
-      if (!action.type.startsWith(storePrefix)) return;
-
+    projectStore.$subscribe((mutation) => {
+      console.log(`mutation`, mutation);
       done.push(action);
       setEdited(true);
       setUndoLabel(actionNames[action.type.replace(storePrefix, '')]);
@@ -46,13 +50,13 @@ const history = {
       }
     });
 
-    ipc.on('projectOpened', (event, data) => {
+    ipc.onProjectOpened((data) => {
       const callReady = !initData;
       initData = data;
-      store.commit(`${storePrefix}init`, initData);
+      // store.commit(`${storePrefix}init`, initData);
       setEdited(false);
       if (callReady) {
-        ready();
+        ready?.();
       } else {
         router.push({ name: 'accounts' });
       }
@@ -66,7 +70,7 @@ const history = {
         !canClose &&
         done.length !== savedDoneLength
       ) {
-        ipc.showCloseWarning(store.state.project);
+        // ipc.showCloseWarning(store.state.project);
         e.returnValue = false;
       }
     });
@@ -76,7 +80,7 @@ const history = {
       window.close();
     });
 
-    Vue.prototype.$history = {
+    app.config.globalProperties.$history = {
       undo() {
         if (done.length === 0) return;
 
@@ -85,12 +89,12 @@ const history = {
         setRedoLabel(actionNames[toUndo.type.replace(storePrefix, '')]);
 
         newAction = false;
-        store.commit(`${storePrefix}init`, initData);
+        // store.commit(`${storePrefix}init`, initData);
         done.forEach((action) => {
-          store.dispatch(action.type, action.payload);
+          // store.dispatch(action.type, action.payload);
           done.pop();
         });
-        store.commit(`${storePrefix}updateSummaryBalance`);
+        // store.commit(`${storePrefix}updateSummaryBalance`);
         newAction = true;
 
         if (done.length === 0) {
@@ -107,7 +111,7 @@ const history = {
 
         const action = undone.pop();
         newAction = false;
-        store.dispatch(action.type, action.payload);
+        // store.dispatch(action.type, action.payload);
         newAction = true;
 
         if (undone.length === 0) {
@@ -121,7 +125,7 @@ const history = {
       },
       save() {
         savedDoneLength = done.length;
-        ipc.saveProject(store.state.project);
+        // ipc.saveProject(store.state.project);
         setEdited(false);
       },
       open() {
@@ -129,45 +133,45 @@ const history = {
       },
       saveAs() {
         savedDoneLength = done.length;
-        ipc.saveProjectAs(store.state.project);
+        // ipc.saveProjectAs(store.state.project);
         setEdited(false);
       },
       new() {
         ipc.newProject();
       },
       exportSummary() {
-        const summary = store.state.project.accounts.map((account) => ({
-          Name: account.name,
-          Category: account.category,
-          Type: account.type,
-          Balance: Number(account.balance),
-        }));
-        ipc.exportCsv('summary', unparse(summary));
+        // const summary = store.state.project.accounts.map((account) => ({
+        //   Name: account.name,
+        //   Category: account.category,
+        //   Type: account.type,
+        //   Balance: Number(account.balance),
+        // }));
+        // ipc.exportCsv('summary', unparse(summary));
       },
       exportTransactions() {
-        const accountNamesById = store.state.project.accounts.reduce(
-          (acc, account) => ({
-            ...acc,
-            [account.id]: account.name,
-          }),
-          {}
-        );
-        const transactions = Object.values(store.state.project.transactions)
-          .sort((a, b) => {
-            const aDateValue = new Date(a.date).valueOf();
-            const bDateValue = new Date(b.date).valueOf();
-            return aDateValue - bDateValue;
-          })
-          .map((transaction) => ({
-            Date: moment(transaction.date).format('YYYY-MM-DD'),
-            From: accountNamesById[transaction.from],
-            To: accountNamesById[transaction.to],
-            Expense: accountNamesById[transaction.expense],
-            Description: transaction.description,
-            Note: transaction.note,
-            Value: Number(transaction.value),
-          }));
-        ipc.exportCsv('transactions', unparse(transactions));
+        // const accountNamesById = store.state.project.accounts.reduce(
+        //   (acc, account) => ({
+        //     ...acc,
+        //     [account.id]: account.name,
+        //   }),
+        //   {}
+        // );
+        //   const transactions = Object.values(store.state.project.transactions)
+        //     .sort((a, b) => {
+        //       const aDateValue = new Date(a.date).valueOf();
+        //       const bDateValue = new Date(b.date).valueOf();
+        //       return aDateValue - bDateValue;
+        //     })
+        //     .map((transaction) => ({
+        //       Date: moment(transaction.date).format('YYYY-MM-DD'),
+        //       From: accountNamesById[transaction.from],
+        //       To: accountNamesById[transaction.to],
+        //       Expense: accountNamesById[transaction.expense],
+        //       Description: transaction.description,
+        //       Note: transaction.note,
+        //       Value: Number(transaction.value),
+        //     }));
+        //   ipc.exportCsv('transactions', unparse(transactions));
       },
     };
   },

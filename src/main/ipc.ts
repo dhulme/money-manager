@@ -1,9 +1,10 @@
-import { ipcMain, dialog, Menu } from 'electron';
+import { ipcMain, dialog, Menu, MenuItemConstructorOptions } from 'electron';
 const fs = require('fs-extra');
 
 import defaultProject from './default-project.json';
 import settings from './settings';
 import project from './project';
+import { Project } from '../types';
 
 const filters = [
   {
@@ -54,7 +55,7 @@ ipcMain.on('projectOpenDefault', async (event) => {
   const projectPath = settings.getProjectPath();
   if (projectPath) {
     try {
-      const data = await project.open(projectPath);
+      const data: Project = await project.open(projectPath);
       event.sender.send('projectOpened', data || defaultProject);
     } catch (e) {
       settings.setProjectPath(null);
@@ -87,7 +88,7 @@ ipcMain.on('projectNew', (event) => {
 });
 
 ipcMain.on('exportCsv', async (event, { type, data }) => {
-  const { cancelled, filePath } = await dialog.showSaveDialog({
+  const { filePath } = await dialog.showSaveDialog({
     filters: [
       {
         name: 'CSV',
@@ -96,7 +97,7 @@ ipcMain.on('exportCsv', async (event, { type, data }) => {
     ],
     title: `Export ${type} CSV`,
   });
-  if (cancelled || !filePath) {
+  if (!filePath) {
     return;
   }
   let path = filePath;
@@ -149,11 +150,14 @@ function addApplicationMenuClickEvents(template, event) {
     }
   });
 }
-ipcMain.handle('setApplicationMenu', async (event, menuTemplate) => {
-  addApplicationMenuClickEvents(menuTemplate, event);
-  const menu = Menu.buildFromTemplate(menuTemplate);
-  Menu.setApplicationMenu(menu);
-});
+ipcMain.handle(
+  'setApplicationMenu',
+  async (event, menuTemplate: MenuItemConstructorOptions[]) => {
+    addApplicationMenuClickEvents(menuTemplate, event);
+    const menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
+  },
+);
 
 ipcMain.handle('getSettings', () => {
   return settings.get();

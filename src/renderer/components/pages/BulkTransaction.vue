@@ -74,6 +74,7 @@ import { getId } from '../../util';
 import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
 import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 import importBulkTransactions from './importBulkTransactions';
+import ipc from '../../ipc';
 
 export default {
   components: {
@@ -94,12 +95,12 @@ export default {
   computed: {
     bulkTransaction() {
       return this.$store.getters['project/bulkTransaction'](
-        this.$route.params.bulkTransactionId
+        this.$route.params.bulkTransactionId,
       );
     },
     bulkTransactionTransactions() {
       return this.$store.getters['project/bulkTransactionTransactions'](
-        this.bulkTransaction
+        this.bulkTransaction,
       );
     },
     hasChanges() {
@@ -116,7 +117,7 @@ export default {
   },
   created() {
     this.discardChanges();
-    this.$ipc.setTitle(this.bulkTransaction.name);
+    ipc.setTitle(this.bulkTransaction.name);
   },
   methods: {
     process() {
@@ -175,12 +176,12 @@ export default {
       });
       await this.$store.dispatch(
         'openSnackbar',
-        'Applied bulk transaction changes'
+        'Applied bulk transaction changes',
       );
     },
     discardChanges() {
       this.transactions = JSON.parse(
-        JSON.stringify(this.bulkTransactionTransactions)
+        JSON.stringify(this.bulkTransactionTransactions),
       );
     },
     async confirmApplyChanges() {

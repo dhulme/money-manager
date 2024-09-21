@@ -1,5 +1,5 @@
 <template>
-  <VBtn :color="color" :text="text" @click="click" class="mr-3">
+  <VBtn :color="color" :variant="variant" @click="click" class="mr-3">
     <slot />
   </VBtn>
 </template>
@@ -21,8 +21,8 @@ export default {
     color() {
       return this.active ? 'black' : '';
     },
-    text() {
-      return !this.active;
+    variant() {
+      return this.active ? 'elevated' : 'text';
     },
   },
   methods: {

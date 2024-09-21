@@ -4,23 +4,7 @@ import cryptoRandomString from 'crypto-random-string';
 // so we do this upfront so first UI operation isn't slow.
 getId();
 
-export function required(param) {
-  throw new Error(`${param} is required`);
-}
-
-export function requireObjectProperties(object, params) {
-  const errors = params.reduce((acc, param) => {
-    if (object[param] === undefined) {
-      return [...acc, param];
-    }
-    return acc;
-  }, []);
-  if (errors.length) {
-    required(errors.join(','));
-  }
-}
-
-export function getFriendlyId(name) {
+export function getFriendlyId(name: string) {
   return name.toLowerCase().replace(/[ ]/g, '-') + '-' + getId(5);
 }
 
@@ -28,11 +12,11 @@ export function getId(length = 10) {
   return cryptoRandomString({ length });
 }
 
-export function capitalizeFirstLetter(string) {
+export function capitalizeFirstLetter(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function validateInputValue(value) {
+export function validateInputValue(value: string) {
   if (Number.isNaN(Number(value))) {
     return 'Amount must be a number';
   }

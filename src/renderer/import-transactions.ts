@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { capitalizeFirstLetter } from './util';
 import ipc from './ipc';
-import store from './store';
+// import store from './store';
 
 function handleCsvErrors(errors) {
   store.commit(
@@ -11,7 +11,7 @@ function handleCsvErrors(errors) {
     'Failed to import transactions CSV' +
       (errors && errors.length
         ? `. Errors on rows: ${errors.map((error) => error.row).join(', ')}`
-        : '')
+        : ''),
   );
 }
 
@@ -86,7 +86,7 @@ export const importTransactionsFormats = [
         return {
           date: moment(transaction.match(/Date:�(.+)/)[1], 'DD/MM/YYYY'),
           description: capitalizeFirstLetter(
-            transaction.match(/Description:�(.+)/)[1].toLowerCase()
+            transaction.match(/Description:�(.+)/)[1].toLowerCase(),
           ),
           value: Math.abs(value),
           type: value < 0 ? 'out' : 'in',

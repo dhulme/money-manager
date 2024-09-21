@@ -36,7 +36,7 @@
 <script>
 import Big from 'big.js';
 import { addYears, set, format, parseISO } from 'date-fns';
-import ipc from '@/ipc';
+import ipc from '../../ipc';
 import { uniq } from 'lodash';
 import { unparse } from 'papaparse';
 import moment from 'moment';
@@ -54,19 +54,19 @@ export default {
             month: 3,
             date: 6,
           }),
-          yearAdjust
+          yearAdjust,
         );
         const endDate = addYears(
           set(today, {
             month: 3,
             date: 5,
           }),
-          yearAdjust + 1
+          yearAdjust + 1,
         );
         return {
           text: `${format(startDate, dateFormat)} - ${format(
             endDate,
-            dateFormat
+            dateFormat,
           )}`,
           value: [startDate, endDate],
         };
@@ -83,7 +83,7 @@ export default {
     transactions() {
       const getTransaction = this.$store.getters['project/transaction'];
       const transactions = uniq(
-        this.accounts.flatMap((account) => account.transactionIds)
+        this.accounts.flatMap((account) => account.transactionIds),
       )
         .map((transactionId) => getTransaction(transactionId))
         .filter((transaction) => {
@@ -132,8 +132,8 @@ export default {
             Date: moment(transaction.date).format(this.$dateFormat),
             Description: transaction.description,
             Amount: transaction.value,
-          }))
-        )
+          })),
+        ),
       );
     },
   },

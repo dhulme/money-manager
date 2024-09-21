@@ -14,10 +14,10 @@ export default {
       let count = 0;
       transactions.forEach((transaction) => {
         const from = this.$store.getters['project/accountByName'](
-          transaction.fromName
+          transaction.fromName,
         )?.id;
         const to = this.$store.getters['project/accountByName'](
-          transaction.toName
+          transaction.toName,
         )?.id;
 
         if (!from) {
@@ -38,17 +38,17 @@ export default {
             (_) =>
               _.to === newTransaction.to &&
               _.from === newTransaction.from &&
-              (!_.note || _.note === newTransaction.note)
+              (!_.note || _.note === newTransaction.note),
           );
           count++;
           if (existingTransactionIndex !== -1) {
             this.transactions.splice(
               existingTransactionIndex,
               1,
-              newTransaction
+              newTransaction,
             );
             replacedTransactionAccountNames.push(
-              `${newTransaction.from} to ${newTransaction.to}`
+              `${newTransaction.from} to ${newTransaction.to}`,
             );
           } else {
             this.transactions.push(newTransaction);
@@ -59,16 +59,16 @@ export default {
         this.$store.commit(
           'setError',
           `Accounts named ${[...missingAccountNames].join(
-            ', '
-          )} could not be found`
+            ', ',
+          )} could not be found`,
         );
       }
       if (replacedTransactionAccountNames.length) {
         this.$store.dispatch(
           'openSnackbar',
           `Imported ${count} transactions (replaced: ${replacedTransactionAccountNames.join(
-            ', '
-          )})`
+            ', ',
+          )})`,
         );
       } else {
         this.$store.dispatch('openSnackbar', `Imported ${count} transactions`);
@@ -77,10 +77,10 @@ export default {
   },
   methods: {
     importTransactions() {
-      this.$ipc.importTransactions(
+      ipc.importTransactions(
         importTransactionsFormats.find(
-          (format) => format.id === 'moneyManagerBulkTransactions'
-        )
+          (format) => format.id === 'moneyManagerBulkTransactions',
+        ),
       );
     },
   },

@@ -10,23 +10,24 @@
 </template>
 
 <script>
+import ipc from '../../ipc';
 import BulkTransactionList from '../BulkTransactionList.vue';
 
 export default {
   components: {
-    BulkTransactionList
+    BulkTransactionList,
   },
   created() {
-    this.$ipc.setTitle();
+    ipc.setTitle();
   },
   methods: {
     newBulkTransaction() {
       this.$store.commit('setNewBulkTransaction');
       this.$router.push({
-        name: 'newBulkTransaction'
+        name: 'newBulkTransaction',
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
