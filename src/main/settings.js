@@ -1,7 +1,6 @@
-const { app } = require('electron');
-const path = require('path');
-const fs = require('fs-extra');
-const moment = require('moment');
+import { app } from 'electron';
+import path from 'path';
+import fs from 'fs-extra';
 
 const userDataPath = app.getPath('userData');
 const settingsPath = path.join(userDataPath, 'settings.json');
@@ -18,7 +17,6 @@ let data;
 const settings = {
   load() {
     const loadedSettings = fs.readJsonSync(settingsPath, { throws: false });
-    // Merge non existing default settings into loaded settings
     data =
       {
         ...defaultSettings,
@@ -44,7 +42,7 @@ const settings = {
 
   getLastBackupDate(projectPath) {
     const date = data.lastBackupDates[projectPath];
-    return date ? moment(date) : null;
+    return date ? new Date(date) : null;
   },
 
   get() {

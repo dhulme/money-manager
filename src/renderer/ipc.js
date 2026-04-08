@@ -1,20 +1,18 @@
-import { ipcRenderer } from 'electron';
-
 const defaultTitle = 'Money Manager';
 let stateEdited = false;
 let currentTitle = '';
 
 const ipc = {
   send(channel, data) {
-    return ipcRenderer.send(channel, data);
+    return window.electronAPI.send(channel, data);
   },
 
   on(channel, callback) {
-    return ipcRenderer.on(channel, callback);
+    return window.electronAPI.on(channel, callback);
   },
 
   invoke(channel, data) {
-    return ipcRenderer.invoke(channel, data);
+    return window.electronAPI.invoke(channel, data);
   },
 
   setTitle(title = defaultTitle) {

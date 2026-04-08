@@ -1,5 +1,5 @@
 import { ipcMain, dialog, Menu } from 'electron';
-const fs = require('fs-extra');
+import fs from 'fs-extra';
 
 import defaultProject from './default-project.json';
 import settings from './settings';

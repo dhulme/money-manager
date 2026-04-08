@@ -1,5 +1,7 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+import { app, BrowserWindow, ipcMain } from 'electron';
+import path from 'path';
+
+import './ipc';
 
 let mainWindow;
 
@@ -9,8 +11,9 @@ function createWindow() {
     height: 768,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
-      nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false,
     },
   });
   mainWindow.maximize();
@@ -28,6 +31,12 @@ function createWindow() {
 }
 
 app.whenReady().then(createWindow);
+
+ipcMain.on('setWindowTitle', (event, title) => {
+  if (mainWindow) {
+    mainWindow.setTitle(title);
+  }
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
