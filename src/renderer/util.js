@@ -1,5 +1,3 @@
-import cryptoRandomString from 'crypto-random-string';
-
 // The first call to this is slow for some reason,
 // so we do this upfront so first UI operation isn't slow.
 getId();
@@ -25,7 +23,11 @@ export function getFriendlyId(name) {
 }
 
 export function getId(length = 10) {
-  return cryptoRandomString({ length });
+  const bytes = new Uint8Array(Math.ceil(length / 2));
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0'))
+    .join('')
+    .slice(0, length);
 }
 
 export function capitalizeFirstLetter(string) {

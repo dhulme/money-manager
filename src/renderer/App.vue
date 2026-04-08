@@ -1,19 +1,21 @@
 <template>
   <v-app>
-    <v-app-bar color="primary">
-      <v-app-bar-title>Money Manager</v-app-bar-title>
-    </v-app-bar>
-    <v-main class="app-content">
-      <router-view class="router-container" />
+    <TheToolbar />
+    <v-main>
+      <div class="app-content">
+        <router-view />
+      </div>
     </v-main>
   </v-app>
 </template>
 
 <script>
 import { init } from './menu';
+import TheToolbar from '@/components/TheToolbar.vue';
 
 export default {
   name: 'App',
+  components: { TheToolbar },
   mounted() {
     init({
       fileNew: () => this.$history.new(),
@@ -39,9 +41,6 @@ export default {
 .app-content {
   margin: 20px auto;
   max-width: 1400px;
-}
-
-.router-container {
-  margin-top: 10px;
+  padding: 0 20px;
 }
 </style>
