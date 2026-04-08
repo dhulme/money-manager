@@ -1,28 +1,25 @@
 <template>
-  <VMenu
+  <v-menu
     ref="dateRangeMenu"
     v-model="dateRangeMenu"
     :close-on-content-click="false"
-    :return-value.sync="dateRange"
     transition="scale-transition"
-    offset-y
     min-width="auto"
   >
-    <template v-slot:activator="{ on, attrs }">
-      <VTextField
+    <template v-slot:activator="{ props }">
+      <v-text-field
         v-model="dateRangeText"
         label="Date range"
         prepend-icon="mdi-calendar"
         readonly
         :hide-details="slim"
         :single-line="slim"
-        v-on="on"
-        v-bind="attrs"
+        v-bind="props"
         class="input mr-3 pt-0"
       />
     </template>
-    <VDatePicker v-model="dateRange" range no-title :type="type" />
-  </VMenu>
+    <v-date-input v-model="dateRange" />
+  </v-menu>
 </template>
 
 <script>
@@ -41,7 +38,9 @@ export default {
   },
   watch: {
     dateRangeMenu(open) {
-      if (!open) this.$refs.dateRangeMenu.save(this.dateRange);
+      if (!open) {
+        this.$emit('dateRange', this.dateRangeParsed);
+      }
     },
     dateRangeParsed() {
       this.$emit('dateRange', this.dateRangeParsed);

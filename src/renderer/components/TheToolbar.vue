@@ -1,5 +1,5 @@
 <template>
-  <VAppBar class="primary" dark app fixed>
+  <v-app-bar color="primary">
     <ToolbarButton
       :child-route-names="[
         'account',
@@ -23,14 +23,14 @@
       >Reports</ToolbarButton
     >
 
-    <VSpacer />
+    <v-spacer />
     <TheAlerts />
-  </VAppBar>
+  </v-app-bar>
 </template>
 
 <script>
-import TheAlerts from '@/components/TheAlerts';
-import ToolbarButton from '@/components/ToolbarButton';
+import TheAlerts from '@/components/TheAlerts.vue';
+import ToolbarButton from '@/components/ToolbarButton.vue';
 
 export default {
   components: {

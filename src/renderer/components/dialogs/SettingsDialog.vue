@@ -1,20 +1,20 @@
 <template>
-  <VDialog v-model="dialog" max-width="600" persistent no-click-animation>
-    <VCard>
-      <VCardTitle>Preferences</VCardTitle>
-      <VForm ref="form" v-model="valid" lazy-validation @submit.prevent="save">
-        <VCardText>
+  <v-dialog v-model="dialog" max-width="600" persistent no-click-animation>
+    <v-card>
+      <v-card-title>Preferences</v-card-title>
+      <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="save">
+        <v-card-text>
           <p>
             Note: These changes will only be visible when the app is restarted.
           </p>
           <div class="text-h6">Formats</div>
-          <VTextField
+          <v-text-field
             label="Currency format"
             v-model="settings.currencyPrefix"
             class="required"
             :rules="currencyPrefixRules"
           />
-          <VTextField
+          <v-text-field
             label="Date format"
             v-model="settings.dateFormat"
             class="required"
@@ -23,26 +23,25 @@
           <div class="text-caption">Example date: {{ exampleDate }}</div>
 
           <div class="text-h6 mt-8">Import transactions</div>
-          <VCombobox
+          <v-combobox
             multiple
             clearable
-            deletable-chips
             chips
             label="Transactions descriptions with Gift Aid"
             v-model="settings.importTransactionsDescriptionsGiftAided"
           />
-        </VCardText>
-        <VCardActions>
-          <VBtn type="submit" text color="primary">Ok</VBtn>
-          <VBtn text @click="dialog = false">Cancel</VBtn>
-        </VCardActions>
-      </VForm>
-    </VCard>
-  </VDialog>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn type="submit" variant="text" color="primary">Ok</v-btn>
+          <v-btn variant="text" @click="dialog = false">Cancel</v-btn>
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
-import moment from 'moment';
+import { format } from 'date-fns';
 
 export default {
   data() {
@@ -68,9 +67,13 @@ export default {
       },
     },
     exampleDate() {
-      return (
-        this.settings.dateFormat && moment().format(this.settings.dateFormat)
-      );
+      try {
+        return (
+          this.settings.dateFormat && format(new Date(), this.settings.dateFormat)
+        );
+      } catch {
+        return 'Invalid format';
+      }
     },
   },
   methods: {

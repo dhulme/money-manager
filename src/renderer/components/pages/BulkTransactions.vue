@@ -1,12 +1,12 @@
 <template>
-  <VCard v-hotkey.add="newBulkTransaction">
-    <VCardTitle>
-      <span class="title">Bulk Transactions</span>
-      <VSpacer />
-      <VBtn text color="primary" @click="newBulkTransaction">Add</VBtn>
-    </VCardTitle>
+  <v-card v-hotkey.add="newBulkTransaction">
+    <v-card-title>
+      <span class="text-subtitle-1">Bulk Transactions</span>
+      <v-spacer />
+      <v-btn variant="text" color="primary" @click="newBulkTransaction">Add</v-btn>
+    </v-card-title>
     <BulkTransactionList />
-  </VCard>
+  </v-card>
 </template>
 
 <script>

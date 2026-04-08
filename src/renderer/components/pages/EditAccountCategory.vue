@@ -1,32 +1,32 @@
 <template>
   <div v-hotkey.close="goToAccounts">
-    <VCard>
-      <VCardTitle>
-        <div class="title">
+    <v-card>
+      <v-card-title>
+        <div class="text-subtitle-1">
           {{ category.id ? 'Edit' : 'Add' }} Account Category
         </div>
-      </VCardTitle>
-      <VForm ref="form" v-model="valid" lazy-validation @submit.prevent="save">
-        <VCardText>
-          <VTextField
+      </v-card-title>
+      <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="save">
+        <v-card-text>
+          <v-text-field
             v-model="category.name"
             label="Name"
             :rules="nameRules"
             class="required"
           />
-          <VSelect
+          <v-select
             :items="types"
             v-model="category.type"
             label="Type"
             :rules="typeRules"
             class="required"
           />
-        </VCardText>
-        <VCardActions>
-          <VBtn type="submit" color="primary" text>OK</VBtn>
-        </VCardActions>
-      </VForm>
-    </VCard>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn type="submit" color="primary" variant="text">OK</v-btn>
+        </v-card-actions>
+      </v-form>
+    </v-card>
   </div>
 </template>
 
@@ -48,14 +48,8 @@ export default {
   computed: {
     types() {
       return [
-        {
-          text: 'Asset',
-          value: 'asset'
-        },
-        {
-          text: 'Budget',
-          value: 'budget'
-        }
+        { title: 'Asset', value: 'asset' },
+        { title: 'Budget', value: 'budget' }
       ];
     }
   },

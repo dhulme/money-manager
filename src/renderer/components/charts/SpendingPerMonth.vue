@@ -1,11 +1,23 @@
+<template>
+  <Pie v-if="chartData" :data="chartData" :options="chartOptions" />
+</template>
+
 <script>
 import { Pie } from 'vue-chartjs';
-import moment from 'moment';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import Big from 'big.js';
-import colors from 'vuetify/lib/util/colors';
+import { startOfMonth, endOfMonth, parseISO, isWithinInterval } from 'date-fns';
+import colors from 'vuetify/lib/util/colors.mjs';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default {
-  extends: Pie,
+  components: { Pie },
   props: {
     date: Date,
   },
@@ -18,8 +30,8 @@ export default {
         return null;
       }
 
-      const startMonth = moment(this.date).startOf('month');
-      const endMonth = moment(this.date).endOf('month');
+      const start = startOfMonth(this.date);
+      const end = endOfMonth(this.date);
 
       return this.accounts.map((account) => {
         return Number(
@@ -29,7 +41,7 @@ export default {
             if (
               transaction.date &&
               transaction.from === account.id &&
-              moment(transaction.date).isBetween(startMonth, endMonth)
+              isWithinInterval(parseISO(transaction.date), { start, end })
             ) {
               return total.plus(transaction.value);
             }
@@ -46,52 +58,47 @@ export default {
         )
       );
     },
-  },
-  watch: {
-    data: 'render',
-  },
-  mounted() {
-    this.render();
-  },
-  methods: {
-    render() {
-      this.renderChart(
-        {
-          labels: this.accounts.map((account) => account.name),
-          datasets: [
-            {
-              data: this.data,
-              backgroundColor: [
-                Object.values(colors.lightBlue),
-                Object.values(colors.cyan),
-                Object.values(colors.teal),
-                Object.values(colors.lightGreen),
-                Object.values(colors.lime),
-              ].flat(),
-            },
-          ],
-        },
-        {
-          responsive: true,
-          legend: {
-            display: false,
+    chartData() {
+      if (!this.data) return null;
+      return {
+        labels: this.accounts.map((account) => account.name),
+        datasets: [
+          {
+            data: this.data,
+            backgroundColor: [
+              Object.values(colors.lightBlue),
+              Object.values(colors.cyan),
+              Object.values(colors.teal),
+              Object.values(colors.lightGreen),
+              Object.values(colors.lime),
+            ].flat(),
           },
-          tooltips: {
+        ],
+      };
+    },
+    chartOptions() {
+      const dataSum = this.dataSum;
+      return {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
             callbacks: {
-              label: (point, data) => {
-                const value = data.datasets[0].data[point.index];
+              label: (context) => {
+                const value = context.parsed;
                 return `${this.$currencyPrefix}${value} (${(
-                  (value / this.dataSum) *
+                  (value / dataSum) *
                   100
                 ).toFixed(1)}%)`;
               },
-              title([point], data) {
-                return data.labels[point.index];
+              title: (items) => {
+                if (!items.length) return '';
+                return items[0].label;
               },
             },
           },
-        }
-      );
+        },
+      };
     },
   },
 };

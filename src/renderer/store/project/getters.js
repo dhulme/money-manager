@@ -17,7 +17,7 @@ export default {
   accountCategoryItems(state) {
     return state.accountCategories
       .sort(sortByName)
-      .map((category) => ({ text: category.name, value: category.id }));
+      .map((category) => ({ title: category.name, value: category.id }));
   },
   accounts(state) {
     return state.accounts.filter((account) => !account.deleted);
@@ -27,7 +27,7 @@ export default {
   },
   accountItems(state, getters) {
     return getters.accounts.sort(sortByName).map((account) => ({
-      text: account.name,
+      title: account.name,
       value: account.id,
     }));
   },

@@ -1,42 +1,42 @@
 <template>
   <div v-hotkey.close="goToBulkTransactions">
-    <VCard class="mb-4">
-      <VCardTitle
-        ><span class="headline">New Bulk Transaction</span><VSpacer /><VBtn
-          text
+    <v-card class="mb-4">
+      <v-card-title
+        ><span class="text-h6">New Bulk Transaction</span><v-spacer /><v-btn
+          variant="text"
           @click="importTransactions"
-          >Import</VBtn
-        ></VCardTitle
+          >Import</v-btn
+        ></v-card-title
       >
-      <VCardText>
-        <VForm ref="mainForm" v-model="mainFormValid" lazy-validation>
-          <VTextField
+      <v-card-text>
+        <v-form ref="mainForm" v-model="mainFormValid" lazy-validation>
+          <v-text-field
             v-model="name"
             label="Name"
             class="required"
             :rules="mainFormNameRules"
           />
-          <VTextField v-model="description" label="Description" />
-        </VForm>
-      </VCardText>
-    </VCard>
-    <VCard class="mb-4">
-      <VCardTitle>Add Transaction</VCardTitle>
-      <VForm
+          <v-text-field v-model="description" label="Description" />
+        </v-form>
+      </v-card-text>
+    </v-card>
+    <v-card class="mb-4">
+      <v-card-title>Add Transaction</v-card-title>
+      <v-form
         ref="newTransactionForm"
         lazy-validation
         v-model="newTransactionFormValid"
         @submit.prevent="addTransaction"
       >
-        <VCardText>
-          <VTextField
+        <v-card-text>
+          <v-text-field
             v-model="newTransaction.value"
             label="Amount"
             :prefix="$currencyPrefix"
             class="required"
             :rules="newTransactionValueValidationRules"
           />
-          <VAutocomplete
+          <v-autocomplete
             :items="projectItems"
             v-model="newTransaction.from"
             label="From"
@@ -45,7 +45,7 @@
             auto-select-first
           />
 
-          <VAutocomplete
+          <v-autocomplete
             :items="projectItems"
             v-model="newTransaction.to"
             label="To"
@@ -54,32 +54,32 @@
             auto-select-first
           />
 
-          <VTextField v-model="newTransaction.note" placeholder="Note" />
-        </VCardText>
-        <VCardActions>
-          <VBtn text color="primary" type="submit">Add</VBtn>
-        </VCardActions>
-      </VForm>
-    </VCard>
-    <VCard>
-      <VCardTitle>Transactions</VCardTitle>
+          <v-text-field v-model="newTransaction.note" placeholder="Note" />
+        </v-card-text>
+        <v-card-actions>
+          <v-btn variant="text" color="primary" type="submit">Add</v-btn>
+        </v-card-actions>
+      </v-form>
+    </v-card>
+    <v-card>
+      <v-card-title>Transactions</v-card-title>
       <BulkTransactionTransactions
         :transactions="transactions"
         @transaction-click="editTransaction"
       />
-    </VCard>
-    <VRow class="mt-4 ml-4">
-      <VBtn color="primary" @click="addBulkTransaction">OK</VBtn>
-    </VRow>
+    </v-card>
+    <v-row class="mt-4 ml-4">
+      <v-btn color="primary" @click="addBulkTransaction">OK</v-btn>
+    </v-row>
 
-    <VDialog v-model="dialogVisible">
+    <v-dialog v-model="dialogVisible">
       <BulkTransactionEdit
         :transaction="editedTransaction"
         @saved="saveEditedTransaction"
         @deleted="deleteEditedTransaction"
         @close="dialogVisible = false"
       />
-    </VDialog>
+    </v-dialog>
   </div>
 </template>
 
@@ -139,7 +139,7 @@ export default {
   computed: {
     projectItems() {
       return this.$store.getters['project/accounts'].map((account) => ({
-        text: account.name,
+        title: account.name,
         value: account.id,
       }));
     },

@@ -1,40 +1,41 @@
 <template>
-  <VCard v-show="visible" class="mb-4">
-    <VCardTitle>
-      <span class="headline">{{ accountCategory }}</span>
-      <VSpacer />
-      <VBtn v-hotkey.add="newAccount" text color="primary" @click="newAccount"
-        >Add</VBtn
+  <v-card v-show="visible" class="mb-4">
+    <v-card-title>
+      <span class="text-h6">{{ accountCategory }}</span>
+      <v-spacer />
+      <v-btn v-hotkey.add="newAccount" variant="text" color="primary" @click="newAccount"
+        >Add</v-btn
       >
-    </VCardTitle>
+    </v-card-title>
 
-    <VDataTable
+    <v-data-table
       v-show="visible"
       ref="dataTable"
       :headers="headers"
       :items="accounts"
-      disable-pagination
-      hide-default-footer
+      :items-per-page="-1"
     >
-      <template v-slot:item="props">
-        <tr @click="openAccount(props.item.id)">
-          <td>{{ props.item.name }}</td>
+      <template v-slot:item="{ item }">
+        <tr @click="openAccount(item.id)">
+          <td>{{ item.name }}</td>
           <td
-            :class="{ 'red--text': parseFloat(props.item.balance) < 0 }"
+            :class="{ 'text-red': parseFloat(item.balance) < 0 }"
             class="text-right account-balance"
           >
-            {{ props.item.balance | currency }}
+            {{ $currency(item.balance) }}
           </td>
         </tr>
       </template>
-      <template v-slot:body.append>
-        <td />
-        <td :class="{ 'red--text': parseFloat(total) < 0 }" class="balance">
-          {{ total | currency }}
-        </td>
+      <template v-slot:bottom>
+        <tr>
+          <td />
+          <td :class="{ 'text-red': parseFloat(total) < 0 }" class="balance">
+            {{ $currency(total) }}
+          </td>
+        </tr>
       </template>
-    </VDataTable>
-  </VCard>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>
@@ -50,14 +51,14 @@ export default {
     return {
       headers: [
         {
-          text: 'Account',
-          value: 'name',
-          align: 'left'
+          title: 'Account',
+          key: 'name',
+          align: 'start'
         },
         {
-          text: 'Balance',
-          value: 'balance',
-          align: 'right'
+          title: 'Balance',
+          key: 'balance',
+          align: 'end'
         }
       ],
     };

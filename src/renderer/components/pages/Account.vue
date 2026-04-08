@@ -1,19 +1,19 @@
 <template>
   <div v-hotkey.close="closeDialog">
-    <VCard class="mb-4">
-      <VCardTitle class="headline">{{ account.name }}</VCardTitle>
-      <VCardActions>
-        <VBtn text color="error" @click="deleteAccount">Delete</VBtn>
-        <VBtn text @click="goToEditAccount">Edit</VBtn>
-        <VBtn text @click="goToInsights">Insights</VBtn>
-        <VBtn
+    <v-card class="mb-4">
+      <v-card-title class="text-h6">{{ account.name }}</v-card-title>
+      <v-card-actions>
+        <v-btn variant="text" color="error" @click="deleteAccount">Delete</v-btn>
+        <v-btn variant="text" @click="goToEditAccount">Edit</v-btn>
+        <v-btn variant="text" @click="goToInsights">Insights</v-btn>
+        <v-btn
           v-if="account.importTransactionsFormatId"
-          text
+          variant="text"
           @click="importTransactions"
-          >Import</VBtn
+          >Import</v-btn
         >
-      </VCardActions>
-    </VCard>
+      </v-card-actions>
+    </v-card>
 
     <TransactionList
       :account="account"
@@ -22,7 +22,7 @@
       @add-transaction="addTransaction"
     />
 
-    <VDialog
+    <v-dialog
       v-model="editTransactionDialogVisible"
       max-width="500px"
       persistent
@@ -35,9 +35,9 @@
         @added="editTransactionDialogVisible = false"
         @updated="editTransactionDialogVisible = false"
       />
-    </VDialog>
+    </v-dialog>
 
-    <VDialog
+    <v-dialog
       v-model="importTransactionsDialogVisible"
       persistent
       no-click-animation
@@ -47,32 +47,32 @@
         @close="importTransactionsDialogVisible = false"
         :visible="importTransactionsDialogVisible"
       />
-    </VDialog>
+    </v-dialog>
 
-    <VDialog v-model="cannotDeleteAccountDialogVisible" max-width="400">
-      <VCard>
-        <VCardTitle>Cannot delete account</VCardTitle>
-        <VCardText
-          >You can only delete an account if the balance is zero.</VCardText
+    <v-dialog v-model="cannotDeleteAccountDialogVisible" max-width="400">
+      <v-card>
+        <v-card-title>Cannot delete account</v-card-title>
+        <v-card-text
+          >You can only delete an account if the balance is zero.</v-card-text
         >
-        <VCardActions>
-          <VBtn
-            text
+        <v-card-actions>
+          <v-btn
+            variant="text"
             color="primary"
             @click="cannotDeleteAccountDialogVisible = false"
-            >Ok</VBtn
+            >Ok</v-btn
           >
-        </VCardActions>
-      </VCard>
-    </VDialog>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import Big from 'big.js';
-import TransactionList from '../TransactionList';
-import TransactionEdit from '../TransactionEdit';
-import ImportTransactions from '../ImportTransactions';
+import TransactionList from '../TransactionList.vue';
+import TransactionEdit from '../TransactionEdit.vue';
+import ImportTransactions from '../ImportTransactions.vue';
 import { importTransactionsFormats } from '../../import-transactions';
 
 export default {

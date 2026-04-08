@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VAutocomplete
+    <v-autocomplete
       v-model="accountId"
       :items="accounts"
       label="Account"
@@ -8,31 +8,31 @@
     />
     <DateRange @dateRange="dateRange = $event" type="month" />
 
-    <VCard v-if="!accountId">
-      <VCardTitle>Spending for {{ formattedMonth }}</VCardTitle>
-      <VCardText
+    <v-card v-if="!accountId">
+      <v-card-title>Spending for {{ formattedMonth }}</v-card-title>
+      <v-card-text
         ><SpendingPerMonth :date="monthDate" :height="140"
-      /></VCardText>
-    </VCard>
+      /></v-card-text>
+    </v-card>
     <template v-else>
-      <VCard class="mb-3">
-        <VCardTitle>Account spending over time</VCardTitle>
-        <VCardText
+      <v-card class="mb-3">
+        <v-card-title>Account spending over time</v-card-title>
+        <v-card-text
           ><AccountSpendingOverTime
             :account="account"
             :date-range="dateRange"
             :height="140"
-        /></VCardText>
-      </VCard>
-      <VCard>
-        <VCardTitle>Account value over time</VCardTitle>
-        <VCardText
+        /></v-card-text>
+      </v-card>
+      <v-card>
+        <v-card-title>Account value over time</v-card-title>
+        <v-card-text
           ><AccountValueOverTime
             :account="account"
             :date-range="dateRange"
             :height="120"
-        /></VCardText>
-      </VCard>
+        /></v-card-text>
+      </v-card>
     </template>
   </div>
 </template>
@@ -64,7 +64,7 @@ export default {
     accounts() {
       return [
         {
-          text: 'All',
+          title: 'All',
           value: null,
         },
         ...this.$store.getters['project/accountItems'],

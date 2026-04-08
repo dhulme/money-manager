@@ -1,25 +1,23 @@
 <template>
-  <VCard>
-    <VCardTitle>
+  <v-card>
+    <v-card-title>
       Reports
-      <VSpacer />
-    </VCardTitle>
-    <VCardText>
-      <VList>
-        <VListItem
+      <v-spacer />
+    </v-card-title>
+    <v-card-text>
+      <v-list>
+        <v-list-item
           v-for="report in reports"
           :key="report.id"
           @click="openReport(report.id)"
         >
-          <VListItemContent>
-            <VListItemTitle>
-              {{ report.name }}
-            </VListItemTitle>
-          </VListItemContent>
-        </VListItem>
-      </VList>
-    </VCardText>
-  </VCard>
+          <v-list-item-title>
+            {{ report.name }}
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>

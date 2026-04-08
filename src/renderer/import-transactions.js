@@ -1,5 +1,5 @@
-import { parse } from 'papaparse';
-import moment from 'moment';
+import { parse as parseCsv } from 'papaparse';
+import { parse as parseDate } from 'date-fns';
 
 import { capitalizeFirstLetter } from './util';
 import ipc from './ipc';
@@ -22,7 +22,7 @@ export const importTransactionsFormats = [
     extensions: ['csv'],
     type: 'account',
     toTransactions(csvData) {
-      let { data, errors } = parse(csvData, {
+      let { data, errors } = parseCsv(csvData, {
         header: true,
         delimiter: ';',
         skipEmptyLines: true,
@@ -41,7 +41,7 @@ export const importTransactionsFormats = [
             const description =
               row['Merchant/Description'].replace(/\*/g, '').trim() || row.Type;
             return {
-              date: moment(row.Date, 'DD/MM/YYYY'),
+              date: parseDate(row.Date, 'dd/MM/yyyy', new Date()),
               description: capitalizeFirstLetter(description.toLowerCase()),
               value: Math.abs(value),
               type: value < 0 ? 'out' : 'in',
@@ -55,14 +55,14 @@ export const importTransactionsFormats = [
     type: 'account',
     extensions: ['csv'],
     toTransactions(csvData) {
-      const { data, errors } = parse(csvData, {
+      const { data, errors } = parseCsv(csvData, {
         header: true,
       });
 
       return errors.length
         ? handleCsvErrors(errors)
         : data.map((row) => ({
-            date: moment(row.date),
+            date: new Date(row.date),
             description: capitalizeFirstLetter(row.description.toLowerCase()),
             value: Number(row.amount),
             type: row.debitCreditCode === 'Credit' ? 'in' : 'out',
@@ -84,7 +84,7 @@ export const importTransactionsFormats = [
       return transactions.map((transaction) => {
         const value = Number(transaction.match(/Amount:�(.+)�/)[1]);
         return {
-          date: moment(transaction.match(/Date:�(.+)/)[1], 'DD/MM/YYYY'),
+          date: parseDate(transaction.match(/Date:�(.+)/)[1], 'dd/MM/yyyy', new Date()),
           description: capitalizeFirstLetter(
             transaction.match(/Description:�(.+)/)[1].toLowerCase()
           ),
@@ -100,7 +100,7 @@ export const importTransactionsFormats = [
     extensions: ['tsv'],
     type: 'bulkTransaction',
     toTransactions(tsvData) {
-      const { data, errors } = parse(tsvData, {
+      const { data, errors } = parseCsv(tsvData, {
         header: true,
         skipEmptyLines: true,
         delimiter: '\t',
@@ -122,7 +122,7 @@ export const importTransactionsFormats = [
     extensions: ['csv'],
     toTransactions(csvData) {
       console.log('csvData', csvData);
-      const { data, errors } = parse(csvData, {
+      const { data, errors } = parseCsv(csvData, {
         header: true,
         skipEmptyLines: true,
       });
@@ -130,7 +130,7 @@ export const importTransactionsFormats = [
       return errors.length
         ? handleCsvErrors(errors)
         : data.map((row) => ({
-            date: moment(row.Date, 'DD/MM/YYYY'),
+            date: parseDate(row.Date, 'dd/MM/yyyy', new Date()),
             description: capitalizeFirstLetter(row.Description.toLowerCase()),
             value: Math.abs(row.Amount),
             type: Number(row.Amount) < 0 ? 'in' : 'out',
@@ -142,11 +142,11 @@ export const importTransactionsFormats = [
 export const importAccountTransactionsFormatItems = importTransactionsFormats
   .filter((format) => format.type === 'account')
   .map((format) => ({
-    text: format.name,
+    title: format.name,
     value: format.id,
   }));
 
-ipc.on('importTransactionsDone', (event, { data, id }) => {
+ipc.on('importTransactionsDone', ({ data, id }) => {
   try {
     const transactions = importTransactionsFormats
       .find((_) => _.id === id)

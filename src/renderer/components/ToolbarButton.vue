@@ -1,7 +1,7 @@
 <template>
-  <VBtn :color="color" :text="text" @click="click" class="mr-3">
+  <v-btn :color="color" :variant="active ? 'flat' : 'text'" @click="click" class="mr-3">
     <slot />
-  </VBtn>
+  </v-btn>
 </template>
 
 <script>
@@ -20,9 +20,6 @@ export default {
     },
     color() {
       return this.active ? 'black' : '';
-    },
-    text() {
-      return !this.active;
     },
   },
   methods: {

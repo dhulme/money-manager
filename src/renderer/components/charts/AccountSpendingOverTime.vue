@@ -1,11 +1,26 @@
+<template>
+  <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
+</template>
+
 <script>
 import { Bar } from 'vue-chartjs';
-import moment from 'moment';
+import {
+  Chart as ChartJS,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import 'chartjs-adapter-date-fns';
 import Big from 'big.js';
-import { isAfter, isBefore, parseISO, isSameDay } from 'date-fns';
+import { isAfter, isBefore, parseISO, isSameDay, parse } from 'date-fns';
+
+ChartJS.register(BarElement, CategoryScale, LinearScale, TimeScale, Tooltip, Legend);
 
 export default {
-  extends: Bar,
+  components: { Bar },
   props: {
     account: {
       type: Object,
@@ -45,68 +60,52 @@ export default {
         {}
       );
     },
-  },
-  watch: {
-    data: 'render',
-  },
-  mounted() {
-    this.render();
-  },
-  methods: {
-    render() {
-      this.renderChart(
-        {
-          labels: Object.keys(this.data).map((_) =>
-            moment(_, 'YYYY-MM').toDate()
-          ),
-          datasets: [
-            {
-              data: Object.values(this.data).map((_) => Number(_)),
-              backgroundColor: '#1976d2',
-              borderColor: '#1976d2',
-            },
-          ],
-        },
-        {
-          responsive: true,
-          legend: {
-            display: false,
+    chartData() {
+      if (!this.data) return null;
+      return {
+        labels: Object.keys(this.data).map((_) =>
+          parse(_, 'yyyy-MM', new Date())
+        ),
+        datasets: [
+          {
+            data: Object.values(this.data).map((_) => Number(_)),
+            backgroundColor: '#1976d2',
+            borderColor: '#1976d2',
           },
-          tooltips: {
+        ],
+      };
+    },
+    chartOptions() {
+      return {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
             displayColors: false,
             callbacks: {
-              title: ([point], config) => {
-                return moment(point.label).format(this.$dateFormat);
+              title: (items) => {
+                if (!items.length) return '';
+                return items[0].label;
               },
-              label: (point) => {
-                return this.$currencyPrefix + point.yLabel;
+              label: (context) => {
+                return this.$currencyPrefix + context.parsed.y;
               },
             },
           },
-          scales: {
-            xAxes: [
-              {
-                type: 'time',
-                scaleLabel: {
-                  labelString: 'Time',
-                },
-                time: {
-                  unit: 'month',
-                },
-              },
-            ],
-            yAxes: [
-              {
-                ticks: {
-                  callback: (value) => {
-                    return this.$currencyPrefix + value;
-                  },
-                },
-              },
-            ],
+        },
+        scales: {
+          x: {
+            type: 'time',
+            title: { display: true, text: 'Time' },
+            time: { unit: 'month' },
           },
-        }
-      );
+          y: {
+            ticks: {
+              callback: (value) => this.$currencyPrefix + value,
+            },
+          },
+        },
+      };
     },
   },
 };

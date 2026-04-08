@@ -1,28 +1,26 @@
 <template>
   <div>
-    <VCardText v-if="!bulkTransactions.length" class="none-message"
-      ><em>No bulk transactions</em></VCardText
+    <v-card-text v-if="!bulkTransactions.length" class="none-message"
+      ><em>No bulk transactions</em></v-card-text
     >
-    <VList v-if="bulkTransactions.length" two-line>
-      <VListItem
+    <v-list v-if="bulkTransactions.length" lines="two">
+      <v-list-item
         v-for="bulkTransaction in bulkTransactions"
         :key="bulkTransaction.id"
         @click="openBulkTransaction(bulkTransaction.id)"
       >
-        <VListItemContent>
-          <VListItemTitle>
-            {{ bulkTransaction.name }}
-          </VListItemTitle>
-          <VListItemSubtitle class="d-flex">
-            <span>{{ bulkTransaction.description }}</span>
-            <VSpacer />
-            <span v-if="bulkTransaction.lastModified" class="body-2"
-              >Updated {{ bulkTransaction.lastModified | date }}</span
-            >
-          </VListItemSubtitle>
-        </VListItemContent>
-      </VListItem>
-    </VList>
+        <v-list-item-title>
+          {{ bulkTransaction.name }}
+        </v-list-item-title>
+        <v-list-item-subtitle class="d-flex">
+          <span>{{ bulkTransaction.description }}</span>
+          <v-spacer />
+          <span v-if="bulkTransaction.lastModified" class="text-body-2"
+            >Updated {{ $date(bulkTransaction.lastModified) }}</span
+          >
+        </v-list-item-subtitle>
+      </v-list-item>
+    </v-list>
   </div>
 </template>
 

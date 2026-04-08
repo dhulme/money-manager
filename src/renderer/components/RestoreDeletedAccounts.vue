@@ -1,24 +1,25 @@
 <template>
-  <VCard>
-    <VCardTitle>Restore Deleted Accounts</VCardTitle>
-    <VCardText>
-      <VList>
-        <VListItem
+  <v-card>
+    <v-card-title>Restore Deleted Accounts</v-card-title>
+    <v-card-text>
+      <v-list>
+        <v-list-item
           v-for="account in deletedAccounts"
           :key="account.id"
           @click="restore(account)"
         >
-          {{ account.name }}
-          <VSpacer />
-          <VIcon>restore_from_trash</VIcon>
-        </VListItem>
-      </VList>
+          <v-list-item-title>{{ account.name }}</v-list-item-title>
+          <template v-slot:append>
+            <v-icon>mdi-delete-restore</v-icon>
+          </template>
+        </v-list-item>
+      </v-list>
       <p v-if="!deletedAccounts.length">No deleted accounts</p>
-    </VCardText>
-    <VCardActions>
-      <VBtn color="primary" text @click="close">Close</VBtn>
-    </VCardActions>
-  </VCard>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="primary" variant="text" @click="close">Close</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>

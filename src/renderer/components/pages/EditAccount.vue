@@ -1,25 +1,25 @@
 <template>
   <div v-hotkey.close="goToAccounts">
-    <VCard>
-      <VCardTitle>
-        <div class="headline">{{ accountId ? 'Edit' : 'Add' }} Account</div>
-      </VCardTitle>
-      <VCardText>
-        <VForm
+    <v-card>
+      <v-card-title>
+        <div class="text-h6">{{ accountId ? 'Edit' : 'Add' }} Account</div>
+      </v-card-title>
+      <v-card-text>
+        <v-form
           ref="form"
           v-model="valid"
           lazy-validation
           @submit.prevent="save"
         >
-          <VTextField v-model="accountCategory" label="Category" disabled />
-          <VTextField
+          <v-text-field v-model="accountCategory" label="Category" disabled />
+          <v-text-field
             autofocus
             v-model="newAccount.name"
             label="Name"
             :rules="nameRules"
             class="required"
           />
-          <VTextField
+          <v-text-field
             v-if="!account"
             v-model="newAccount.openingBalance"
             label="Opening balance"
@@ -27,15 +27,15 @@
             :rules="openingBalanceRules"
             class="required"
           />
-          <VSelect
+          <v-select
             :items="importAccountTransactionsFormatItems"
             label="Transaction import format"
             v-model="newAccount.importTransactionsFormatId"
           />
-          <VBtn type="submit" text color="primary">OK</VBtn>
-        </VForm>
-      </VCardText>
-    </VCard>
+          <v-btn type="submit" variant="text" color="primary">OK</v-btn>
+        </v-form>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 

@@ -1,57 +1,44 @@
 <template>
-  <VCard>
-    <VCardTitle class="headline"
-      >{{ isNewTransaction ? 'Add' : 'Edit' }} Transaction</VCardTitle
+  <v-card>
+    <v-card-title class="text-h6"
+      >{{ isNewTransaction ? 'Add' : 'Edit' }} Transaction</v-card-title
     >
-    <VCardText>
-      <VForm ref="form" v-model="valid" lazy-validation>
-        <VMenu
-          ref="dateMenu"
-          v-model="dateMenu"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <VTextField
-              v-model="prettyDate"
-              label="Date"
-              prepend-icon="event"
-              readonly
-              class="required"
-              v-on="on"
-            />
-          </template>
-          <VDatePicker v-model="date" @input="dateMenu = false" />
-        </VMenu>
+    <v-card-text>
+      <v-form ref="form" v-model="valid" lazy-validation>
+        <v-text-field
+          v-model="date"
+          label="Date"
+          prepend-icon="mdi-calendar"
+          type="date"
+          class="required"
+        />
 
-        <VTextField
+        <v-text-field
           ref="description"
           :rules="descriptionValidationRules"
           v-model="newTransaction.description"
           label="Description"
-          prepend-icon="description"
+          prepend-icon="mdi-text"
           class="required"
           @keyup.enter="save"
         />
-        <VTextField
+        <v-text-field
           v-model="newTransaction.note"
           label="Note"
-          prepend-icon="note"
+          prepend-icon="mdi-note"
           @keyup.enter="save"
         />
-        <VAutocomplete
+        <v-autocomplete
           :items="accounts"
           :rules="accountValidationRules"
           v-model="newTransaction.account"
           label="Account"
-          prepend-icon="account_balance"
+          prepend-icon="mdi-bank"
           class="required"
           :disabled="!isNewTransaction"
           auto-select-first
         />
-        <VTextField
+        <v-text-field
           v-model="newTransaction.valueIn"
           :rules="valueValidationRules"
           label="In"
@@ -59,7 +46,7 @@
           @keyup.enter="save"
           :disabled="!isNewTransaction && isFromTransaction"
         />
-        <VTextField
+        <v-text-field
           v-model="newTransaction.valueOut"
           :rules="valueValidationRules"
           label="Out"
@@ -67,28 +54,28 @@
           @keyup.enter="save"
           :disabled="!isNewTransaction && !isFromTransaction"
         />
-        <VCheckbox
+        <v-checkbox
           v-if="!isNewTransaction"
           v-model="newTransaction.highlighted"
           label="Highlighted"
-          dense
+          density="compact"
         />
-        <VCheckbox
+        <v-checkbox
           v-model="newTransaction.giftAided"
           label="Gift Aided"
-          dense
+          density="compact"
         />
-      </VForm>
-    </VCardText>
-    <VCardActions>
-      <VBtn text @click="close">Close</VBtn>
-      <VBtn color="primary" text @click="save">OK</VBtn>
-    </VCardActions>
-  </VCard>
+      </v-form>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn variant="text" @click="close">Close</v-btn>
+      <v-btn color="primary" variant="text" @click="save">OK</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
-import moment from 'moment';
+import { format, parseISO } from 'date-fns';
 
 import { getId, validateInputValue } from '../util';
 
@@ -106,7 +93,6 @@ export default {
   data() {
     return {
       newTransaction: {},
-      dateMenu: false,
       valid: true,
       formClean: true,
       valueValidationRules: [
@@ -133,8 +119,7 @@ export default {
         (value) =>
           this.formClean || !!value || 'Transaction account is required',
       ],
-      date: moment().format('YYYY-MM-DD'),
-      prettyDate: moment().format(this.$dateFormat),
+      date: format(new Date(), 'yyyy-MM-dd'),
     };
   },
   computed: {
@@ -158,12 +143,13 @@ export default {
           this.$refs.form.resetValidation();
           this.formClean = true;
         }
-        this.date = moment(transaction.date).format('YYYY-MM-DD');
+        this.date = transaction.date
+          ? format(new Date(transaction.date), 'yyyy-MM-dd')
+          : format(new Date(), 'yyyy-MM-dd');
         this.$nextTick(() => {
-          this.prettyDate = moment(transaction.date).format(this.$dateFormat);
-          this.$nextTick(() => {
+          if (this.$refs.description) {
             this.$refs.description.focus();
-          });
+          }
         });
         const isFromTransaction = transaction.from === this.account.id;
         this.newTransaction = {
@@ -176,11 +162,6 @@ export default {
           ...(isFromTransaction && { valueOut: transaction.value }),
           ...(!isFromTransaction && { valueIn: transaction.value }),
         };
-      },
-    },
-    date: {
-      handler(date) {
-        this.prettyDate = moment(date, 'YYYY-MM-DD').format(this.$dateFormat);
       },
     },
   },
@@ -198,16 +179,17 @@ export default {
     },
     getTransactionFromUi() {
       const uiTransaction = this.newTransaction;
-      const date = moment(this.date);
+      const parsedDate = parseISO(this.date);
       return {
         ...uiTransaction,
-        date: moment()
-          .set({
-            year: date.year(),
-            month: date.month(),
-            date: date.date(),
-          })
-          .toDate(),
+        date: new Date(
+          parsedDate.getFullYear(),
+          parsedDate.getMonth(),
+          parsedDate.getDate(),
+          new Date().getHours(),
+          new Date().getMinutes(),
+          new Date().getSeconds()
+        ),
         id: uiTransaction.id || getId(),
         value: uiTransaction.valueIn || uiTransaction.valueOut,
       };

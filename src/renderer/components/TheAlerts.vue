@@ -1,23 +1,22 @@
 <template>
   <div>
-    <VAlert
+    <v-alert
       v-model="hasError"
       color="error"
-      icon="error"
-      dismissible
+      icon="mdi-alert-circle"
+      closable
       class="alert caption"
     >
       {{ error }}
-    </VAlert>
-    <VAlert
-      v-show="showBudgetWarning"
+    </v-alert>
+    <v-alert
+      v-if="showBudgetWarning"
       :color="color"
-      :value="true"
-      icon="info"
+      icon="mdi-information"
       class="alert caption"
     >
-      Your budget and accounts are different by {{ summaryBalance | currency }}!
-    </VAlert>
+      Your budget and accounts are different by {{ $currency(summaryBalance) }}!
+    </v-alert>
   </div>
 </template>
 

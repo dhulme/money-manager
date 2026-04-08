@@ -1,52 +1,52 @@
 <template>
-  <VCard v-hotkey.close="close">
-    <VCardTitle class="headline">
+  <v-card v-hotkey.close="close">
+    <v-card-title class="text-h6">
       {{ transaction.id ? 'Edit' : 'Add' }} Transaction
-    </VCardTitle>
-    <VForm ref="form" v-model="valid" lazy-validation @submit.prevent="save">
-      <VCardText>
-        <VTextField
+    </v-card-title>
+    <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="save">
+      <v-card-text>
+        <v-text-field
           v-model="newTransaction.value"
           label="Amount"
           :prefix="$currencyPrefix"
           class="required"
           :rules="valueRules"
         />
-        <VAutocomplete
+        <v-autocomplete
           :items="accounts"
           v-model="newTransaction.from"
           label="From"
-          prepend-icon="account_balance"
+          prepend-icon="mdi-bank"
           class="required"
           :rules="fromRules"
           auto-select-first
         />
-        <VAutocomplete
+        <v-autocomplete
           :items="accounts"
           v-model="newTransaction.to"
           label="To"
-          prepend-icon="account_balance"
+          prepend-icon="mdi-bank"
           class="required"
           :rules="toRules"
           auto-select-first
         />
-        <VTextField
+        <v-text-field
           v-model="newTransaction.note"
           label="Note"
-          prepend-icon="note"
+          prepend-icon="mdi-note"
         />
-      </VCardText>
-      <VCardActions>
-        <VBtn text @click="close">Close</VBtn>
-        <VBtn v-if="transaction.id" text @click="_delete" color="error"
-          >Delete</VBtn
+      </v-card-text>
+      <v-card-actions>
+        <v-btn variant="text" @click="close">Close</v-btn>
+        <v-btn v-if="transaction.id" variant="text" @click="_delete" color="error"
+          >Delete</v-btn
         >
-        <VBtn type="submit" color="primary" text>{{
+        <v-btn type="submit" color="primary" variant="text">{{
           transaction.id ? 'Update' : 'Add'
-        }}</VBtn>
-      </VCardActions>
-    </VForm>
-  </VCard>
+        }}</v-btn>
+      </v-card-actions>
+    </v-form>
+  </v-card>
 </template>
 
 <script>

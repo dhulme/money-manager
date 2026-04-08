@@ -3,47 +3,47 @@
     v-hotkey.close="goToBulkTransactionsIfDialogClosed"
     v-hotkey.add="addTransaction"
   >
-    <VCard>
-      <VCardTitle>
-        <span class="headline">{{ bulkTransaction.name }}</span>
-        <VBtn text @click="addTransaction">Add</VBtn>
-        <VBtn text @click="importTransactions">Import</VBtn>
-        <VBtn text @click="clone">Clone</VBtn>
-        <VSpacer />
-        <VTextField
+    <v-card>
+      <v-card-title>
+        <span class="text-h6">{{ bulkTransaction.name }}</span>
+        <v-btn variant="text" @click="addTransaction">Add</v-btn>
+        <v-btn variant="text" @click="importTransactions">Import</v-btn>
+        <v-btn variant="text" @click="clone">Clone</v-btn>
+        <v-spacer />
+        <v-text-field
           v-model="search"
-          append-icon="search"
+          append-icon="mdi-magnify"
           label="Search"
           single-line
           hide-details
         />
-      </VCardTitle>
-      <VSubheader>
+      </v-card-title>
+      <div class="d-flex align-center px-4 py-1">
         <div>{{ bulkTransaction.description }}</div>
-        <VSpacer />
-        <div v-if="bulkTransaction.lastModified" class="body-2 ml-2">
-          Updated {{ bulkTransaction.lastModified | date }}
+        <v-spacer />
+        <div v-if="bulkTransaction.lastModified" class="text-body-2 ml-2">
+          Updated {{ $date(bulkTransaction.lastModified) }}
         </div>
-      </VSubheader>
+      </div>
       <BulkTransactionTransactions
         :transactions="transactions"
         :search="search"
         @transaction-click="editTransaction"
       />
-      <VCardActions>
-        <VBtn text color="primary" @click="process" :disabled="hasChanges"
-          >Run</VBtn
+      <v-card-actions>
+        <v-btn variant="text" color="primary" @click="process" :disabled="hasChanges"
+          >Run</v-btn
         >
-        <VBtn text @click="applyChanges" :disabled="!hasChanges"
-          >Apply changes</VBtn
+        <v-btn variant="text" @click="applyChanges" :disabled="!hasChanges"
+          >Apply changes</v-btn
         >
-        <VBtn text @click="discardChanges" :disabled="!hasChanges"
-          >Discard changes</VBtn
+        <v-btn variant="text" @click="discardChanges" :disabled="!hasChanges"
+          >Discard changes</v-btn
         >
-      </VCardActions>
-    </VCard>
+      </v-card-actions>
+    </v-card>
 
-    <VDialog v-model="dialogVisible">
+    <v-dialog v-model="dialogVisible">
       <BulkTransactionEdit
         :transaction="transaction"
         :bulk-transaction="bulkTransaction"
@@ -51,24 +51,22 @@
         @deleted="deletedTransaction"
         @close="dialogVisible = false"
       />
-    </VDialog>
+    </v-dialog>
 
-    <VDialog v-model="unappliedChangesDialogVisible" max-width="400">
-      <VCard>
-        <VCardTitle>Unapplied changes</VCardTitle>
-        <VCardText>Do you want to apply the changes you have made?</VCardText>
-        <VCardActions>
-          <VBtn text @click="confirmDiscardChanges">Don't apply</VBtn>
-          <VBtn text color="primary" @click="confirmApplyChanges">Apply</VBtn>
-        </VCardActions>
-      </VCard>
-    </VDialog>
+    <v-dialog v-model="unappliedChangesDialogVisible" max-width="400">
+      <v-card>
+        <v-card-title>Unapplied changes</v-card-title>
+        <v-card-text>Do you want to apply the changes you have made?</v-card-text>
+        <v-card-actions>
+          <v-btn variant="text" @click="confirmDiscardChanges">Don't apply</v-btn>
+          <v-btn variant="text" color="primary" @click="confirmApplyChanges">Apply</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-import moment from 'moment';
-
 import { getId } from '../../util';
 
 import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
@@ -125,7 +123,7 @@ export default {
         transactions: this.transactions.map((transaction) => ({
           ...transaction,
           id: getId(),
-          date: moment(),
+          date: new Date().toISOString(),
         })),
       });
       this.$store.dispatch('openSnackbar', 'Transactions done');

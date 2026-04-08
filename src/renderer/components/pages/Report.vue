@@ -1,22 +1,22 @@
 <template>
-  <VCard v-if="reportId === 'giftAid'">
-    <VCardTitle>
+  <v-card v-if="reportId === 'giftAid'">
+    <v-card-title>
       Gift Aid
-      <VSpacer />
-      <VBtn text @click="exportCsv">Export as CSV</VBtn>
-    </VCardTitle>
-    <VCardText>
-      <VSelect :items="years" label="Tax Year" v-model="dateRange" />
+      <v-spacer />
+      <v-btn variant="text" @click="exportCsv">Export as CSV</v-btn>
+    </v-card-title>
+    <v-card-text>
+      <v-select :items="years" label="Tax Year" v-model="dateRange" />
 
-      <VDataTable :headers="headers" :items="transactions">
-        <template v-slot:item="props">
+      <v-data-table :headers="headers" :items="transactions">
+        <template v-slot:item="{ item }">
           <tr>
-            <td>{{ props.item.date | date }}</td>
-            <td>{{ props.item.description }}</td>
-            <td>{{ props.item.value | currency }}</td>
+            <td>{{ $date(item.date) }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ $currency(item.value) }}</td>
           </tr>
         </template>
-        <template v-slot:body.append>
+        <template v-slot:bottom>
           <tr>
             <td />
             <td />
@@ -25,12 +25,12 @@
           <tr>
             <td />
             <td class="font-weight-bold">Total</td>
-            <td class="font-weight-bold">{{ total | currency }}</td>
+            <td class="font-weight-bold">{{ $currency(total) }}</td>
           </tr>
         </template>
-      </VDataTable>
-    </VCardText>
-  </VCard>
+      </v-data-table>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -39,7 +39,6 @@ import { addYears, set, format, parseISO } from 'date-fns';
 import ipc from '@/ipc';
 import { uniq } from 'lodash';
 import { unparse } from 'papaparse';
-import moment from 'moment';
 
 const dateFormat = 'do MMMM yyyy';
 const today = new Date();
@@ -64,7 +63,7 @@ export default {
           yearAdjust + 1
         );
         return {
-          text: `${format(startDate, dateFormat)} - ${format(
+          title: `${format(startDate, dateFormat)} - ${format(
             endDate,
             dateFormat
           )}`,
@@ -106,19 +105,19 @@ export default {
     headers() {
       return [
         {
-          text: 'Date',
-          value: 'date',
-          align: 'left',
+          title: 'Date',
+          key: 'date',
+          align: 'start',
         },
         {
-          text: 'Description',
-          value: 'description',
-          align: 'left',
+          title: 'Description',
+          key: 'description',
+          align: 'start',
         },
         {
-          text: 'Amount',
-          value: 'value',
-          align: 'left',
+          title: 'Amount',
+          key: 'value',
+          align: 'start',
         },
       ];
     },
@@ -129,7 +128,7 @@ export default {
         'transactions',
         unparse(
           this.transactions.map((transaction) => ({
-            Date: moment(transaction.date).format(this.$dateFormat),
+            Date: format(parseISO(transaction.date), this.$dateFormat),
             Description: transaction.description,
             Amount: transaction.value,
           }))

@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import AboutDialog from './dialogs/AboutDialog';
-import SettingsDialog from './dialogs/SettingsDialog';
+import AboutDialog from './dialogs/AboutDialog.vue';
+import SettingsDialog from './dialogs/SettingsDialog.vue';
 
 export default {
   components: {

@@ -1,21 +1,21 @@
 <template>
   <div>
-    <VCard>
-      <VCardTitle>
-        <span class="headline">Transactions</span>
-        <VBtn
+    <v-card>
+      <v-card-title>
+        <span class="text-h6">Transactions</span>
+        <v-btn
           v-hotkey.add="addTransaction"
-          text
+          variant="text"
           color="primary"
           @click="addTransaction"
-          >Add</VBtn
+          >Add</v-btn
         >
-        <VBtn text @click="toggleFilters" class="toggle-filters">{{
+        <v-btn variant="text" @click="toggleFilters" class="toggle-filters">{{
           showFilters ? 'Clear' : 'Filter'
-        }}</VBtn>
+        }}</v-btn>
         <template v-if="showFilters">
           <DateRange @dateRange="dateRange = $event" slim />
-          <VSelect
+          <v-select
             v-model="direction"
             :items="['Both', 'In', 'Out']"
             label="In/Out"
@@ -24,43 +24,43 @@
             class="input"
           />
         </template>
-        <VSpacer />
-        <VTextField
+        <v-spacer />
+        <v-text-field
           v-model="search"
-          append-icon="search"
+          append-icon="mdi-magnify"
           label="Search"
           single-line
           hide-details
           autofocus
           class="input"
         />
-      </VCardTitle>
-      <VDataTable
+      </v-card-title>
+      <v-data-table
         :headers="headers"
         :items="filteredTransactions"
         :search="search"
         :custom-filter="customFilter"
-        :footer-props="footerProps"
-        :page.sync="page"
+        :items-per-page-options="[10, -1]"
+        v-model:page="page"
       >
-        <template v-slot:item="props">
+        <template v-slot:item="{ item }">
           <tr
-            :style="{ background: props.item.highlighted ? '#E3F2FD' : 'none' }"
-            @click="$emit('edit-transaction', props.item)"
+            :style="{ background: item.highlighted ? '#E3F2FD' : 'none' }"
+            @click="$emit('edit-transaction', item)"
           >
-            <td>{{ props.item.date | date }}</td>
-            <td>{{ props.item.description }}</td>
-            <td>{{ props.item.note }}</td>
-            <td>{{ props.item.accountName }}</td>
-            <td>{{ transactionIn(props.item) | currency }}</td>
-            <td>{{ transactionOut(props.item) | currency }}</td>
+            <td>{{ $date(item.date) }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.note }}</td>
+            <td>{{ item.accountName }}</td>
+            <td>{{ $currency(transactionIn(item)) }}</td>
+            <td>{{ $currency(transactionOut(item)) }}</td>
             <td v-if="!hasFilter">
-              {{ accountBalance(props.item) | currency }}
+              {{ $currency(accountBalance(item)) }}
             </td>
             <td v-else />
           </tr>
         </template>
-        <template v-slot:body.append>
+        <template v-slot:bottom>
           <tr>
             <td />
             <td />
@@ -70,31 +70,30 @@
             <td />
             <td
               :class="{
-                'red--text': !hasFilter && parseFloat(account.balance) < 0,
+                'text-red': !hasFilter && parseFloat(account.balance) < 0,
               }"
               class="balance"
             >
               {{
                 hasFilter
-                  ? filteredTransactionsTotal
-                  : account.balance | currency
+                  ? $currency(filteredTransactionsTotal)
+                  : $currency(account.balance)
               }}
             </td>
           </tr>
         </template>
-      </VDataTable>
-    </VCard>
+      </v-data-table>
+    </v-card>
   </div>
 </template>
 
 <script>
-import moment from 'moment';
-import { isAfter, isBefore, parseISO, isSameDay } from 'date-fns';
+import { isAfter, isBefore, parseISO, isSameDay, parse } from 'date-fns';
 import Big from 'big.js';
 import DateRange from './DateRange.vue';
 
 const defaultTransaction = {
-  date: moment(),
+  date: new Date(),
   description: '',
   valueIn: '',
   valueOut: '',
@@ -122,9 +121,6 @@ export default {
         ...defaultTransaction,
       },
       search: '',
-      footerProps: {
-        itemsPerPageOptions: [10, -1],
-      },
       page: 1,
       dateRange: [],
       direction: '',
@@ -134,40 +130,13 @@ export default {
   computed: {
     headers() {
       return [
-        {
-          text: 'Date',
-          value: 'date',
-          align: 'left',
-        },
-        {
-          text: 'Description',
-          value: 'description',
-          align: 'left',
-        },
-        {
-          text: 'Note',
-          value: 'note',
-          align: 'left',
-        },
-        {
-          text: 'Account',
-          value: 'accountName',
-          align: 'left',
-        },
-        {
-          text: 'In',
-          value: 'value',
-          align: 'left',
-        },
-        {
-          text: 'Out',
-          value: 'value',
-          align: 'left',
-        },
-        {
-          text: this.hasFilter ? 'Total' : 'Balance',
-          align: 'left',
-        },
+        { title: 'Date', key: 'date', align: 'start' },
+        { title: 'Description', key: 'description', align: 'start' },
+        { title: 'Note', key: 'note', align: 'start' },
+        { title: 'Account', key: 'accountName', align: 'start' },
+        { title: 'In', key: 'value', align: 'start' },
+        { title: 'Out', key: 'value', align: 'start' },
+        { title: this.hasFilter ? 'Total' : 'Balance', align: 'start' },
       ];
     },
     hasFilter() {
@@ -260,12 +229,17 @@ export default {
 
       const value = rawValue.toString();
 
-      // Simple search first
       if (value.toLowerCase().includes(rawSearch.toLowerCase())) return true;
 
-      // Then do currency and date
-      const date = moment(this.search, this.$dateFormat).format('YYYY-MM-DD');
-      if (date && value.includes(date)) return true;
+      try {
+        const date = parse(this.search, this.$dateFormat, new Date());
+        if (date && !isNaN(date)) {
+          const isoDate = date.toISOString().substring(0, 10);
+          if (value.includes(isoDate)) return true;
+        }
+      } catch (e) {
+        // ignore parse errors
+      }
 
       return false;
     },

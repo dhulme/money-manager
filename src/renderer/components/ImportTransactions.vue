@@ -1,72 +1,71 @@
 <template>
-  <VCard>
-    <VCardTitle class="headline">Import transactions</VCardTitle>
-    <VCardText>
-      <VDataTable
-        dense
+  <v-card>
+    <v-card-title class="text-h6">Import transactions</v-card-title>
+    <v-card-text>
+      <v-data-table
+        density="compact"
         :items="transactions"
         :headers="headers"
         class="import-transactions-table"
-        :footer-props="{ showFirstLastPage: true }"
-        :page.sync="page"
+        show-first-last-page
+        v-model:page="page"
         :items-per-page="itemsPerPage"
         no-data-text="No new transactions found"
       >
-        <template v-slot:item="props">
+        <template v-slot:item="{ item, index }">
           <tr>
             <td>
-              <VTextField hide-details v-model="props.item.date" />
+              <v-text-field hide-details v-model="item.date" />
             </td>
             <td>
-              <VTextField hide-details v-model="props.item.description" />
+              <v-text-field hide-details v-model="item.description" />
             </td>
             <td>
-              <VAutocomplete
+              <v-autocomplete
                 :items="accounts"
-                v-model="props.item.account"
+                v-model="item.account"
                 class="required"
                 hide-details
-                :ref="'account' + props.index"
-                @change="accountChange(props.index)"
+                :ref="'account' + index"
+                @update:model-value="accountChange(index)"
                 auto-select-first
               />
             </td>
             <td>
-              <VSelect
+              <v-select
                 hide-details
                 :items="transactionTypeItems"
-                v-model="props.item.type"
+                v-model="item.type"
               />
             </td>
             <td>
-              <VTextField
+              <v-text-field
                 hide-details
-                v-model="props.item.value"
+                v-model="item.value"
                 :prefix="$currencyPrefix"
               />
             </td>
             <td class="pr-0">
-              <VCheckbox hide-details v-model="props.item.giftAided" dense />
+              <v-checkbox hide-details v-model="item.giftAided" density="compact" />
             </td>
             <td class="pa-0 pt-2">
-              <VBtn icon @click="removeTransaction(props.index)"
-                ><VIcon>delete</VIcon></VBtn
+              <v-btn icon @click="removeTransaction(index)"
+                ><v-icon>mdi-delete</v-icon></v-btn
               >
             </td>
           </tr>
         </template>
-      </VDataTable>
-    </VCardText>
-    <VCardActions>
-      <VBtn text @click="completeImport" color="primary">OK</VBtn>
-      <VBtn text @click="$emit('close')">Cancel</VBtn>
-    </VCardActions>
-  </VCard>
+      </v-data-table>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn variant="text" @click="completeImport" color="primary">OK</v-btn>
+      <v-btn variant="text" @click="$emit('close')">Cancel</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
-import Vue from 'vue';
-import moment from 'moment';
+import { format, parse, parseISO, isSameDay } from 'date-fns';
 import { getId } from '../util';
 import ipc from '../ipc';
 
@@ -79,47 +78,47 @@ export default {
     return {
       headers: [
         {
-          text: 'Date',
-          value: 'date',
+          title: 'Date',
+          key: 'date',
           width: 150,
         },
         {
-          text: 'Description',
-          value: 'description',
+          title: 'Description',
+          key: 'description',
         },
         {
-          text: 'Account',
-          value: 'account',
+          title: 'Account',
+          key: 'account',
         },
         {
-          text: 'In/Out',
-          value: 'type',
+          title: 'In/Out',
+          key: 'type',
           width: 100,
         },
         {
-          text: 'Value',
-          value: 'value',
+          title: 'Value',
+          key: 'value',
           width: 150,
         },
         {
-          text: 'Gift Aided',
-          value: 'giftAided',
+          title: 'Gift Aided',
+          key: 'giftAided',
           width: 100,
         },
         {
-          text: '',
-          value: 'actions',
+          title: '',
+          key: 'actions',
           width: 50,
         },
       ],
       transactions: [],
       transactionTypeItems: [
         {
-          text: 'In',
+          title: 'In',
           value: 'in',
         },
         {
-          text: 'Out',
+          title: 'Out',
           value: 'out',
         },
       ],
@@ -130,7 +129,6 @@ export default {
   },
   computed: {
     importedTransactions() {
-      const dateFilter = Vue.filter('date');
       const existingTransactions = this.$store.getters['project/transactions'](
         this.account
       );
@@ -139,13 +137,13 @@ export default {
           (existing) =>
             existing.description === transaction.description &&
             Number(existing.value) === transaction.value &&
-            moment(existing.date).isSame(transaction.date, 'day')
+            isSameDay(parseISO(existing.date), transaction.date instanceof Date ? transaction.date : parseISO(transaction.date))
         );
       }
       return this.$store.state.importedTransactions
         .filter((item) => !transactionExists(item))
         .map((item) => ({
-          date: dateFilter(item.date),
+          date: format(item.date instanceof Date ? item.date : parseISO(item.date), this.$dateFormat),
           description: item.description,
           value: item.value.toFixed(2),
           type: item.type,
@@ -190,7 +188,7 @@ export default {
           const transaction = {
             description: uiTransaction.description,
             note: 'Imported',
-            date: moment(uiTransaction.date, this.$dateFormat),
+            date: parse(uiTransaction.date, this.$dateFormat, new Date()).toISOString(),
             id: primaryTransactionId,
             value: uiTransaction.value,
             giftAided: uiTransaction.giftAided,

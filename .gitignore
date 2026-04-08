@@ -11,3 +11,4 @@ thumbs.db
 /test/unit/coverage/
 build-archive
 dist
+out

@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import AccountList from '@/components/AccountList';
-import RestoreDeletedAccounts from '@/components/RestoreDeletedAccounts';
+import AccountList from '@/components/AccountList.vue';
+import RestoreDeletedAccounts from '@/components/RestoreDeletedAccounts.vue';
 
 export default {
   components: {

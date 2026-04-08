@@ -1,10 +1,27 @@
+<template>
+  <Line v-if="chartData" :data="chartData" :options="chartOptions" />
+</template>
+
 <script>
 import { Line } from 'vue-chartjs';
-import moment from 'moment';
-import { isAfter, isBefore, parseISO, isSameDay } from 'date-fns';
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  TimeScale,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+import 'chartjs-adapter-date-fns';
+import { isAfter, isBefore, parseISO, isSameDay, format } from 'date-fns';
+
+ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, TimeScale, Tooltip, Legend, Filler);
 
 export default {
-  extends: Line,
+  components: { Line },
   props: {
     account: {
       type: Object,
@@ -50,65 +67,50 @@ export default {
           return true;
         });
     },
-  },
-  watch: {
-    data: 'render',
-  },
-  mounted() {
-    this.render();
-  },
-  methods: {
-    render() {
-      this.renderChart(
-        {
-          datasets: [
-            {
-              data: this.data,
-              backgroundColor: 'transparent',
-              borderColor: '#1976d2',
-              steppedLine: true,
-            },
-          ],
-        },
-        {
-          responsive: true,
-          legend: {
-            display: false,
+    chartData() {
+      if (!this.data) return null;
+      return {
+        datasets: [
+          {
+            data: this.data,
+            backgroundColor: 'transparent',
+            borderColor: '#1976d2',
+            stepped: true,
           },
-          tooltips: {
+        ],
+      };
+    },
+    chartOptions() {
+      return {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
             displayColors: false,
             callbacks: {
-              title: ([point], config) => {
-                const datum =
-                  config.datasets[point.datasetIndex].data[point.index];
-                return moment(datum.x).format(this.$dateFormat);
+              title: (items) => {
+                if (!items.length) return '';
+                const datum = this.data[items[0].dataIndex];
+                return format(datum.x, this.$dateFormat);
               },
-              label: (point) => {
-                return this.$currencyPrefix + point.yLabel;
+              label: (context) => {
+                return this.$currencyPrefix + context.parsed.y;
               },
             },
           },
-          scales: {
-            xAxes: [
-              {
-                type: 'time',
-                scaleLabel: {
-                  labelString: 'Time',
-                },
-              },
-            ],
-            yAxes: [
-              {
-                ticks: {
-                  callback: (value) => {
-                    return this.$currencyPrefix + value;
-                  },
-                },
-              },
-            ],
+        },
+        scales: {
+          x: {
+            type: 'time',
+            title: { display: true, text: 'Time' },
           },
-        }
-      );
+          y: {
+            ticks: {
+              callback: (value) => this.$currencyPrefix + value,
+            },
+          },
+        },
+      };
     },
   },
 };
