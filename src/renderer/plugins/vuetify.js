@@ -1,14 +1,14 @@
-import Vue from 'vue';
 import '@mdi/font/css/materialdesignicons.css';
-import Vuetify from 'vuetify';
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
 
-Vue.use(Vuetify);
-
-export default new Vuetify({
+export default createVuetify({
   theme: {
     themes: {
       light: {
-        accent: '#1976D2',
+        colors: {
+          accent: '#1976D2',
+        },
       },
     },
   },

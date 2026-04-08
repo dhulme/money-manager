@@ -1,52 +1,33 @@
-const electron = require('electron');
-require('./ipc');
-
-const { app, BrowserWindow } = electron;
-const development = process.env.NODE_ENV !== 'production';
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
 
 let mainWindow;
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
-if (development) {
-  global.__static = require('path')
-    .join(__dirname, '/static')
-    .replace(/\\/g, '\\\\');
-}
-
-const winURL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:9080'
-    : `file://${__dirname}/index.html`;
-
 function createWindow() {
-  /**
-   * Initial window options
-   */
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
     webPreferences: {
+      preload: path.join(__dirname, '../preload/index.js'),
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
   mainWindow.maximize();
 
-  mainWindow.loadURL(winURL);
+  // electron-vite injects ELECTRON_RENDERER_URL in dev
+  if (process.env['ELECTRON_RENDERER_URL']) {
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
+  } else {
+    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
 
-app.on('ready', createWindow);
-
-electron.ipcMain.on('setWindowTitle', (event, title) => {
-  mainWindow.setTitle(title);
-});
+app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -59,23 +40,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
-/*
-import { autoUpdater } from 'electron-updater'
-
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
- */
