@@ -37,7 +37,6 @@
 import Big from 'big.js';
 import { addYears, set, format, parseISO } from 'date-fns';
 import ipc from '@/ipc';
-import { uniq } from 'lodash';
 import { unparse } from 'papaparse';
 
 const dateFormat = 'do MMMM yyyy';
@@ -81,9 +80,9 @@ export default {
     },
     transactions() {
       const getTransaction = this.$store.getters['project/transaction'];
-      const transactions = uniq(
+      const transactions = [...new Set(
         this.accounts.flatMap((account) => account.transactionIds)
-      )
+      )]
         .map((transactionId) => getTransaction(transactionId))
         .filter((transaction) => {
           const date = parseISO(transaction.date);

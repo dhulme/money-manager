@@ -42,12 +42,14 @@ describe('getters', () => {
   });
 
   describe('deletedAccounts', () => {
-    const account1 = getNewAccount('a');
-    const account2 = getNewAccount('b');
-    account1.deleted = true;
-    init({ accounts: [account1, account2] });
-    const accounts = get('deletedAccounts');
-    expect(accounts).toHaveLength(1);
+    it('should return deleted accounts', () => {
+      const account1 = getNewAccount('a');
+      const account2 = getNewAccount('b');
+      account1.deleted = true;
+      init({ accounts: [account1, account2] });
+      const accounts = get('deletedAccounts');
+      expect(accounts).toHaveLength(1);
+    });
   });
 
   describe('accountItems', () => {
@@ -62,14 +64,14 @@ describe('getters', () => {
       });
       const accounts = get('accountItems');
       expect(accounts).toHaveLength(4);
-      expect(accounts[0].text).toBe('a');
-      expect(accounts[1].text).toBe('a');
+      expect(accounts[0].title).toBe('a');
+      expect(accounts[1].title).toBe('a');
       expect(accounts[2]).toMatchObject({
-        text: accountB.name,
+        title: accountB.name,
         value: accountB.id,
       });
       expect(accounts[3]).toMatchObject({
-        text: accountC.name,
+        title: accountC.name,
         value: accountC.id,
       });
     });
@@ -102,7 +104,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      expect(get('account')(account.id)).toBe(account);
+      expect(get('account')(account.id)).toEqual(account);
     });
 
     it('gets a deleted account', () => {
@@ -111,7 +113,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      expect(get('account')(account.id)).toBe(account);
+      expect(get('account')(account.id)).toEqual(account);
     });
   });
 
@@ -121,7 +123,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      expect(get('accountByName')(account.name)).toBe(account);
+      expect(get('accountByName')(account.name)).toEqual(account);
     });
   });
 
@@ -138,7 +140,7 @@ describe('getters', () => {
       });
 
       const transactions = get('transactions')(account);
-      expect(transactions[0]).toBe(transaction);
+      expect(transactions[0]).toEqual(transaction);
     });
   });
 
@@ -148,7 +150,7 @@ describe('getters', () => {
       init({
         transactions: { [transaction.id]: transaction },
       });
-      expect(get('transaction')(transaction.id)).toBe(transaction);
+      expect(get('transaction')(transaction.id)).toEqual(transaction);
     });
   });
 
@@ -203,7 +205,7 @@ describe('getters', () => {
     it('returns bulk transactions sorted by date', () => {
       const bulkTransaction1 = getNewBulkTransaction('1');
       const bulkTransaction2 = getNewBulkTransaction('2');
-      bulkTransaction1.lastModified.year('2010');
+      bulkTransaction1.lastModified = '2010-01-01T00:00:00.000Z';
       init({
         bulkTransactions: [bulkTransaction1, bulkTransaction2],
       });

@@ -194,7 +194,7 @@ export default {
     if (!bulkTransaction.transactionIds.includes(id)) {
       bulkTransaction.transactionIds.push(id);
     }
-    bulkTransaction.lastModified = moment();
+    bulkTransaction.lastModified = new Date().toISOString();
   },
 
   deleteBulkTransactionTransaction(

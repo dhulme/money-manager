@@ -1,5 +1,3 @@
-import moment from 'moment';
-
 export function getNewAccount(id = 'test') {
   return {
     name: id,
@@ -28,7 +26,7 @@ export function getNewBulkTransaction(id = 'test') {
     id,
     name: 'test',
     transactionIds: [],
-    lastModified: moment()
+    lastModified: new Date().toISOString()
   };
 }
 

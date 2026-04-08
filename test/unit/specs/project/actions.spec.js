@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import store from '@/store';
 
 import {
@@ -8,10 +9,17 @@ import {
   getNewAccountCategory,
 } from './utils';
 
-import cryptoRandomString from 'crypto-random-string';
-
-jest.mock('crypto-random-string');
-cryptoRandomString.mockReturnValue('0');
+vi.mock('@/util', () => ({
+  required: (param) => { throw new Error(`${param} is required`); },
+  requireObjectProperties: (object, params) => {
+    const errors = params.filter((p) => object[p] === undefined);
+    if (errors.length) throw new Error(`${errors.join(',')} is required`);
+  },
+  getId: () => '0',
+  getFriendlyId: (name) => name.toLowerCase().replace(/[ ]/g, '-') + '-0',
+  capitalizeFirstLetter: (s) => s.charAt(0).toUpperCase() + s.slice(1),
+  validateInputValue: () => true,
+}));
 
 describe('actions', () => {
   const state = store.state.project;
