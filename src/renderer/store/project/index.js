@@ -19,6 +19,4 @@ const project = {
   getters
 };
 
-window.projectStore = project;
-
 export default project;

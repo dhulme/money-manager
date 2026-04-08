@@ -101,7 +101,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export function init(clickHandlers) {
-  ipc.on('runApplicationMenuItem', (event, id) => {
+  ipc.on('runApplicationMenuItem', (id) => {
     clickHandlers[id]?.();
   });
 }

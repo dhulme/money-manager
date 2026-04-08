@@ -1,8 +1,5 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 import project from './project';
-
-Vue.use(Vuex);
 
 function initialNewBulkTransaction() {
   return {
@@ -12,7 +9,7 @@ function initialNewBulkTransaction() {
   };
 }
 
-const store = new Vuex.Store({
+const store = createStore({
   state: {
     error: '',
     snackbar: {
@@ -61,7 +58,5 @@ const store = new Vuex.Store({
     project,
   },
 });
-
-window.store = store;
 
 export default store;

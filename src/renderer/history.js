@@ -1,5 +1,5 @@
 import { unparse } from 'papaparse';
-import moment from 'moment';
+import { format } from 'date-fns';
 
 import ipc from './ipc';
 import { setSaveEnabled, setUndoLabel, setRedoLabel } from './menu';
@@ -27,7 +27,7 @@ function setEdited(edited) {
 }
 
 const history = {
-  install(Vue, { store, router, ready }) {
+  install(app, { store, router, ready }) {
     const done = [];
     let undone = [];
     let newAction = true;
@@ -46,7 +46,7 @@ const history = {
       }
     });
 
-    ipc.on('projectOpened', (event, data) => {
+    ipc.on('projectOpened', (data) => {
       const callReady = !initData;
       initData = data;
       store.commit(`${storePrefix}init`, initData);
@@ -62,7 +62,6 @@ const history = {
     let canClose = false;
     window.addEventListener('beforeunload', (e) => {
       if (
-        process.env.NODE_ENV === 'production' &&
         !canClose &&
         done.length !== savedDoneLength
       ) {
@@ -76,7 +75,7 @@ const history = {
       window.close();
     });
 
-    Vue.prototype.$history = {
+    app.config.globalProperties.$history = {
       undo() {
         if (done.length === 0) return;
 
@@ -159,7 +158,7 @@ const history = {
             return aDateValue - bDateValue;
           })
           .map((transaction) => ({
-            Date: moment(transaction.date).format('YYYY-MM-DD'),
+            Date: format(new Date(transaction.date), 'yyyy-MM-dd'),
             From: accountNamesById[transaction.from],
             To: accountNamesById[transaction.to],
             Expense: accountNamesById[transaction.expense],

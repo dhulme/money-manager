@@ -1,15 +1,37 @@
 <template>
   <v-app>
+    <v-app-bar color="primary">
+      <v-app-bar-title>Money Manager</v-app-bar-title>
+    </v-app-bar>
     <v-main class="app-content">
-      <h1>Money Manager</h1>
-      <p>Phase 1: electron-vite + Vue 3 + Vuetify 3 shell is working.</p>
+      <router-view class="router-container" />
     </v-main>
   </v-app>
 </template>
 
 <script>
+import { init } from './menu';
+
 export default {
   name: 'App',
+  mounted() {
+    init({
+      fileNew: () => this.$history.new(),
+      fileOpen: () => this.$history.open(),
+      fileSave: () => this.$history.save(),
+      fileSaveAs: () => this.$history.saveAs(),
+      editUndo: () => this.$history.undo(),
+      editRedo: () => this.$history.redo(),
+      exportSummary: () => this.$history.exportSummary(),
+      exportTransactions: () => this.$history.exportTransactions(),
+      helpAbout: () => this.$store.commit('setDialog', 'about'),
+      editSettings: () => this.$store.commit('setDialog', 'settings'),
+      editNewAccountCategory: () =>
+        this.$router.push({
+          name: 'newAccountCategory',
+        }),
+    });
+  },
 };
 </script>
 
@@ -17,6 +39,9 @@ export default {
 .app-content {
   margin: 20px auto;
   max-width: 1400px;
-  padding: 24px;
+}
+
+.router-container {
+  margin-top: 10px;
 }
 </style>

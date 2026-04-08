@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 /**
  * Binds hotkeys globally according to key map.
  * Modifiers specify key map names to bind.
@@ -8,8 +6,8 @@ import Vue from 'vue';
 
 const hotkeys = [];
 
-Vue.directive('hotkey', {
-  bind(element, { modifiers, value }) {
+export const hotkeyDirective = {
+  mounted(element, { modifiers, value }) {
     hotkeys.unshift({
       names: Object.keys(modifiers),
       action: value,
@@ -17,10 +15,10 @@ Vue.directive('hotkey', {
     });
   },
 
-  unbind(element) {
+  unmounted(element) {
     hotkeys.splice(hotkeys.findIndex(hotkey => hotkey.element === element), 1);
   }
-});
+};
 
 export default {
   init(keymap) {

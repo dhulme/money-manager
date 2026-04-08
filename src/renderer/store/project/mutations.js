@@ -1,6 +1,4 @@
 import Big from 'big.js';
-import Vue from 'vue';
-import moment from 'moment';
 
 import { requireObjectProperties, required, getFriendlyId } from '../../util';
 
@@ -36,7 +34,7 @@ export default {
   ) {
     requireObjectProperties(transaction, ['id', 'value', 'from', 'to']);
 
-    Vue.set(state.transactions, transaction.id, transaction);
+    state.transactions[transaction.id] = transaction;
     const fromAccount = state.accounts.find((_) => _.id === fromAccountId);
     if (!fromAccount) {
       throw new Error(`Cannot find 'from' account called ${fromAccountId}`);
@@ -75,8 +73,9 @@ export default {
     }
     toAccount.balance = new Big(toAccount.balance).add(balanceDifference);
 
-    state.transactions[transaction.id] = {
-      ...transaction,
+    state.transactions = {
+      ...state.transactions,
+      [transaction.id]: { ...transaction },
     };
   },
 
@@ -154,7 +153,7 @@ export default {
       description,
       id: bulkTransaction.id || getFriendlyId(name),
       transactionIds: [],
-      lastModified: bulkTransaction.lastModified || moment(),
+      lastModified: bulkTransaction.lastModified || new Date().toISOString(),
     };
     state.bulkTransactions.push(newBulkTransaction);
   },
@@ -171,7 +170,7 @@ export default {
       description,
       transactionIds:
         transactionIds || state.bulkTransactions[index].transactionIds,
-      lastModified: moment(),
+      lastModified: new Date().toISOString(),
     };
   },
 
@@ -185,13 +184,13 @@ export default {
     requireObjectProperties(transaction, ['to', 'from', 'value', 'id']);
     requireObjectProperties(bulkTransaction, ['transactionIds']);
     const { to, from, value, note, id } = transaction;
-    Vue.set(state.bulkTransactionTransactions, id, {
+    state.bulkTransactionTransactions[id] = {
       to,
       from,
       value,
       note,
       id,
-    });
+    };
     if (!bulkTransaction.transactionIds.includes(id)) {
       bulkTransaction.transactionIds.push(id);
     }
@@ -208,11 +207,11 @@ export default {
     requireObjectProperties(transaction, ['id']);
     const { id } = transaction;
     requireObjectProperties(bulkTransaction, ['transactionIds']);
-    Vue.delete(state.bulkTransactionTransactions, id);
+    delete state.bulkTransactionTransactions[id];
     const index = bulkTransaction.transactionIds.indexOf(id);
     if (index !== -1) {
       bulkTransaction.transactionIds.splice(index, 1);
     }
-    bulkTransaction.lastModified = moment();
+    bulkTransaction.lastModified = new Date().toISOString();
   },
 };

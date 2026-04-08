@@ -23,7 +23,7 @@ const defaultSettings = {
   projectPath: null,
   lastBackupDates: {},
   currencyPrefix: "£",
-  dateFormat: "DD/MM/YYYY"
+  dateFormat: "dd/MM/yyyy"
 };
 let data;
 const settings = {
