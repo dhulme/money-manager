@@ -1,11 +1,17 @@
 <template>
   <v-card v-show="visible" class="mb-4">
     <v-card-title>
-      <span class="text-h6">{{ accountCategory }}</span>
-      <v-spacer />
-      <v-btn v-hotkey.add="newAccount" variant="text" color="primary" @click="newAccount"
-        >Add</v-btn
-      >
+      <VRow class="my-1 mx-0">
+        <span class="text-h6">{{ accountCategory }}</span>
+        <v-spacer />
+        <v-btn
+          v-hotkey.add="newAccount"
+          variant="text"
+          color="primary"
+          @click="newAccount"
+          >Add</v-btn
+        >
+      </VRow>
     </v-card-title>
 
     <v-data-table
@@ -14,6 +20,7 @@
       :headers="headers"
       :items="accounts"
       :items-per-page="-1"
+      hide-default-footer
     >
       <template v-slot:item="{ item }">
         <tr @click="openAccount(item.id)">
@@ -26,13 +33,15 @@
           </td>
         </tr>
       </template>
-      <template v-slot:bottom>
-        <tr>
-          <td />
-          <td :class="{ 'text-red': parseFloat(total) < 0 }" class="balance">
-            {{ $currency(total) }}
-          </td>
-        </tr>
+      <template v-slot:tfoot>
+        <tfoot>
+          <tr>
+            <td />
+            <td :class="{ 'text-red': parseFloat(total) < 0 }" class="balance">
+              {{ $currency(total) }}
+            </td>
+          </tr>
+        </tfoot>
       </template>
     </v-data-table>
   </v-card>
@@ -45,31 +54,25 @@ export default {
     accountType: String,
     search: String,
     hideOnEmpty: Boolean,
-    showPositive: Boolean
+    showPositive: Boolean,
   },
   data() {
     return {
       headers: [
-        {
-          title: 'Account',
-          key: 'name',
-          align: 'start'
-        },
-        {
-          title: 'Balance',
-          key: 'balance',
-          align: 'end'
-        }
+        { title: 'Account', key: 'name', align: 'start' },
+        { title: 'Balance', key: 'balance', align: 'end' },
       ],
     };
   },
   computed: {
     accounts() {
       const accounts = this.$store.getters['project/accountsByCategory'](
-        this.accountCategory
+        this.accountCategory,
       );
-      return accounts.filter(account =>
-        account.name.toLowerCase().includes(this.search.toLowerCase()) && (this.showPositive || account.balance < 0)
+      return accounts.filter(
+        (account) =>
+          account.name.toLowerCase().includes(this.search.toLowerCase()) &&
+          (this.showPositive || account.balance < 0),
       );
     },
     total() {
@@ -77,7 +80,7 @@ export default {
     },
     visible() {
       return this.hideOnEmpty ? this.accounts.length > 0 : true;
-    }
+    },
   },
   methods: {
     newAccount() {
@@ -86,8 +89,8 @@ export default {
         params: {
           accountId: 'new',
           accountCategory: this.accountCategory,
-          accountType: this.accountType
-        }
+          accountType: this.accountType,
+        },
       });
     },
     openAccount(accountId) {
@@ -97,16 +100,16 @@ export default {
         params: {
           accountId,
           accountCategory: account.category,
-          accountType: account.type
-        }
+          accountType: account.type,
+        },
       });
-    }
+    },
   },
   watch: {
     accounts(accounts) {
       this.$emit('accounts', accounts);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -116,6 +119,10 @@ export default {
   height: 48px;
   padding: 0 1rem;
   text-align: right;
-  font-weight: 500;
+  font-weight: 600;
+}
+
+:deep(thead th) {
+  color: rgba(0, 0, 0, 0.6) !important;
 }
 </style>

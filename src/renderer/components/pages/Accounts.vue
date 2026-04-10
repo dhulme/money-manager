@@ -1,17 +1,22 @@
 <template>
   <div>
-    <VRow class="mb-2 mr-1 ml-1">
-    <VTextField
-      autofocus
-      v-model="search"
-      class="mr-6"
-      append-icon="search"
-      label="Search"
-      single-line
-      hide-details
-      @keyup.enter="openSearchedAccount"
-    />
-    <VSwitch  v-model="showPositive" label="Show positive" dense />
+    <VRow class="mb-4 mr-1 ml-1 mt-1 align-center">
+      <VTextField
+        autofocus
+        v-model="search"
+        append-icon="search"
+        label="Search"
+        single-line
+        hide-details
+        @keyup.enter="openSearchedAccount"
+      />
+      <VSwitch
+        v-model="showPositive"
+        label="Show positive"
+        dense
+        hide-details
+        color="primary"
+      />
     </VRow>
 
     <AccountList
@@ -42,19 +47,12 @@ import AccountList from '@/components/AccountList.vue';
 import RestoreDeletedAccounts from '@/components/RestoreDeletedAccounts.vue';
 
 export default {
-  components: {
-    AccountList,
-    RestoreDeletedAccounts
-  },
+  components: { AccountList, RestoreDeletedAccounts },
   data() {
     return {
-      searched: {
-        assets: [],
-        liabilities: [],
-        budgets: []
-      },
+      searched: { assets: [], liabilities: [], budgets: [] },
       restoreDeletedAccountsDialogVisible: false,
-      showPositive: true
+      showPositive: true,
     };
   },
   created() {
@@ -67,13 +65,13 @@ export default {
       },
       set(value) {
         this.$store.commit('setSearch', value);
-      }
-    }
+      },
+    },
   },
   methods: {
     openSearchedAccount() {
       const searchedAccounts = Object.values(this.searched).filter(
-        _ => _.length !== 0
+        (_) => _.length !== 0,
       );
       if (searchedAccounts.length === 1 && searchedAccounts[0].length === 1) {
         const account = searchedAccounts[0][0];
@@ -82,11 +80,11 @@ export default {
           params: {
             accountId: account.id,
             accountCategory: account.category,
-            accountType: account.type
-          }
+            accountType: account.type,
+          },
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>

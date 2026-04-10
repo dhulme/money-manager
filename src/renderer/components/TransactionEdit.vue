@@ -1,15 +1,15 @@
 <template>
   <v-card>
-    <v-card-title class="text-h6"
+    <v-card-title class="text-h6 mt-2"
       >{{ isNewTransaction ? 'Add' : 'Edit' }} Transaction</v-card-title
     >
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
-        <v-text-field
+        <v-date-input
           v-model="date"
           label="Date"
           prepend-icon="mdi-calendar"
-          type="date"
+          :rules="dateValidationRules"
           class="required"
         />
 
@@ -75,11 +75,11 @@
 </template>
 
 <script>
-import { format, parseISO } from 'date-fns';
-
+import { VDateInput } from 'vuetify/labs/VDateInput';
 import { getId, validateInputValue } from '../util';
 
 export default {
+  components: { VDateInput },
   props: {
     transaction: {
       type: Object,
@@ -109,7 +109,7 @@ export default {
         },
       ],
       dateValidationRules: [
-        (value) => this.formClean || !!value || 'Transaction date is required',
+        (value) => this.formClean || (value instanceof Date && !isNaN(value)) || 'Transaction date is required',
       ],
       descriptionValidationRules: [
         (value) =>
@@ -119,7 +119,7 @@ export default {
         (value) =>
           this.formClean || !!value || 'Transaction account is required',
       ],
-      date: format(new Date(), 'yyyy-MM-dd'),
+      date: new Date(),
     };
   },
   computed: {
@@ -144,8 +144,8 @@ export default {
           this.formClean = true;
         }
         this.date = transaction.date
-          ? format(new Date(transaction.date), 'yyyy-MM-dd')
-          : format(new Date(), 'yyyy-MM-dd');
+          ? new Date(transaction.date)
+          : new Date();
         this.$nextTick(() => {
           if (this.$refs.description) {
             this.$refs.description.focus();
@@ -179,13 +179,13 @@ export default {
     },
     getTransactionFromUi() {
       const uiTransaction = this.newTransaction;
-      const parsedDate = parseISO(this.date);
+      const d = this.date;
       return {
         ...uiTransaction,
         date: new Date(
-          parsedDate.getFullYear(),
-          parsedDate.getMonth(),
-          parsedDate.getDate(),
+          d.getFullYear(),
+          d.getMonth(),
+          d.getDate(),
           new Date().getHours(),
           new Date().getMinutes(),
           new Date().getSeconds()

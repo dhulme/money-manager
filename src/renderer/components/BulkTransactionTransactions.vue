@@ -13,13 +13,15 @@
         <td class="text-right">{{ $currency(item.value) }}</td>
       </tr>
     </template>
-    <template v-slot:bottom>
-      <tr>
-        <td />
-        <td />
-        <td />
-        <td class="text-right font-weight-medium">{{ $currency(total) }}</td>
-      </tr>
+    <template v-slot:tfoot>
+      <tfoot>
+        <tr>
+          <td />
+          <td />
+          <td />
+          <td class="text-right font-weight-bold">{{ $currency(total) }}</td>
+        </tr>
+      </tfoot>
     </template>
   </v-data-table>
 </template>
@@ -28,38 +30,35 @@
 import Big from 'big.js';
 
 export default {
-  props: {
-    transactions: Array,
-    search: String
-  },
+  props: { transactions: Array, search: String },
   data() {
     return {
       headers: [
         { title: 'From', key: 'from', align: 'start' },
         { title: 'To', key: 'to', align: 'start' },
         { title: 'Note', key: 'note', align: 'start' },
-        { title: 'Amount', key: 'value', align: 'end' }
+        { title: 'Amount', key: 'value', align: 'end' },
       ],
       itemsPerPageOptions: [
         { value: 10, title: '10' },
         { value: 20, title: '20' },
-        { value: 50, title: '50' }
-      ]
+        { value: 50, title: '50' },
+      ],
     };
   },
   computed: {
     total() {
       return this.transactions.reduce(
         (sum, transaction) => sum.plus(transaction.value),
-        new Big(0)
+        new Big(0),
       );
-    }
+    },
   },
   methods: {
     accountName(accountId) {
       return this.$store.getters['project/account'](accountId).name;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -54,7 +54,7 @@ export default createRouter({
       component: EditAccount,
     },
     {
-      path: '/insights/:accountId',
+      path: '/insights/:accountId?',
       name: 'insights',
       component: Insights,
     },

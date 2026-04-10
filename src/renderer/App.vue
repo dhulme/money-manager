@@ -44,3 +44,9 @@ export default {
   padding: 0 20px;
 }
 </style>
+
+<style lang="scss">
+.v-dialog .v-card-text {
+  padding: 24px;
+}
+</style>

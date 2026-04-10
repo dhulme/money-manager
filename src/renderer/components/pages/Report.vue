@@ -6,7 +6,7 @@
       <v-btn variant="text" @click="exportCsv">Export as CSV</v-btn>
     </v-card-title>
     <v-card-text>
-      <v-select :items="years" label="Tax Year" v-model="dateRange" />
+      <v-select :items="years" label="Tax Year" v-model="dateRange" return-object />
 
       <v-data-table :headers="headers" :items="transactions">
         <template v-slot:item="{ item }">
@@ -39,7 +39,7 @@ import { addYears, set, format, parseISO } from 'date-fns';
 import ipc from '@/ipc';
 import { unparse } from 'papaparse';
 
-const dateFormat = 'do MMMM yyyy';
+const dateFormat = 'd MMMM yyyy';
 const today = new Date();
 
 export default {
@@ -88,8 +88,8 @@ export default {
           const date = parseISO(transaction.date);
           return (
             this.dateRange &&
-            date >= this.dateRange[0] &&
-            date <= this.dateRange[1] &&
+            date >= this.dateRange.value[0] &&
+            date <= this.dateRange.value[1] &&
             transaction.giftAided
           );
         });

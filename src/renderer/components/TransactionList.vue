@@ -2,38 +2,40 @@
   <div>
     <v-card>
       <v-card-title>
-        <span class="text-h6">Transactions</span>
-        <v-btn
-          v-hotkey.add="addTransaction"
-          variant="text"
-          color="primary"
-          @click="addTransaction"
-          >Add</v-btn
-        >
-        <v-btn variant="text" @click="toggleFilters" class="toggle-filters">{{
-          showFilters ? 'Clear' : 'Filter'
-        }}</v-btn>
-        <template v-if="showFilters">
-          <DateRange @dateRange="dateRange = $event" slim />
-          <v-select
-            v-model="direction"
-            :items="['Both', 'In', 'Out']"
-            label="In/Out"
+        <v-row class="align-center ma-0">
+          <span class="text-h6">Transactions</span>
+          <v-btn
+            v-hotkey.add="addTransaction"
+            variant="text"
+            color="primary"
+            @click="addTransaction"
+            >Add</v-btn
+          >
+          <v-btn variant="text" @click="toggleFilters" class="toggle-filters">{{
+            showFilters ? 'Clear' : 'Filter'
+          }}</v-btn>
+          <template v-if="showFilters">
+            <DateRange @dateRange="dateRange = $event" slim />
+            <v-select
+              v-model="direction"
+              :items="['Both', 'In', 'Out']"
+              label="In/Out"
+              single-line
+              hide-details
+              class="input"
+            />
+          </template>
+          <v-spacer />
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
             single-line
             hide-details
+            autofocus
             class="input"
           />
-        </template>
-        <v-spacer />
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-          autofocus
-          class="input"
-        />
+        </v-row>
       </v-card-title>
       <v-data-table
         :headers="headers"
@@ -42,6 +44,7 @@
         :custom-filter="customFilter"
         :items-per-page-options="[10, -1]"
         v-model:page="page"
+        hide-default-footer
       >
         <template v-slot:item="{ item }">
           <tr
@@ -60,27 +63,29 @@
             <td v-else />
           </tr>
         </template>
-        <template v-slot:bottom>
-          <tr>
-            <td />
-            <td />
-            <td />
-            <td />
-            <td />
-            <td />
-            <td
-              :class="{
-                'text-red': !hasFilter && parseFloat(account.balance) < 0,
-              }"
-              class="balance"
-            >
-              {{
-                hasFilter
-                  ? $currency(filteredTransactionsTotal)
-                  : $currency(account.balance)
-              }}
-            </td>
-          </tr>
+        <template v-slot:tfoot>
+          <tfoot>
+            <tr>
+              <td />
+              <td />
+              <td />
+              <td />
+              <td />
+              <td />
+              <td
+                :class="{
+                  'text-red': !hasFilter && parseFloat(account.balance) < 0,
+                }"
+                class="balance"
+              >
+                {{
+                  hasFilter
+                    ? $currency(filteredTransactionsTotal)
+                    : $currency(account.balance)
+                }}
+              </td>
+            </tr>
+          </tfoot>
         </template>
       </v-data-table>
     </v-card>
@@ -260,7 +265,7 @@ export default {
   font-size: 0.875rem;
   height: 48px;
   padding: 0 1rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 .input {
   padding-top: 0;

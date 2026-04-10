@@ -1,6 +1,5 @@
 <template>
-  <v-card>
-    <v-card-title class="text-h6">Import transactions</v-card-title>
+  <v-card title="Import transactions">
     <v-card-text>
       <v-data-table
         density="compact"
@@ -57,7 +56,7 @@
         </template>
       </v-data-table>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions class="ma-1">
       <v-btn variant="text" @click="completeImport" color="primary">OK</v-btn>
       <v-btn variant="text" @click="$emit('close')">Cancel</v-btn>
     </v-card-actions>
