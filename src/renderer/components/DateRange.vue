@@ -37,7 +37,9 @@ export default {
   },
   computed: {
     dateRangeParsed() {
-      return this.dateRange;
+      if (this.dateRange.length < 2) return this.dateRange;
+      const sorted = [...this.dateRange].sort((a, b) => a - b);
+      return [sorted[0], sorted[sorted.length - 1]];
     },
   },
 };
