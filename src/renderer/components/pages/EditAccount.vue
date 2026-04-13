@@ -87,9 +87,10 @@ export default {
     this.$ipc.setTitle();
   },
   methods: {
-    save() {
+    async save() {
       this.formClean = false;
-      if (!this.$refs.form.validate()) {
+      const { valid } = await this.$refs.form.validate();
+      if (!valid) {
         return;
       }
       if (this.accountId) {

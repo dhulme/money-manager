@@ -54,9 +54,10 @@ export default {
     }
   },
   methods: {
-    save() {
+    async save() {
       this.formClean = false;
-      if (this.$refs.form.validate()) {
+      const { valid } = await this.$refs.form.validate();
+      if (valid) {
         this.$store.dispatch('project/addAccountCategory', {
           name: this.category.name,
           type: this.category.type

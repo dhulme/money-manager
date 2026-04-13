@@ -1,6 +1,6 @@
 <template>
   <v-card v-hotkey.close="close">
-    <v-card-title class="text-h6">
+    <v-card-title class="text-h6 mt-2">
       {{ transaction.id ? 'Edit' : 'Add' }} Transaction
     </v-card-title>
     <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="save">
@@ -99,9 +99,10 @@ export default {
     },
   },
   methods: {
-    save() {
+    async save() {
       this.formClean = false;
-      if (!this.$refs.form.validate()) {
+      const { valid } = await this.$refs.form.validate();
+      if (!valid) {
         return;
       }
 

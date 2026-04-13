@@ -5,7 +5,8 @@
   >
     <v-card>
       <v-card-title>
-        <span class="text-h6">{{ bulkTransaction.name }}</span>
+        <v-row class="ma-1">
+        <span class="text-h6 mr-4">{{ bulkTransaction.name }}</span>
         <v-btn variant="text" @click="addTransaction">Add</v-btn>
         <v-btn variant="text" @click="importTransactions">Import</v-btn>
         <v-btn variant="text" @click="clone">Clone</v-btn>
@@ -17,6 +18,7 @@
           single-line
           hide-details
         />
+        </v-row>
       </v-card-title>
       <div class="d-flex align-center px-4 py-1">
         <div>{{ bulkTransaction.description }}</div>

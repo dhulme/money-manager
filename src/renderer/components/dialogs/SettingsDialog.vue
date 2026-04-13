@@ -77,8 +77,9 @@ export default {
     },
   },
   methods: {
-    save() {
-      if (this.$refs.form.validate()) {
+    async save() {
+      const { valid } = await this.$refs.form.validate();
+      if (valid) {
         this.$ipc.saveSettings(this.settings);
         this.dialog = false;
       }

@@ -44,7 +44,6 @@
         :custom-filter="customFilter"
         :items-per-page-options="[10, -1]"
         v-model:page="page"
-        hide-default-footer
       >
         <template v-slot:item="{ item }">
           <tr

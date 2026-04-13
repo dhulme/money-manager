@@ -1,11 +1,13 @@
 <template>
   <div v-hotkey.close="goToBulkTransactions">
     <v-card class="mb-4">
-      <v-card-title
-        ><span class="text-h6">New Bulk Transaction</span><v-spacer /><v-btn
-          variant="text"
-          @click="importTransactions"
-          >Import</v-btn
+      <v-card-title>
+        <v-row class="ma-1">
+          <span class="text-h6">New Bulk Transaction</span><v-spacer /><v-btn
+            variant="text"
+            @click="importTransactions"
+            >Import</v-btn
+          ></v-row
         ></v-card-title
       >
       <v-card-text>
@@ -91,10 +93,7 @@ import importBulkTransactions from './importBulkTransactions';
 import { getId, validateInputValue } from '../../util';
 
 export default {
-  components: {
-    BulkTransactionTransactions,
-    BulkTransactionEdit,
-  },
+  components: { BulkTransactionTransactions, BulkTransactionEdit },
   mixins: [importBulkTransactions],
   data() {
     const { name, description, transactions } =
@@ -102,17 +101,9 @@ export default {
     return {
       name,
       description,
-      newTransaction: {
-        id: getId(),
-      },
+      newTransaction: { id: getId() },
       transactions,
-      editedTransaction: {
-        id: null,
-        from: '',
-        to: '',
-        value: 0,
-        note: '',
-      },
+      editedTransaction: { id: null, from: '', to: '', value: 0, note: '' },
       dialogVisible: false,
       newTransactionFormValid: true,
       newTransactionFormClean: true,
@@ -150,20 +141,20 @@ export default {
     },
   },
   methods: {
-    addTransaction() {
+    async addTransaction() {
       this.newTransactionFormClean = false;
-      if (this.$refs.newTransactionForm.validate()) {
+      const { valid } = await this.$refs.newTransactionForm.validate();
+      if (valid) {
         this.newTransactionFormClean = true;
         this.transactions.push(this.newTransaction);
-        this.newTransaction = {
-          id: getId(),
-        };
+        this.newTransaction = { id: getId() };
         this.$refs.newTransactionForm.resetValidation();
       }
     },
-    addBulkTransaction() {
+    async addBulkTransaction() {
       this.mainFormClean = false;
-      if (!this.$refs.mainForm.validate()) {
+      const { valid } = await this.$refs.mainForm.validate();
+      if (!valid) {
         return;
       }
 
@@ -173,15 +164,11 @@ export default {
         transactions: this.transactions,
       });
 
-      this.$router.push({
-        name: 'bulkTransactions',
-      });
+      this.$router.push({ name: 'bulkTransactions' });
     },
     goToBulkTransactions() {
       if (!this.$store.state.dialog) {
-        this.$router.push({
-          name: 'bulkTransactions',
-        });
+        this.$router.push({ name: 'bulkTransactions' });
       }
     },
     editTransaction(transaction) {
