@@ -1,14 +1,14 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="transactions"
+    :items="searchableTransactions"
     :search="search"
     :items-per-page-options="itemsPerPageOptions"
   >
     <template v-slot:item="{ item }">
       <tr @click="$emit('transaction-click', item)">
-        <td>{{ accountName(item.from) }}</td>
-        <td>{{ accountName(item.to) }}</td>
+        <td>{{ item.fromName }}</td>
+        <td>{{ item.toName }}</td>
         <td>{{ item.note }}</td>
         <td class="text-right">{{ $currency(item.value) }}</td>
       </tr>
@@ -34,8 +34,8 @@ export default {
   data() {
     return {
       headers: [
-        { title: 'From', key: 'from', align: 'start' },
-        { title: 'To', key: 'to', align: 'start' },
+        { title: 'From', key: 'fromName', align: 'start' },
+        { title: 'To', key: 'toName', align: 'start' },
         { title: 'Note', key: 'note', align: 'start' },
         { title: 'Amount', key: 'value', align: 'end' },
       ],
@@ -47,6 +47,13 @@ export default {
     };
   },
   computed: {
+    searchableTransactions() {
+      return this.transactions.map((t) => ({
+        ...t,
+        fromName: this.accountName(t.from),
+        toName: this.accountName(t.to),
+      }));
+    },
     total() {
       return this.transactions.reduce(
         (sum, transaction) => sum.plus(transaction.value),
