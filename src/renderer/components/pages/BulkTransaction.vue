@@ -42,6 +42,9 @@
         <v-btn variant="text" @click="discardChanges" :disabled="!hasChanges"
           >Discard changes</v-btn
         >
+        <v-btn variant="text" color="error" @click="deleteBulkTransaction"
+          >Delete</v-btn
+        >
       </v-card-actions>
     </v-card>
 
@@ -191,6 +194,13 @@ export default {
     async confirmDiscardChanges() {
       this.discardChanges();
       this.$router.push({ name: this.toLocation.name });
+    },
+    async deleteBulkTransaction() {
+      await this.$store.dispatch(
+        'project/deleteBulkTransaction',
+        this.bulkTransaction.id
+      );
+      this.$router.push({ name: 'bulkTransactions' });
     },
   },
   beforeRouteLeave(to, from, next) {

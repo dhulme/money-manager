@@ -126,6 +126,10 @@ export default {
     }
   },
 
+  deleteBulkTransaction({ commit }, id) {
+    commit('deleteBulkTransaction', { id });
+  },
+
   addAccount(
     { commit },
     { name, balance, type, category, importTransactionsFormatId }

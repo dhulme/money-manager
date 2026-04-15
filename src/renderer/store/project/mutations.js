@@ -214,4 +214,17 @@ export default {
     }
     bulkTransaction.lastModified = new Date().toISOString();
   },
+
+  deleteBulkTransaction(state, { id }) {
+    const bulkTransaction = state.bulkTransactions.find((_) => _.id === id);
+    if (bulkTransaction) {
+      bulkTransaction.transactionIds.forEach((transactionId) => {
+        delete state.bulkTransactionTransactions[transactionId];
+      });
+    }
+    const index = state.bulkTransactions.findIndex((_) => _.id === id);
+    if (index !== -1) {
+      state.bulkTransactions.splice(index, 1);
+    }
+  },
 };

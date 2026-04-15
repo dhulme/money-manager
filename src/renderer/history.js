@@ -14,6 +14,7 @@ const actionNames = {
   runBulkTransactionTransactions: 'Run bulk transactions',
   deleteBulkTransactionTransaction: 'Delete bulk transaction',
   addBulkTransaction: 'Add bulk transaction',
+  deleteBulkTransaction: 'Delete bulk transaction',
   addAccount: 'Add account',
   editAccount: 'Edit account',
   addAccountCategory: 'Add account category',
