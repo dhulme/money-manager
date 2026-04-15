@@ -188,6 +188,8 @@ export default {
           await ipc.getSettings();
         this.importTransactionsDescriptionsGiftAided =
           importTransactionsDescriptionsGiftAided;
+        } else {
+          this.page = 1;
         }
       },
       immediate: true,
