@@ -14,10 +14,10 @@
         <template v-slot:item="{ item, index }">
           <tr>
             <td>
-              <v-text-field hide-details v-model="item.date" />
+              <v-text-field hide-details v-model="item.date" variant="underlined" />
             </td>
             <td>
-              <v-text-field hide-details v-model="item.description" />
+              <v-text-field hide-details v-model="item.description" variant="underlined" />
             </td>
             <td>
               <v-autocomplete
@@ -28,6 +28,7 @@
                 :ref="'account' + index"
                 @update:model-value="accountChange(index)"
                 auto-select-first
+                variant="underlined"
               />
             </td>
             <td>
@@ -35,6 +36,7 @@
                 hide-details
                 :items="transactionTypeItems"
                 v-model="item.type"
+                variant="underlined"
               />
             </td>
             <td>
@@ -42,13 +44,14 @@
                 hide-details
                 v-model="item.value"
                 :prefix="$currencyPrefix"
+                variant="underlined"
               />
             </td>
-            <td class="pr-0">
-              <v-checkbox hide-details v-model="item.giftAided" density="compact" />
+            <td class="pr-0" >
+              <v-checkbox hide-details v-model="item.giftAided" density="compact"  />
             </td>
-            <td class="pa-0 pt-2">
-              <v-btn icon @click="removeTransaction(index)"
+            <td class="pa-0">
+              <v-btn icon @click="removeTransaction(index)" variant="flat"
                 ><v-icon>mdi-delete</v-icon></v-btn
               >
             </td>
@@ -114,7 +117,7 @@ export default {
         {
           title: 'Gift Aided',
           key: 'giftAided',
-          width: 100,
+          width: 50,
         },
         {
           title: '',
@@ -284,5 +287,9 @@ export default {
 
 .import-transactions-table .v-data-footer {
   margin-top: 0.5rem;
+}
+
+.import-transactions-table th:last-of-type {
+  padding-right: 0;
 }
 </style>
