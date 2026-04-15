@@ -93,7 +93,6 @@ export default {
             transaction.giftAided
           );
         });
-      console.log('transactions', transactions);
       return transactions;
     },
     total() {
