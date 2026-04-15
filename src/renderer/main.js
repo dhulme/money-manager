@@ -80,12 +80,13 @@ app.use(history, {
     const { currencyPrefix, dateFormat } = await ipc.getSettings();
 
     app.config.globalProperties.$currencyPrefix = currencyPrefix;
-    app.config.globalProperties.$dateFormat = dateFormat;
 
     // Convert moment.js format tokens to date-fns tokens for legacy settings
     const dateFnsFormat = dateFormat
       .replace(/YYYY/g, 'yyyy')
       .replace(/DD/g, 'dd');
+
+    app.config.globalProperties.$dateFormat = dateFnsFormat;
 
     const numberFormat = new Intl.NumberFormat('en-GB', {
       style: 'currency',
