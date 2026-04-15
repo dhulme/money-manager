@@ -58,9 +58,20 @@
     </v-card-text>
     <v-card-actions class="ma-1">
       <v-btn variant="text" @click="completeImport" color="primary">OK</v-btn>
-      <v-btn variant="text" @click="$emit('close')">Cancel</v-btn>
+      <v-btn variant="text" @click="confirmCancel">Cancel</v-btn>
     </v-card-actions>
   </v-card>
+
+  <v-dialog v-model="cancelDialogVisible" max-width="400">
+    <v-card>
+      <v-card-title>Cancel import</v-card-title>
+      <v-card-text>Are you sure you want to cancel the import?</v-card-text>
+      <v-card-actions>
+        <v-btn variant="text" @click="cancelDialogVisible = false">No</v-btn>
+        <v-btn variant="text" color="primary" @click="$emit('close')">Yes</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
@@ -73,6 +84,7 @@ export default {
     account: Object,
     visible: Boolean,
   },
+  emits: ['close'],
   data() {
     return {
       headers: [
@@ -124,6 +136,7 @@ export default {
       page: 1,
       itemsPerPage: 10,
       importTransactionsDescriptionsGiftAided: [],
+      cancelDialogVisible: false,
     };
   },
   computed: {
@@ -256,6 +269,9 @@ export default {
     },
     removeTransaction(index) {
       this.$store.state.importedTransactions.splice(index, 1);
+    },
+    confirmCancel() {
+      this.cancelDialogVisible = true;
     },
   },
 };

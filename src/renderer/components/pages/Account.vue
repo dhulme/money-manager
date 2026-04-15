@@ -43,6 +43,7 @@
       no-click-animation
     >
       <ImportTransactions
+        ref="importTransactions"
         :account="account"
         @close="importTransactionsDialogVisible = false"
         :visible="importTransactionsDialogVisible"
@@ -131,11 +132,11 @@ export default {
       if (
         this.$store.state.dialog ||
         this.editTransactionDialogVisible ||
-        this.importTransactionsDialogVisible ||
         this.importTransactionsActive
       ) {
         this.editTransactionDialogVisible = false;
-        this.importTransactionsDialogVisible = false;
+      } else if (this.importTransactionsDialogVisible) {
+        this.$refs.importTransactions.confirmCancel();
       } else {
         this.$store.commit('setSearch', '');
         this.$router.push({
