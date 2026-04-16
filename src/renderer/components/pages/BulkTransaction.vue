@@ -7,9 +7,10 @@
       <v-card-title>
         <v-row class="ma-1">
         <span class="text-h6 mr-4">{{ bulkTransaction.name }}</span>
-        <v-btn variant="text" @click="addTransaction">Add</v-btn>
-        <v-btn variant="text" @click="importTransactions">Import</v-btn>
+        <v-btn variant="text" @click="openEditDialog">Edit</v-btn>
         <v-btn variant="text" @click="clone">Clone</v-btn>
+        <v-btn variant="text" @click="addTransaction">Add Transaction</v-btn>
+        <v-btn variant="text" @click="importTransactions">Import Transactions</v-btn>
         <v-spacer />
         <v-text-field
           v-model="search"
@@ -68,6 +69,27 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="editDialogVisible" max-width="500" persistent no-click-animation>
+      <v-card>
+        <v-card-title>Edit Bulk Transaction</v-card-title>
+        <v-form ref="editForm" @submit.prevent="saveEdit">
+          <v-card-text>
+            <v-text-field
+              v-model="editName"
+              label="Name"
+              class="required"
+              :rules="[(v) => !!v || 'Name is required']"
+            />
+            <v-text-field v-model="editDescription" label="Description" />
+          </v-card-text>
+          <v-card-actions>
+            <v-btn type="submit" variant="text" color="primary">Save</v-btn>
+            <v-btn variant="text" @click="editDialogVisible = false">Cancel</v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -91,6 +113,9 @@ export default {
       transaction: {},
       transactions: [],
       unappliedChangesDialogVisible: false,
+      editDialogVisible: false,
+      editName: '',
+      editDescription: '',
       toLocation: null,
     };
   },
@@ -201,6 +226,22 @@ export default {
         this.bulkTransaction.id
       );
       this.$router.push({ name: 'bulkTransactions' });
+    },
+    openEditDialog() {
+      this.editName = this.bulkTransaction.name;
+      this.editDescription = this.bulkTransaction.description;
+      this.editDialogVisible = true;
+    },
+    async saveEdit() {
+      const { valid } = await this.$refs.editForm.validate();
+      if (!valid) return;
+      await this.$store.dispatch('project/updateBulkTransaction', {
+        ...this.bulkTransaction,
+        name: this.editName,
+        description: this.editDescription,
+      });
+      this.$ipc.setTitle(this.editName);
+      this.editDialogVisible = false;
     },
   },
   beforeRouteLeave(to, from, next) {
