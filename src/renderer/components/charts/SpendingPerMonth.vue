@@ -1,5 +1,19 @@
 <template>
-  <Pie v-if="chartData" :data="chartData" :options="chartOptions" />
+  <div>
+    <v-autocomplete
+      v-model="excludedAccountIds"
+      :items="accountItems"
+      label="Exclude accounts"
+      multiple
+      chips
+      closable-chips
+      hide-details
+      class="mb-3"
+    />
+    <div style="max-width: 400px; margin: 0 auto">
+      <Pie v-if="chartData" :data="chartData" :options="chartOptions" />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -21,9 +35,25 @@ export default {
   props: {
     date: Date,
   },
+  data() {
+    return {
+      excludedAccountIds: [],
+    };
+  },
   computed: {
     accounts() {
       return this.$store.getters['project/accountsByType']('budget');
+    },
+    filteredAccounts() {
+      return this.accounts.filter(
+        (account) => !this.excludedAccountIds.includes(account.id)
+      );
+    },
+    accountItems() {
+      return this.accounts.map((account) => ({
+        title: account.name,
+        value: account.id,
+      }));
     },
     data() {
       if (!this.date) {
@@ -33,7 +63,7 @@ export default {
       const start = startOfMonth(this.date);
       const end = endOfMonth(this.date);
 
-      return this.accounts.map((account) => {
+      return this.filteredAccounts.map((account) => {
         return Number(
           account.transactionIds.reduce((total, transactionId) => {
             const transaction =
@@ -61,7 +91,7 @@ export default {
     chartData() {
       if (!this.data) return null;
       return {
-        labels: this.accounts.map((account) => account.name),
+        labels: this.filteredAccounts.map((account) => account.name),
         datasets: [
           {
             data: this.data,

@@ -12,6 +12,15 @@
 
 <script>
 import { VDateInput } from 'vuetify/labs/VDateInput';
+import { startOfMonth, endOfMonth, subMonths } from 'date-fns';
+
+function initialRange(type) {
+  if (type === 'month') {
+    const lastMonth = subMonths(new Date(), 1);
+    return [startOfMonth(lastMonth), endOfMonth(lastMonth)];
+  }
+  return [];
+}
 
 export default {
   components: { VDateInput },
@@ -26,13 +35,16 @@ export default {
     },
   },
   watch: {
-    dateRangeParsed() {
-      this.$emit('dateRange', this.dateRangeParsed);
+    dateRangeParsed: {
+      immediate: true,
+      handler() {
+        this.$emit('dateRange', this.dateRangeParsed);
+      },
     },
   },
   data() {
     return {
-      dateRange: [],
+      dateRange: initialRange(this.type),
     };
   },
   computed: {
