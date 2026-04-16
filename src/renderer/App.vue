@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <TheToolbar />
+    <TheDialogs />
     <v-main>
       <div class="app-content">
         <router-view />
@@ -12,10 +13,11 @@
 <script>
 import { init } from './menu';
 import TheToolbar from '@/components/TheToolbar.vue';
+import TheDialogs from '@/components/TheDialogs.vue';
 
 export default {
   name: 'App',
-  components: { TheToolbar },
+  components: { TheToolbar, TheDialogs },
   mounted() {
     init({
       fileNew: () => this.$history.new(),

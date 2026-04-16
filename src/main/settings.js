@@ -9,7 +9,8 @@ const defaultSettings = {
   projectPath: null,
   lastBackupDates: {},
   currencyPrefix: '£',
-  dateFormat: 'dd/MM/yyyy'
+  dateFormat: 'dd/MM/yyyy',
+  importTransactionsDescriptionsGiftAided: []
 };
 
 let data;
