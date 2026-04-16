@@ -70,6 +70,11 @@
     <v-card-actions>
       <v-btn variant="text" @click="close">Close</v-btn>
       <v-btn color="primary" variant="text" @click="save">OK</v-btn>
+      <v-spacer />
+      <span v-if="newBalance !== null" class="text-body-2 mr-2">
+        New balance:
+        <strong :class="{ 'text-red': newBalance < 0 }">{{ $currency(newBalance) }}</strong>
+      </span>
     </v-card-actions>
   </v-card>
 </template>
@@ -133,6 +138,24 @@ export default {
     },
     isFromTransaction() {
       return this.transaction.from === this.account.id;
+    },
+    newBalance() {
+      if (!this.account) return null;
+      const balance = parseFloat(this.account.balance);
+      if (isNaN(balance)) return null;
+      if (this.isNewTransaction) {
+        const valueIn = parseFloat(this.newTransaction.valueIn) || 0;
+        const valueOut = parseFloat(this.newTransaction.valueOut) || 0;
+        return balance + valueIn - valueOut;
+      } else {
+        const existingValue = parseFloat(this.transaction.value) || 0;
+        const base = this.isFromTransaction
+          ? balance + existingValue
+          : balance - existingValue;
+        const valueIn = parseFloat(this.newTransaction.valueIn) || 0;
+        const valueOut = parseFloat(this.newTransaction.valueOut) || 0;
+        return base + valueIn - valueOut;
+      }
     },
   },
   watch: {
