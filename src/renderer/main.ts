@@ -81,7 +81,7 @@ app.use(router);
 app.use(history, {
   router,
   async ready() {
-    const { currencyPrefix, dateFormat } = await ipc.getSettings();
+    const { currencyPrefix, dateFormat } = await ipc.getSettings() as { currencyPrefix: string; dateFormat: string };
 
     app.config.globalProperties.$currencyPrefix = currencyPrefix;
 
@@ -97,7 +97,7 @@ app.use(history, {
       currency: 'GBP',
     });
 
-    app.config.globalProperties.$currency = (value) => {
+    app.config.globalProperties.$currency = (value: number | null | undefined) => {
       if (value === undefined || value === null) {
         return '';
       }
@@ -111,7 +111,7 @@ app.use(history, {
         : formatted.replace('£', currencyPrefix);
     };
 
-    app.config.globalProperties.$date = (value) =>
+    app.config.globalProperties.$date = (value: string | null | undefined) =>
       value ? format(new Date(value), dateFnsFormat) : '';
 
     app.mount('#app');

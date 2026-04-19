@@ -2,12 +2,12 @@
 // so we do this upfront so first UI operation isn't slow.
 getId();
 
-export function required(param) {
+export function required(param: string): never {
   throw new Error(`${param} is required`);
 }
 
-export function requireObjectProperties(object, params) {
-  const errors = params.reduce((acc, param) => {
+export function requireObjectProperties(object: Record<string, unknown>, params: string[]): void {
+  const errors = params.reduce<string[]>((acc, param) => {
     if (object[param] === undefined) {
       return [...acc, param];
     }
@@ -18,11 +18,11 @@ export function requireObjectProperties(object, params) {
   }
 }
 
-export function getFriendlyId(name) {
+export function getFriendlyId(name: string): string {
   return name.toLowerCase().replace(/[ ]/g, '-') + '-' + getId(5);
 }
 
-export function getId(length = 10) {
+export function getId(length = 10): string {
   const bytes = new Uint8Array(Math.ceil(length / 2));
   crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0'))
@@ -30,11 +30,11 @@ export function getId(length = 10) {
     .slice(0, length);
 }
 
-export function capitalizeFirstLetter(string) {
+export function capitalizeFirstLetter(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function validateInputValue(value) {
+export function validateInputValue(value: string): string | true {
   if (Number.isNaN(Number(value))) {
     return 'Amount must be a number';
   }

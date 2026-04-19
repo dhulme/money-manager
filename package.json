@@ -73,6 +73,7 @@
     "@mdi/font": "^7.4.47",
     "@types/big.js": "^6.2.2",
     "@types/node": "^25.6.0",
+    "@types/papaparse": "^5.5.2",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vitest/eslint-plugin": "^1.6.15",
     "@vue/test-utils": "^2.4.6",

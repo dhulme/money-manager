@@ -1,12 +1,21 @@
 import { unparse } from 'papaparse';
 import { format } from 'date-fns';
+import type { App } from 'vue';
+import type { Router } from 'vue-router';
 
 import ipc from './ipc';
 import { setSaveEnabled, setUndoLabel, setRedoLabel } from './menu';
 import { useProjectStore } from './store/project';
-import { useRootStore } from './store/root';
+import type { ProjectData, Account, Transaction } from '../types/project';
 
-const actionNames = {
+type ActionName = keyof typeof actionNames;
+
+interface HistoryEntry {
+  name: ActionName;
+  args: unknown;
+}
+
+const actionNames: Record<string, string> = {
   addTransaction: 'Add transaction',
   addDualTransaction: 'Add transaction',
   addDualTransactions: 'Add transactions',
@@ -23,19 +32,19 @@ const actionNames = {
   updateBulkTransaction: 'Apply bulk transaction changes',
 };
 
-function setEdited(edited) {
+function setEdited(edited: boolean) {
   ipc.setEdited(edited);
   setSaveEnabled(edited);
 }
 
 const history = {
-  install(app, { router, ready }) {
-    const done = [];
-    let undone = [];
+  install(app: App, { router, ready }: { router: Router; ready: () => void }) {
+    const done: HistoryEntry[] = [];
+    let undone: HistoryEntry[] = [];
     let newAction = true;
-    let initData;
+    let initData: ProjectData | undefined;
     let savedDoneLength = 0;
-    let projectStore;
+    let projectStore: ReturnType<typeof useProjectStore> | undefined;
 
     // We defer getting the store until after Pinia is installed
     function getProjectStore() {
@@ -45,17 +54,17 @@ const history = {
 
     // Subscribe to Pinia actions on the project store
     // We need to wait until Pinia is ready before subscribing
-    let unsubscribe;
+    let unsubscribe: (() => void) | undefined;
     const setupSubscription = () => {
       if (unsubscribe) return;
       const store = getProjectStore();
-      unsubscribe = store.$onAction(({ name, args, after }) => {
+      unsubscribe = store.$onAction(({ name, args, after }: { name: string; args: unknown[]; after: (cb: () => void) => void }) => {
         // Skip internal/private actions
         if (name.startsWith('_') || name === 'init' || name === 'updateSummaryBalance') return;
         if (!actionNames[name]) return;
 
         after(() => {
-          done.push({ name, args: args[0] });
+          done.push({ name: name as ActionName, args: args[0] });
           setEdited(true);
           setUndoLabel(actionNames[name]);
           if (newAction) {
@@ -66,11 +75,11 @@ const history = {
       });
     };
 
-    ipc.on('projectOpened', (data) => {
+    ipc.on('projectOpened', (data: unknown) => {
       const callReady = !initData;
-      initData = data;
+      initData = data as ProjectData;
       setupSubscription();
-      getProjectStore().init(initData);
+      getProjectStore().init(initData!);
       setEdited(false);
       if (callReady) {
         ready();
@@ -108,18 +117,19 @@ const history = {
       undo() {
         if (done.length === 0) return;
 
-        const toUndo = done.pop();
+        const toUndo = done.pop()!;
         undone.push(toUndo);
         setRedoLabel(actionNames[toUndo.name]);
 
         const store = getProjectStore();
         newAction = false;
-        store.init(initData);
+        store.init(initData!);
         const actionsToReplay = [...done];
         // Clear done because replaying will re-add them via the subscription
         done.length = 0;
         actionsToReplay.forEach((action) => {
-          store[action.name](action.args);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (store as any)[action.name](action.args);
         });
         store.updateSummaryBalance();
         newAction = true;
@@ -136,9 +146,10 @@ const history = {
       redo() {
         if (undone.length === 0) return;
 
-        const action = undone.pop();
+        const action = undone.pop()!;
         newAction = false;
-        getProjectStore()[action.name](action.args);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (getProjectStore() as any)[action.name](action.args);
         newAction = true;
 
         if (undone.length === 0) {
@@ -194,14 +205,14 @@ const history = {
       },
       exportTransactions() {
         const store = getProjectStore();
-        const accountNamesById = store.accounts.reduce(
+        const accountNamesById = store.accounts.reduce<Record<string, string>>(
           (acc, account) => ({
             ...acc,
             [account.id]: account.name,
           }),
           {}
         );
-        const transactions = Object.values(store.transactions)
+        const transactions = (Object.values(store.transactions) as Transaction[])
           .sort((a, b) => {
             const aDateValue = new Date(a.date).valueOf();
             const bDateValue = new Date(b.date).valueOf();

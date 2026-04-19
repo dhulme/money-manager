@@ -4,8 +4,9 @@ import { parse as parseDate } from 'date-fns';
 import { capitalizeFirstLetter } from './util';
 import ipc from './ipc';
 import { useRootStore } from './store/root';
+import type { ImportedTransaction } from '../types/project';
 
-function handleCsvErrors(errors) {
+function handleCsvErrors(errors?: { row?: number }[]) {
   const rootStore = useRootStore();
   rootStore.setError(
     'Failed to import transactions CSV' +
@@ -21,8 +22,8 @@ export const importTransactionsFormats = [
     name: 'midata',
     extensions: ['csv'],
     type: 'account',
-    toTransactions(csvData) {
-      let { data, errors } = parseCsv(csvData, {
+    toTransactions(csvData: string) {
+      let { data, errors } = parseCsv<Record<string, string>>(csvData, {
         header: true,
         delimiter: ';',
         skipEmptyLines: true,
@@ -44,7 +45,7 @@ export const importTransactionsFormats = [
               date: parseDate(row.Date, 'dd/MM/yyyy', new Date()),
               description: capitalizeFirstLetter(description.toLowerCase()),
               value: Math.abs(value),
-              type: value < 0 ? 'out' : 'in',
+              type: value < 0 ? 'out' as const : 'in' as const,
             };
           });
     },
@@ -54,8 +55,8 @@ export const importTransactionsFormats = [
     name: 'Capital One',
     type: 'account',
     extensions: ['csv'],
-    toTransactions(csvData) {
-      const { data, errors } = parseCsv(csvData, {
+    toTransactions(csvData: string) {
+      const { data, errors } = parseCsv<Record<string, string>>(csvData, {
         header: true,
       });
 
@@ -65,7 +66,7 @@ export const importTransactionsFormats = [
             date: new Date(row.date),
             description: capitalizeFirstLetter(row.description.toLowerCase()),
             value: Number(row.amount),
-            type: row.debitCreditCode === 'Credit' ? 'in' : 'out',
+            type: row.debitCreditCode === 'Credit' ? 'in' as const : 'out' as const,
           }));
     },
   },
@@ -74,7 +75,7 @@ export const importTransactionsFormats = [
     name: 'Santander Text',
     extensions: ['txt'],
     type: 'account',
-    toTransactions(textData) {
+    toTransactions(textData: string) {
       const transactions = textData
         .split('\n')
         .slice(4)
@@ -82,14 +83,14 @@ export const importTransactionsFormats = [
         .split('\t\t\t\t\t\t\n');
 
       return transactions.map((transaction) => {
-        const value = Number(transaction.match(/Amount:�(.+)�/)[1]);
+        const value = Number(transaction.match(/Amount:�(.+)�/)![1]);
         return {
-          date: parseDate(transaction.match(/Date:�(.+)/)[1], 'dd/MM/yyyy', new Date()),
+          date: parseDate(transaction.match(/Date:�(.+)/)![1], 'dd/MM/yyyy', new Date()),
           description: capitalizeFirstLetter(
-            transaction.match(/Description:�(.+)/)[1].toLowerCase()
+            transaction.match(/Description:�(.+)/)![1].toLowerCase()
           ),
           value: Math.abs(value),
-          type: value < 0 ? 'out' : 'in',
+          type: value < 0 ? 'out' as const : 'in' as const,
         };
       });
     },
@@ -99,8 +100,8 @@ export const importTransactionsFormats = [
     name: 'Money Manager Bulk Transactions',
     extensions: ['tsv'],
     type: 'bulkTransaction',
-    toTransactions(tsvData) {
-      const { data, errors } = parseCsv(tsvData, {
+    toTransactions(tsvData: string) {
+      const { data, errors } = parseCsv<Record<string, string>>(tsvData, {
         header: true,
         skipEmptyLines: true,
         delimiter: '\t',
@@ -120,9 +121,9 @@ export const importTransactionsFormats = [
     name: 'Lloyds',
     type: 'account',
     extensions: ['csv'],
-    toTransactions(csvData) {
+    toTransactions(csvData: string) {
       console.log('csvData', csvData);
-      const { data, errors } = parseCsv(csvData, {
+      const { data, errors } = parseCsv<Record<string, string>>(csvData, {
         header: true,
         skipEmptyLines: true,
       });
@@ -132,8 +133,8 @@ export const importTransactionsFormats = [
         : data.map((row) => ({
             date: parseDate(row.Date, 'dd/MM/yyyy', new Date()),
             description: capitalizeFirstLetter(row.Description.toLowerCase()),
-            value: Math.abs(row.Amount),
-            type: Number(row.Amount) < 0 ? 'in' : 'out',
+            value: Math.abs(Number(row.Amount)),
+            type: Number(row.Amount) < 0 ? 'in' as const : 'out' as const,
           }));
     },
   },
@@ -146,14 +147,15 @@ export const importAccountTransactionsFormatItems = importTransactionsFormats
     value: format.id,
   }));
 
-ipc.on('importTransactionsDone', ({ data, id }) => {
+ipc.on('importTransactionsDone', (...args: unknown[]) => {
+  const { data, id } = args[0] as { data: string; id: string };
   try {
     const transactions = importTransactionsFormats
-      .find((_) => _.id === id)
+      .find((_) => _.id === id)!
       .toTransactions(data);
     if (transactions) {
       const rootStore = useRootStore();
-      rootStore.setImportedTransactions(transactions);
+      rootStore.setImportedTransactions(transactions as ImportedTransaction[]);
     }
   } catch (e) {
     console.error(e);

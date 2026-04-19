@@ -158,7 +158,7 @@ export const useProjectStore = defineStore('project', {
       toAccountId: string;
       fromAccountId: string;
     }) {
-      requireObjectProperties(transaction, ['id', 'value', 'from', 'to']);
+      requireObjectProperties(transaction as unknown as Record<string, unknown>, ['id', 'value', 'from', 'to']);
 
       this.transactions[transaction.id] = transaction;
       const fromAccount = this.accounts.find((_) => _.id === fromAccountId);
@@ -177,7 +177,7 @@ export const useProjectStore = defineStore('project', {
     },
 
     _updateTransaction(transaction: Transaction) {
-      requireObjectProperties(transaction, ['id', 'value', 'from', 'to']);
+      requireObjectProperties(transaction as unknown as Record<string, unknown>, ['id', 'value', 'from', 'to']);
       const currentTransaction = this.transactions[transaction.id];
       if (!currentTransaction) {
         throw new Error(`Cannot find transaction with ID ${transaction.id}`);
