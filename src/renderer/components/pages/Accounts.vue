@@ -20,7 +20,7 @@
     </VRow>
 
     <AccountList
-      v-for="category in $store.getters['project/accountCategories']"
+      v-for="category in projectStore.accountCategories"
       :search="search"
       :account-category="category.name"
       :account-type="category.type"
@@ -46,11 +46,12 @@
 import AccountList from '@/components/AccountList.vue';
 import RestoreDeletedAccounts from '@/components/RestoreDeletedAccounts.vue';
 import { useRootStore } from '../../store/root';
+import { useProjectStore } from '../../store/project';
 
 export default {
   components: { AccountList, RestoreDeletedAccounts },
   setup() {
-    return { rootStore: useRootStore() };
+    return { rootStore: useRootStore(), projectStore: useProjectStore() };
   },
   data() {
     return {

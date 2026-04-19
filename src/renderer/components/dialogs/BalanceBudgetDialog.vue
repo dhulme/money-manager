@@ -1,6 +1,6 @@
 <template>
-  <v-dialog v-model="dialogVisible" max-width="700" persistent no-click-animation v-hotkey.close="close">
-    <v-card>
+  <v-dialog v-model="dialogVisible" max-width="700" persistent no-click-animation>
+    <v-card v-hotkey.close="close">
       <v-card-title>Balance Budget</v-card-title>
       <v-card-text>
         <p class="mb-4">
