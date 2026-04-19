@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-hotkey.balance="showBalanceDialog">
     <v-alert
       v-model="hasError"
       color="error"
@@ -15,13 +15,23 @@
       icon="mdi-information"
       class="alert caption"
     >
-      Your budget and accounts are different by {{ $currency(summaryBalance) }}!
+      Budget difference: {{ $currency(summaryBalance) }}
+      <v-btn variant="flat" size="small" class="ml-2" @click="balanceDialogVisible = true">Balance</v-btn> 
     </v-alert>
+    <BalanceBudgetDialog v-model="balanceDialogVisible" />
   </div>
 </template>
 
 <script>
+import BalanceBudgetDialog from './dialogs/BalanceBudgetDialog.vue';
+
 export default {
+  components: { BalanceBudgetDialog },
+  data() {
+    return {
+      balanceDialogVisible: false,
+    };
+  },
   computed: {
     summaryBalance() {
       return this.$store.getters['project/summaryBalance'];
@@ -46,6 +56,13 @@ export default {
       return this.$store.state.error;
     },
   },
+  methods: {
+    showBalanceDialog() {
+      if (this.showBudgetWarning) {
+        this.balanceDialogVisible = true;
+      }
+    },
+  }
 };
 </script>
 

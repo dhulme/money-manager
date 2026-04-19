@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar color="primary">
+  <v-app-bar color="primary" class="px-2">
     <ToolbarButton
       :child-route-names="[
         'account',

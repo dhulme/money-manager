@@ -17,6 +17,11 @@ hotkey.init({
     code: 78,
     ctrl: true,
   },
+  balance: {
+    name: 'b',
+    code: 66,
+    ctrl: true,
+  },
   new: {
     name: 'n',
     code: 78,
