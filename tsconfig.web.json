@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client"],
+    "paths": {
+      "@/*": ["./src/renderer/*"]
+    },
+    "composite": true
+  },
+  "include": [
+    "src/renderer/**/*",
+    "src/renderer/**/*.vue",
+    "src/types/**/*"
+  ]
+}
