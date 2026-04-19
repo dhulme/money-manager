@@ -3,8 +3,9 @@ import { differenceInMonths, format } from 'date-fns';
 
 import settings from './settings';
 import defaultProject from './default-project.json';
+import type { ProjectData } from '../types/project';
 
-function backup(filePath, data) {
+function backup(filePath: string, data: string) {
   const lastBackup = settings.getLastBackupDate(filePath);
   if (!lastBackup || differenceInMonths(new Date(), lastBackup) >= 1) {
     const dateStr = format(new Date(), 'yyyy-MM-dd');
@@ -20,7 +21,7 @@ function backup(filePath, data) {
 }
 
 const project = {
-  async save(filePath, data) {
+  async save(filePath: string, data: string) {
     if (typeof data !== 'string') {
       throw new Error('Project must be stringified on client');
     }
@@ -31,20 +32,20 @@ const project = {
     });
   },
 
-  async open(filePath) {
+  async open(filePath: string): Promise<ProjectData> {
     console.log(`Opening project ${filePath}`);
     try {
-      const data = await fs.readJson(filePath);
+      const data = await fs.readJson(filePath) as ProjectData;
       if (!data.accountCategories) {
-        data.accountCategories = defaultProject.accountCategories;
+        data.accountCategories = defaultProject.accountCategories as ProjectData['accountCategories'];
       }
       return data;
-    } catch (e) {
+    } catch {
       throw new Error('Failed to open project');
     }
   },
 
-  async exportCsv(filePath, data) {
+  async exportCsv(filePath: string, data: string) {
     return fs.writeFile(filePath, data).catch(() => {
       throw new Error('Failed to export');
     });

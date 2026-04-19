@@ -1,9 +1,11 @@
-import { ipcMain, dialog, Menu } from 'electron';
+import { ipcMain, dialog, Menu, type IpcMainEvent, type IpcMainInvokeEvent, type MenuItemConstructorOptions } from 'electron';
 import fs from 'fs-extra';
 
 import defaultProject from './default-project.json';
 import settings from './settings';
 import project from './project';
+import type { ProjectData } from '../types/project';
+import type { Settings } from '../types/settings';
 
 const filters = [
   {
@@ -12,7 +14,7 @@ const filters = [
   },
 ];
 
-async function saveAs(data) {
+async function saveAs(data: string) {
   const defaultPath = settings.getProjectPath();
   const { canceled, filePath } = await dialog.showSaveDialog({
     filters,
@@ -33,7 +35,7 @@ async function saveAs(data) {
   await project.save(path, data);
 }
 
-async function save(data) {
+async function save(data: string) {
   const projectPath = settings.getProjectPath();
   if (projectPath) {
     await project.save(projectPath, data);
@@ -42,21 +44,21 @@ async function save(data) {
   }
 }
 
-ipcMain.on('projectSave', async (event, data) => {
+ipcMain.on('projectSave', async (_event: IpcMainEvent, data: string) => {
   save(data);
 });
 
-ipcMain.on('projectSaveAs', async (event, data) => {
+ipcMain.on('projectSaveAs', async (_event: IpcMainEvent, data: string) => {
   saveAs(data);
 });
 
-ipcMain.on('projectOpenDefault', async (event) => {
+ipcMain.on('projectOpenDefault', async (event: IpcMainEvent) => {
   const projectPath = settings.getProjectPath();
   if (projectPath) {
     try {
       const data = await project.open(projectPath);
       event.sender.send('projectOpened', data || defaultProject);
-    } catch (e) {
+    } catch {
       settings.setProjectPath(null);
       event.sender.send('projectOpened', defaultProject);
     }
@@ -66,7 +68,7 @@ ipcMain.on('projectOpenDefault', async (event) => {
   }
 });
 
-ipcMain.on('projectOpen', async (event) => {
+ipcMain.on('projectOpen', async (event: IpcMainEvent) => {
   const { filePaths, canceled } = await dialog.showOpenDialog({
     filters,
   });
@@ -80,14 +82,14 @@ ipcMain.on('projectOpen', async (event) => {
   event.sender.send('projectOpened', data);
 });
 
-ipcMain.on('projectNew', (event) => {
+ipcMain.on('projectNew', (event: IpcMainEvent) => {
   settings.setProjectPath(null);
   settings.save();
   event.sender.send('projectOpened', defaultProject);
 });
 
-ipcMain.on('exportCsv', async (event, { type, data }) => {
-  const { cancelled, filePath } = await dialog.showSaveDialog({
+ipcMain.on('exportCsv', async (_event: IpcMainEvent, { type, data }: { type: string; data: string }) => {
+  const { canceled: cancelled, filePath } = await dialog.showSaveDialog({
     filters: [
       {
         name: 'CSV',
@@ -108,7 +110,7 @@ ipcMain.on('exportCsv', async (event, { type, data }) => {
   project.exportCsv(path, data);
 });
 
-ipcMain.on('showCloseWarning', async (event, data) => {
+ipcMain.on('showCloseWarning', async (event: IpcMainEvent, data: string) => {
   const { response } = await dialog.showMessageBox({
     type: 'warning',
     title: 'Money Manager',
@@ -122,7 +124,7 @@ ipcMain.on('showCloseWarning', async (event, data) => {
   }
 });
 
-ipcMain.handle('importTransactions', async (event, { extensions, id }) => {
+ipcMain.handle('importTransactions', async (event: IpcMainInvokeEvent, { extensions, id }: { extensions: string[]; id: string }) => {
   const { filePaths, canceled } = await dialog.showOpenDialog({
     filters: [{ name: 'Transaction files', extensions }],
   });
@@ -137,7 +139,12 @@ ipcMain.handle('importTransactions', async (event, { extensions, id }) => {
   });
 });
 
-function addApplicationMenuClickEvents(template, event) {
+interface MenuTemplateItem extends MenuItemConstructorOptions {
+  id?: string;
+  submenu?: MenuTemplateItem[];
+}
+
+function addApplicationMenuClickEvents(template: MenuTemplateItem[], event: IpcMainInvokeEvent) {
   template.forEach((item) => {
     if (item.id) {
       item.click = () => {
@@ -149,7 +156,7 @@ function addApplicationMenuClickEvents(template, event) {
     }
   });
 }
-ipcMain.handle('setApplicationMenu', async (event, menuTemplate) => {
+ipcMain.handle('setApplicationMenu', async (event: IpcMainInvokeEvent, menuTemplate: MenuTemplateItem[]) => {
   addApplicationMenuClickEvents(menuTemplate, event);
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
@@ -159,7 +166,7 @@ ipcMain.handle('getSettings', () => {
   return settings.get();
 });
 
-ipcMain.handle('saveSettings', (event, data) => {
+ipcMain.handle('saveSettings', (_event: IpcMainInvokeEvent, data: Settings) => {
   settings.set(data);
   return settings.save();
 });

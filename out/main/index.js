@@ -45,7 +45,7 @@ const settings = {
     data.projectPath = projectPath;
   },
   setLastBackupDate(projectPath, date) {
-    data.lastBackupDates[projectPath] = date;
+    data.lastBackupDates[projectPath] = date.toISOString();
   },
   getLastBackupDate(projectPath) {
     const date = data.lastBackupDates[projectPath];
@@ -88,7 +88,7 @@ const project = {
         data2.accountCategories = defaultProject.accountCategories;
       }
       return data2;
-    } catch (e) {
+    } catch {
       throw new Error("Failed to open project");
     }
   },
@@ -129,10 +129,10 @@ async function save(data2) {
     await saveAs(data2);
   }
 }
-electron.ipcMain.on("projectSave", async (event, data2) => {
+electron.ipcMain.on("projectSave", async (_event, data2) => {
   save(data2);
 });
-electron.ipcMain.on("projectSaveAs", async (event, data2) => {
+electron.ipcMain.on("projectSaveAs", async (_event, data2) => {
   saveAs(data2);
 });
 electron.ipcMain.on("projectOpenDefault", async (event) => {
@@ -141,7 +141,7 @@ electron.ipcMain.on("projectOpenDefault", async (event) => {
     try {
       const data2 = await project.open(projectPath);
       event.sender.send("projectOpened", data2 || defaultProject);
-    } catch (e) {
+    } catch {
       settings.setProjectPath(null);
       event.sender.send("projectOpened", defaultProject);
     }
@@ -165,8 +165,8 @@ electron.ipcMain.on("projectNew", (event) => {
   settings.save();
   event.sender.send("projectOpened", defaultProject);
 });
-electron.ipcMain.on("exportCsv", async (event, { type, data: data2 }) => {
-  const { cancelled, filePath } = await electron.dialog.showSaveDialog({
+electron.ipcMain.on("exportCsv", async (_event, { type, data: data2 }) => {
+  const { canceled: cancelled, filePath } = await electron.dialog.showSaveDialog({
     filters: [
       {
         name: "CSV",
@@ -230,7 +230,7 @@ electron.ipcMain.handle("setApplicationMenu", async (event, menuTemplate) => {
 electron.ipcMain.handle("getSettings", () => {
   return settings.get();
 });
-electron.ipcMain.handle("saveSettings", (event, data2) => {
+electron.ipcMain.handle("saveSettings", (_event, data2) => {
   settings.set(data2);
   return settings.save();
 });
@@ -257,7 +257,7 @@ function createWindow() {
   });
 }
 electron.app.whenReady().then(createWindow);
-electron.ipcMain.on("setWindowTitle", (event, title) => {
+electron.ipcMain.on("setWindowTitle", (_event, title) => {
   if (mainWindow) {
     mainWindow.setTitle(title);
   }

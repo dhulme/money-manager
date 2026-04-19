@@ -3,7 +3,7 @@ import path from 'path';
 
 import './ipc';
 
-let mainWindow;
+let mainWindow: BrowserWindow | null;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -32,7 +32,7 @@ function createWindow() {
 
 app.whenReady().then(createWindow);
 
-ipcMain.on('setWindowTitle', (event, title) => {
+ipcMain.on('setWindowTitle', (_event, title: string) => {
   if (mainWindow) {
     mainWindow.setTitle(title);
   }

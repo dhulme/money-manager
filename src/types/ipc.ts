@@ -35,10 +35,6 @@ export interface ElectronAPI {
   invoke(channel: 'importBulkTransactionTransactions'): Promise<string>;
   invoke(channel: 'setApplicationMenu', data: unknown): Promise<void>;
   invoke(channel: IpcInvokeChannel, data?: unknown): Promise<unknown>;
-  on(channel: 'projectOpened', callback: (data: { data: ProjectData; filePath: string }) => void): (() => void) | undefined;
-  on(channel: 'closeConfirmed', callback: () => void): (() => void) | undefined;
-  on(channel: 'importTransactionsDone', callback: (data: { data: string; id: string }) => void): (() => void) | undefined;
-  on(channel: 'runApplicationMenuItem', callback: (menuItemId: string) => void): (() => void) | undefined;
   on(channel: IpcOnChannel, callback: (...args: unknown[]) => void): (() => void) | undefined;
 }
 

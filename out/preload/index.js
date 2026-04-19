@@ -1,47 +1,49 @@
 "use strict";
-const { contextBridge, ipcRenderer } = require("electron");
-contextBridge.exposeInMainWorld("electronAPI", {
-  // Fire-and-forget: renderer → main
+const electron = require("electron");
+const sendChannels = [
+  "projectSave",
+  "projectSaveAs",
+  "projectOpenDefault",
+  "projectOpen",
+  "projectNew",
+  "exportCsv",
+  "showCloseWarning",
+  "setWindowTitle"
+];
+const invokeChannels = [
+  "importTransactions",
+  "importBulkTransactionTransactions",
+  "setApplicationMenu",
+  "getSettings",
+  "saveSettings"
+];
+const onChannels = [
+  "projectOpened",
+  "closeConfirmed",
+  "importTransactionsDone",
+  "runApplicationMenuItem"
+];
+const api = {
   send(channel, data) {
-    const allowedChannels = [
-      "projectSave",
-      "projectSaveAs",
-      "projectOpenDefault",
-      "projectOpen",
-      "projectNew",
-      "exportCsv",
-      "showCloseWarning",
-      "setWindowTitle"
-    ];
-    if (allowedChannels.includes(channel)) {
-      ipcRenderer.send(channel, data);
+    if (sendChannels.includes(channel)) {
+      electron.ipcRenderer.send(channel, data);
     }
   },
-  // Request/response: renderer → main → renderer
   invoke(channel, data) {
-    const allowedChannels = [
-      "importTransactions",
-      "importBulkTransactionTransactions",
-      "setApplicationMenu",
-      "getSettings",
-      "saveSettings"
-    ];
-    if (allowedChannels.includes(channel)) {
-      return ipcRenderer.invoke(channel, data);
+    if (invokeChannels.includes(channel)) {
+      return electron.ipcRenderer.invoke(channel, data);
     }
+    return Promise.reject(new Error(`Invalid invoke channel: ${channel}`));
   },
-  // Listen: main → renderer
   on(channel, callback) {
-    const allowedChannels = [
-      "projectOpened",
-      "closeConfirmed",
-      "importTransactionsDone",
-      "runApplicationMenuItem"
-    ];
-    if (allowedChannels.includes(channel)) {
+    if (onChannels.includes(channel)) {
       const subscription = (_event, ...args) => callback(...args);
-      ipcRenderer.on(channel, subscription);
-      return () => ipcRenderer.removeListener(channel, subscription);
+      electron.ipcRenderer.on(channel, subscription);
+      return () => {
+        electron.ipcRenderer.removeListener(channel, subscription);
+      };
     }
+    return void 0;
   }
-});
+};
+electron.contextBridge.exposeInMainWorld("electronAPI", api);
