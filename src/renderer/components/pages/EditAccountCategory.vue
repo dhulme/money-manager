@@ -31,7 +31,12 @@
 </template>
 
 <script>
+import { useProjectStore } from '@/store';
+
 export default {
+  setup() {
+    return { projectStore: useProjectStore() };
+  },
   data() {
     return {
       category: {
@@ -58,7 +63,7 @@ export default {
       this.formClean = false;
       const { valid } = await this.$refs.form.validate();
       if (valid) {
-        this.$store.dispatch('project/addAccountCategory', {
+        this.projectStore.addAccountCategory({
           name: this.category.name,
           type: this.category.type
         });

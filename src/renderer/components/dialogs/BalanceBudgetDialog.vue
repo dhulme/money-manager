@@ -80,12 +80,17 @@
 <script>
 import Big from 'big.js';
 import { getId } from '../../util';
+import { useProjectStore } from '../../store/project';
+import { useRootStore } from '../../store/root';
 
 export default {
   props: {
     modelValue: Boolean,
   },
   emits: ['update:modelValue'],
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   data() {
     return {
       rows: [],
@@ -101,13 +106,13 @@ export default {
       },
     },
     summaryBalance() {
-      return this.$store.getters['project/summaryBalance'];
+      return this.projectStore.summaryBalance;
     },
     isNegative() {
       return parseFloat(this.summaryBalance) < 0;
     },
     accountItems() {
-      return this.$store.getters['project/accountItems'];
+      return this.projectStore.accountItems;
     },
     transactionsTotal() {
       return this.rows.reduce((total, row) => {
@@ -159,11 +164,10 @@ export default {
         });
 
       transactions.forEach((transaction) => {
-        this.$store.dispatch('project/addTransaction', transaction);
+        this.projectStore.addTransaction(transaction);
       });
 
-      this.$store.dispatch(
-        'openSnackbar',
+      this.rootStore.openSnackbar(
         `${transactions.length} balancing transaction${transactions.length === 1 ? '' : 's'} added`
       );
       this.dialogVisible = false;

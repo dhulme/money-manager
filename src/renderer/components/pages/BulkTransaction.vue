@@ -99,8 +99,12 @@ import { getId } from '../../util';
 import BulkTransactionTransactions from '../BulkTransactionTransactions.vue';
 import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 import importBulkTransactions from './importBulkTransactions';
+import { useProjectStore, useRootStore } from '@/store';
 
 export default {
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   components: {
     BulkTransactionTransactions,
     BulkTransactionEdit,
@@ -121,12 +125,12 @@ export default {
   },
   computed: {
     bulkTransaction() {
-      return this.$store.getters['project/bulkTransaction'](
+      return this.projectStore.getBulkTransaction(
         this.$route.params.bulkTransactionId
       );
     },
     bulkTransactionTransactions() {
-      return this.$store.getters['project/bulkTransactionTransactions'](
+      return this.projectStore.getBulkTransactionTransactions(
         this.bulkTransaction
       );
     },
@@ -148,7 +152,7 @@ export default {
   },
   methods: {
     process() {
-      this.$store.dispatch('project/runBulkTransactionTransactions', {
+      this.projectStore.runBulkTransactionTransactions({
         bulkTransaction: this.bulkTransaction,
         transactions: this.transactions.map((transaction) => ({
           ...transaction,
@@ -156,7 +160,7 @@ export default {
           date: new Date().toISOString(),
         })),
       });
-      this.$store.dispatch('openSnackbar', 'Transactions done');
+      this.rootStore.openSnackbar('Transactions done');
     },
     editTransaction(transaction) {
       this.transaction = transaction;
@@ -181,14 +185,14 @@ export default {
       this.transactions.splice(index, 1);
     },
     goToBulkTransactionsIfDialogClosed() {
-      if (!this.$store.state.dialog && !this.dialogVisible) {
+      if (!this.rootStore.dialog && !this.dialogVisible) {
         this.$router.push({
           name: 'bulkTransactions',
         });
       }
     },
     clone() {
-      this.$store.commit('setNewBulkTransaction', {
+      this.rootStore.setNewBulkTransaction({
         ...this.bulkTransaction,
         transactions: this.transactions,
       });
@@ -197,14 +201,11 @@ export default {
       });
     },
     async applyChanges() {
-      await this.$store.dispatch('project/updateBulkTransaction', {
+      await this.projectStore.updateBulkTransaction({
         ...this.bulkTransaction,
         transactions: this.transactions,
       });
-      await this.$store.dispatch(
-        'openSnackbar',
-        'Applied bulk transaction changes'
-      );
+      this.rootStore.openSnackbar('Applied bulk transaction changes');
     },
     discardChanges() {
       this.transactions = JSON.parse(
@@ -221,10 +222,7 @@ export default {
       this.$router.push({ name: this.toLocation.name });
     },
     async deleteBulkTransaction() {
-      await this.$store.dispatch(
-        'project/deleteBulkTransaction',
-        this.bulkTransaction.id
-      );
+      await this.projectStore.deleteBulkTransaction(this.bulkTransaction.id);
       this.$router.push({ name: 'bulkTransactions' });
     },
     openEditDialog() {
@@ -235,7 +233,7 @@ export default {
     async saveEdit() {
       const { valid } = await this.$refs.editForm.validate();
       if (!valid) return;
-      await this.$store.dispatch('project/updateBulkTransaction', {
+      await this.projectStore.updateBulkTransaction({
         ...this.bulkTransaction,
         name: this.editName,
         description: this.editDescription,

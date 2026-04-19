@@ -51,6 +51,8 @@
 
 <script>
 import { getId, validateInputValue } from '../util';
+import { useProjectStore } from '../store/project';
+import { useRootStore } from '../store/root';
 
 export default {
   props: {
@@ -62,6 +64,9 @@ export default {
       type: Object,
       default: null,
     },
+  },
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
   },
   data() {
     return {
@@ -82,7 +87,7 @@ export default {
   },
   computed: {
     accounts() {
-      return this.$store.getters['project/accountItems'];
+      return this.projectStore.accountItems;
     },
   },
   watch: {
@@ -109,7 +114,7 @@ export default {
       this.$emit('saved', this.newTransaction);
     },
     close() {
-      if (!this.$store.state.dialog) {
+      if (!this.rootStore.dialog) {
         this.$emit('close');
       }
     },

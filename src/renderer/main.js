@@ -1,10 +1,10 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import { format } from 'date-fns';
 
 import vuetify from './plugins/vuetify';
 import App from './App.vue';
 import router from './router';
-import store from './store/index';
 
 import history from './history';
 import ipc from './ipc';
@@ -76,10 +76,9 @@ app.config.globalProperties.$ipc = ipc;
 app.directive('hotkey', hotkeyDirective);
 
 app.use(vuetify);
-app.use(store);
+app.use(createPinia());
 app.use(router);
 app.use(history, {
-  store,
   router,
   async ready() {
     const { currencyPrefix, dateFormat } = await ipc.getSettings();

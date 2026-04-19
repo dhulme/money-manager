@@ -45,9 +45,13 @@
 <script>
 import AccountList from '@/components/AccountList.vue';
 import RestoreDeletedAccounts from '@/components/RestoreDeletedAccounts.vue';
+import { useRootStore } from '../../store/root';
 
 export default {
   components: { AccountList, RestoreDeletedAccounts },
+  setup() {
+    return { rootStore: useRootStore() };
+  },
   data() {
     return {
       searched: { assets: [], liabilities: [], budgets: [] },
@@ -61,10 +65,10 @@ export default {
   computed: {
     search: {
       get() {
-        return this.$store.state.search;
+        return this.rootStore.search;
       },
       set(value) {
-        this.$store.commit('setSearch', value);
+        this.rootStore.setSearch(value);
       },
     },
   },

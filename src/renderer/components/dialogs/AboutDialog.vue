@@ -20,14 +20,19 @@
 </template>
 
 <script>
+import { useRootStore } from '../../store/root';
+
 export default {
+  setup() {
+    return { rootStore: useRootStore() };
+  },
   computed: {
     dialog: {
       get() {
-        return this.$store.state.dialog === 'about';
+        return this.rootStore.dialog === 'about';
       },
       set(value) {
-        return this.$store.commit('setDialog', value ? 'about' : null);
+        this.rootStore.setDialog(value ? 'about' : null);
       }
     }
   }

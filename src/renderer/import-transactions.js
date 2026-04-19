@@ -3,11 +3,11 @@ import { parse as parseDate } from 'date-fns';
 
 import { capitalizeFirstLetter } from './util';
 import ipc from './ipc';
-import store from './store';
+import { useRootStore } from './store/root';
 
 function handleCsvErrors(errors) {
-  store.commit(
-    'setError',
+  const rootStore = useRootStore();
+  rootStore.setError(
     'Failed to import transactions CSV' +
       (errors && errors.length
         ? `. Errors on rows: ${errors.map((error) => error.row).join(', ')}`
@@ -152,7 +152,8 @@ ipc.on('importTransactionsDone', ({ data, id }) => {
       .find((_) => _.id === id)
       .toTransactions(data);
     if (transactions) {
-      store.commit('setImportedTransactions', transactions);
+      const rootStore = useRootStore();
+      rootStore.setImportedTransactions(transactions);
     }
   } catch (e) {
     console.error(e);

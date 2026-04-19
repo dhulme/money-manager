@@ -25,10 +25,15 @@
 </template>
 
 <script>
+import { useProjectStore } from '../store/project';
+
 export default {
+  setup() {
+    return { projectStore: useProjectStore() };
+  },
   computed: {
     bulkTransactions() {
-      return this.$store.getters['project/bulkTransactions'];
+      return this.projectStore.sortedBulkTransactions;
     }
   },
   methods: {

@@ -17,6 +17,7 @@ import {
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { isAfter, isBefore, parseISO, isSameDay, format } from 'date-fns';
+import { useProjectStore } from '../../store/project';
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, TimeScale, Tooltip, Legend, Filler);
 
@@ -29,6 +30,9 @@ export default {
     },
     dateRange: Array,
   },
+  setup() {
+    return { projectStore: useProjectStore() };
+  },
   computed: {
     data() {
       if (!this.account) {
@@ -38,11 +42,11 @@ export default {
       return this.account.transactionIds
         .map((transactionId) => {
           const transaction =
-            this.$store.getters['project/transaction'](transactionId);
+            this.projectStore.getTransaction(transactionId);
           if (transaction.date) {
             return {
               y: Number(
-                this.$store.getters['project/accountBalance'](
+                this.projectStore.getAccountBalance(
                   this.account,
                   transactionId
                 )

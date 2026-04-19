@@ -1,6 +1,6 @@
 import Big from 'big.js';
 
-import store from '@/store';
+import { useProjectStore } from '@/store';
 
 import {
   getInit,
@@ -10,14 +10,14 @@ import {
 } from './utils';
 
 describe('getters', () => {
-  const state = store.state.project;
+  let store;
+  let init;
 
-  const init = getInit(state);
-  beforeEach(() => init());
-
-  function get(name) {
-    return store.getters[`project/${name}`];
-  }
+  beforeEach(() => {
+    store = useProjectStore();
+    init = getInit(store);
+    init();
+  });
 
   describe('accounts', () => {
     it('should return accounts', () => {
@@ -25,7 +25,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      const accounts = get('accounts');
+      const accounts = store.activeAccounts;
       expect(accounts).toHaveLength(1);
       expect(accounts[0]).toMatchObject(account);
     });
@@ -36,7 +36,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      const accounts = get('accounts');
+      const accounts = store.activeAccounts;
       expect(accounts).toHaveLength(0);
     });
   });
@@ -47,7 +47,7 @@ describe('getters', () => {
       const account2 = getNewAccount('b');
       account1.deleted = true;
       init({ accounts: [account1, account2] });
-      const accounts = get('deletedAccounts');
+      const accounts = store.deletedAccounts;
       expect(accounts).toHaveLength(1);
     });
   });
@@ -62,7 +62,7 @@ describe('getters', () => {
       init({
         accounts: [accountB, accountC, accountA, accountD],
       });
-      const accounts = get('accountItems');
+      const accounts = store.accountItems;
       expect(accounts).toHaveLength(4);
       expect(accounts[0].title).toBe('a');
       expect(accounts[1].title).toBe('a');
@@ -82,7 +82,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      const accounts = get('accountItems');
+      const accounts = store.accountItems;
       expect(accounts).toHaveLength(0);
     });
   });
@@ -93,7 +93,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      const accounts = get('accountsByCategory')('test');
+      const accounts = store.accountsByCategory('test');
       expect(accounts).toHaveLength(1);
     });
   });
@@ -104,7 +104,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      expect(get('account')(account.id)).toEqual(account);
+      expect(store.getAccount(account.id)).toEqual(account);
     });
 
     it('gets a deleted account', () => {
@@ -113,7 +113,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      expect(get('account')(account.id)).toEqual(account);
+      expect(store.getAccount(account.id)).toEqual(account);
     });
   });
 
@@ -123,7 +123,7 @@ describe('getters', () => {
       init({
         accounts: [account],
       });
-      expect(get('accountByName')(account.name)).toEqual(account);
+      expect(store.getAccountByName(account.name)).toEqual(account);
     });
   });
 
@@ -139,7 +139,7 @@ describe('getters', () => {
         },
       });
 
-      const transactions = get('transactions')(account);
+      const transactions = store.getTransactions(account);
       expect(transactions[0]).toEqual(transaction);
     });
   });
@@ -150,7 +150,7 @@ describe('getters', () => {
       init({
         transactions: { [transaction.id]: transaction },
       });
-      expect(get('transaction')(transaction.id)).toEqual(transaction);
+      expect(store.getTransaction(transaction.id)).toEqual(transaction);
     });
   });
 
@@ -162,7 +162,7 @@ describe('getters', () => {
           balance,
         },
       });
-      expect(get('summaryBalance')).toBe(balance);
+      expect(store.summaryBalance).toBe(balance);
     });
   });
 
@@ -173,7 +173,7 @@ describe('getters', () => {
           balance: 0,
         },
       });
-      expect(get('summaryBalanceEqualsZero')).toBe(true);
+      expect(store.summaryBalanceEqualsZero).toBe(true);
     });
 
     it('returns false if not 0', () => {
@@ -182,7 +182,7 @@ describe('getters', () => {
           balance: 3,
         },
       });
-      expect(get('summaryBalanceEqualsZero')).toBe(false);
+      expect(store.summaryBalanceEqualsZero).toBe(false);
     });
   });
 
@@ -195,7 +195,7 @@ describe('getters', () => {
       init({
         accounts: [account1, account2],
       });
-      expect(get('accountsTotal')(account1.category)).toMatchObject(
+      expect(store.accountsTotal(account1.category)).toMatchObject(
         new Big(account1.balance + account2.balance)
       );
     });
@@ -209,7 +209,7 @@ describe('getters', () => {
       init({
         bulkTransactions: [bulkTransaction1, bulkTransaction2],
       });
-      const bulkTransactions = get('bulkTransactions');
+      const bulkTransactions = store.sortedBulkTransactions;
       expect(bulkTransactions[0]).toMatchObject(bulkTransaction2);
       expect(bulkTransactions[1]).toMatchObject(bulkTransaction1);
     });
@@ -225,7 +225,7 @@ describe('getters', () => {
         bulkTransactionTransactions: { [transaction.id]: transaction },
       });
       expect(
-        get('bulkTransactionTransactions')(bulkTransaction)[0]
+        store.getBulkTransactionTransactions(bulkTransaction)[0]
       ).toMatchObject(transaction);
     });
 
@@ -237,7 +237,7 @@ describe('getters', () => {
         bulkTransactions: [bulkTransaction],
         bulkTransactionTransactions: { [transaction.id]: transaction },
       });
-      expect(get('bulkTransactionTransactions')(bulkTransaction)[0].id).toBe(
+      expect(store.getBulkTransactionTransactions(bulkTransaction)[0].id).toBe(
         transaction.id
       );
     });
@@ -260,10 +260,10 @@ describe('getters', () => {
         },
       });
 
-      expect(get('accountBalance')(account, transaction1.id)).toMatchObject(
+      expect(store.getAccountBalance(account, transaction1.id)).toMatchObject(
         new Big(-2)
       );
-      expect(get('accountBalance')(account, transaction2.id)).toMatchObject(
+      expect(store.getAccountBalance(account, transaction2.id)).toMatchObject(
         new Big(0)
       );
     });

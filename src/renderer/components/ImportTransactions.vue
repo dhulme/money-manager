@@ -81,6 +81,8 @@
 import { format, parse, parseISO, isSameDay } from 'date-fns';
 import { getId } from '../util';
 import ipc from '../ipc';
+import { useProjectStore } from '../store/project';
+import { useRootStore } from '../store/root';
 
 export default {
   props: {
@@ -88,6 +90,9 @@ export default {
     visible: Boolean,
   },
   emits: ['close'],
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   data() {
     return {
       headers: [
@@ -144,7 +149,7 @@ export default {
   },
   computed: {
     importedTransactions() {
-      const existingTransactions = this.$store.getters['project/transactions'](
+      const existingTransactions = this.projectStore.getTransactions(
         this.account
       );
       function transactionExists(transaction) {
@@ -155,7 +160,7 @@ export default {
             isSameDay(parseISO(existing.date), transaction.date instanceof Date ? transaction.date : parseISO(transaction.date))
         );
       }
-      return this.$store.state.importedTransactions
+      return this.rootStore.importedTransactions
         .filter((item) => !transactionExists(item))
         .map((item) => ({
           date: format(item.date instanceof Date ? item.date : parseISO(item.date), this.$dateFormat),
@@ -169,7 +174,7 @@ export default {
         }));
     },
     accounts() {
-      return this.$store.getters['project/accountItems'].filter(
+      return this.projectStore.accountItems.filter(
         (account) => account.value !== this.account.id
       );
     },
@@ -211,7 +216,7 @@ export default {
             giftAided: uiTransaction.giftAided,
           };
 
-          const transactionAccount = this.$store.getters['project/account'](
+          const transactionAccount = this.projectStore.getAccount(
             uiTransaction.account
           );
 
@@ -252,10 +257,9 @@ export default {
         })
         .filter((transaction) => !!transaction);
 
-      this.$store.dispatch('project/addDualTransactions', transactions);
+      this.projectStore.addDualTransactions(transactions);
       this.$emit('close');
-      this.$store.dispatch(
-        'openSnackbar',
+      this.rootStore.openSnackbar(
         `${transactions.length || 'No'} transactions imported`
       );
     },
@@ -273,7 +277,7 @@ export default {
       }
     },
     removeTransaction(index) {
-      this.$store.state.importedTransactions.splice(index, 1);
+      this.rootStore.importedTransactions.splice(index, 1);
     },
     confirmCancel() {
       this.cancelDialogVisible = true;

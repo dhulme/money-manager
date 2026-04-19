@@ -16,6 +16,7 @@ import {
 import 'chartjs-adapter-date-fns';
 import Big from 'big.js';
 import { isAfter, isBefore, parseISO, isSameDay, parse } from 'date-fns';
+import { useProjectStore } from '../../store/project';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, TimeScale, Tooltip, Legend);
 
@@ -28,6 +29,9 @@ export default {
     },
     dateRange: Array,
   },
+  setup() {
+    return { projectStore: useProjectStore() };
+  },
   computed: {
     data() {
       if (!this.account) {
@@ -37,7 +41,7 @@ export default {
       return this.account.transactionIds.reduce(
         (monthlyTotals, transactionId) => {
           const transaction =
-            this.$store.getters['project/transaction'](transactionId);
+            this.projectStore.getTransaction(transactionId);
 
           if (transaction.date && transaction.from === this.account.id) {
             const date = parseISO(transaction.date);

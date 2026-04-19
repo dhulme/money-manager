@@ -91,13 +91,17 @@ import BulkTransactionEdit from '../BulkTransactionEdit.vue';
 import importBulkTransactions from './importBulkTransactions';
 
 import { getId, validateInputValue } from '../../util';
+import { useProjectStore, useRootStore } from '@/store';
 
 export default {
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   components: { BulkTransactionTransactions, BulkTransactionEdit },
   mixins: [importBulkTransactions],
   data() {
     const { name, description, transactions } =
-      this.$store.state.newBulkTransaction;
+      this.rootStore.newBulkTransaction;
     return {
       name,
       description,
@@ -129,7 +133,7 @@ export default {
   },
   computed: {
     projectItems() {
-      return this.$store.getters['project/accounts'].map((account) => ({
+      return this.projectStore.activeAccounts.map((account) => ({
         title: account.name,
         value: account.id,
       }));
@@ -158,7 +162,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch('project/addBulkTransaction', {
+      this.projectStore.addBulkTransaction({
         name: this.name,
         description: this.description,
         transactions: this.transactions,
@@ -167,7 +171,7 @@ export default {
       this.$router.push({ name: 'bulkTransactions' });
     },
     goToBulkTransactions() {
-      if (!this.$store.state.dialog) {
+      if (!this.rootStore.dialog) {
         this.$router.push({ name: 'bulkTransactions' });
       }
     },

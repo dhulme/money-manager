@@ -28,9 +28,13 @@
 
 <script>
 import Big from 'big.js';
+import { useProjectStore } from '../store/project';
 
 export default {
   props: { transactions: Array, search: String },
+  setup() {
+    return { projectStore: useProjectStore() };
+  },
   data() {
     return {
       headers: [
@@ -63,7 +67,7 @@ export default {
   },
   methods: {
     accountName(accountId) {
-      return this.$store.getters['project/account'](accountId).name;
+      return this.projectStore.getAccount(accountId).name;
     },
   },
 };

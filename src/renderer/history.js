@@ -3,6 +3,8 @@ import { format } from 'date-fns';
 
 import ipc from './ipc';
 import { setSaveEnabled, setUndoLabel, setRedoLabel } from './menu';
+import { useProjectStore } from './store/project';
+import { useRootStore } from './store/root';
 
 const actionNames = {
   addTransaction: 'Add transaction',
@@ -20,7 +22,6 @@ const actionNames = {
   addAccountCategory: 'Add account category',
   updateBulkTransaction: 'Apply bulk transaction changes',
 };
-const storePrefix = 'project/';
 
 function setEdited(edited) {
   ipc.setEdited(edited);
@@ -28,29 +29,48 @@ function setEdited(edited) {
 }
 
 const history = {
-  install(app, { store, router, ready }) {
+  install(app, { router, ready }) {
     const done = [];
     let undone = [];
     let newAction = true;
     let initData;
     let savedDoneLength = 0;
+    let projectStore;
 
-    store.subscribeAction((action) => {
-      if (!action.type.startsWith(storePrefix)) return;
+    // We defer getting the store until after Pinia is installed
+    function getProjectStore() {
+      if (!projectStore) projectStore = useProjectStore();
+      return projectStore;
+    }
 
-      done.push(action);
-      setEdited(true);
-      setUndoLabel(actionNames[action.type.replace(storePrefix, '')]);
-      if (newAction) {
-        setRedoLabel();
-        undone = [];
-      }
-    });
+    // Subscribe to Pinia actions on the project store
+    // We need to wait until Pinia is ready before subscribing
+    let unsubscribe;
+    const setupSubscription = () => {
+      if (unsubscribe) return;
+      const store = getProjectStore();
+      unsubscribe = store.$onAction(({ name, args, after }) => {
+        // Skip internal/private actions
+        if (name.startsWith('_') || name === 'init' || name === 'updateSummaryBalance') return;
+        if (!actionNames[name]) return;
+
+        after(() => {
+          done.push({ name, args: args[0] });
+          setEdited(true);
+          setUndoLabel(actionNames[name]);
+          if (newAction) {
+            setRedoLabel();
+            undone = [];
+          }
+        });
+      });
+    };
 
     ipc.on('projectOpened', (data) => {
       const callReady = !initData;
       initData = data;
-      store.commit(`${storePrefix}init`, initData);
+      setupSubscription();
+      getProjectStore().init(initData);
       setEdited(false);
       if (callReady) {
         ready();
@@ -66,7 +86,15 @@ const history = {
         !canClose &&
         done.length !== savedDoneLength
       ) {
-        ipc.showCloseWarning(store.state.project);
+        const store = getProjectStore();
+        ipc.showCloseWarning({
+          accountCategories: store.accountCategories,
+          accounts: store.accounts,
+          transactions: store.transactions,
+          summary: store.summary,
+          bulkTransactions: store.bulkTransactions,
+          bulkTransactionTransactions: store.bulkTransactionTransactions,
+        });
         e.returnValue = false;
       }
     });
@@ -82,15 +110,18 @@ const history = {
 
         const toUndo = done.pop();
         undone.push(toUndo);
-        setRedoLabel(actionNames[toUndo.type.replace(storePrefix, '')]);
+        setRedoLabel(actionNames[toUndo.name]);
 
+        const store = getProjectStore();
         newAction = false;
-        store.commit(`${storePrefix}init`, initData);
-        done.forEach((action) => {
-          store.dispatch(action.type, action.payload);
-          done.pop();
+        store.init(initData);
+        const actionsToReplay = [...done];
+        // Clear done because replaying will re-add them via the subscription
+        done.length = 0;
+        actionsToReplay.forEach((action) => {
+          store[action.name](action.args);
         });
-        store.commit(`${storePrefix}updateSummaryBalance`);
+        store.updateSummaryBalance();
         newAction = true;
 
         if (done.length === 0) {
@@ -107,7 +138,7 @@ const history = {
 
         const action = undone.pop();
         newAction = false;
-        store.dispatch(action.type, action.payload);
+        getProjectStore()[action.name](action.args);
         newAction = true;
 
         if (undone.length === 0) {
@@ -120,23 +151,40 @@ const history = {
         setEdited(done.length !== savedDoneLength);
       },
       save() {
+        const store = getProjectStore();
         savedDoneLength = done.length;
-        ipc.saveProject(store.state.project);
+        ipc.saveProject({
+          accountCategories: store.accountCategories,
+          accounts: store.accounts,
+          transactions: store.transactions,
+          summary: store.summary,
+          bulkTransactions: store.bulkTransactions,
+          bulkTransactionTransactions: store.bulkTransactionTransactions,
+        });
         setEdited(false);
       },
       open() {
         ipc.openProject();
       },
       saveAs() {
+        const store = getProjectStore();
         savedDoneLength = done.length;
-        ipc.saveProjectAs(store.state.project);
+        ipc.saveProjectAs({
+          accountCategories: store.accountCategories,
+          accounts: store.accounts,
+          transactions: store.transactions,
+          summary: store.summary,
+          bulkTransactions: store.bulkTransactions,
+          bulkTransactionTransactions: store.bulkTransactionTransactions,
+        });
         setEdited(false);
       },
       new() {
         ipc.newProject();
       },
       exportSummary() {
-        const summary = store.state.project.accounts.map((account) => ({
+        const store = getProjectStore();
+        const summary = store.accounts.map((account) => ({
           Name: account.name,
           Category: account.category,
           Type: account.type,
@@ -145,14 +193,15 @@ const history = {
         ipc.exportCsv('summary', unparse(summary));
       },
       exportTransactions() {
-        const accountNamesById = store.state.project.accounts.reduce(
+        const store = getProjectStore();
+        const accountNamesById = store.accounts.reduce(
           (acc, account) => ({
             ...acc,
             [account.id]: account.name,
           }),
           {}
         );
-        const transactions = Object.values(store.state.project.transactions)
+        const transactions = Object.values(store.transactions)
           .sort((a, b) => {
             const aDateValue = new Date(a.date).valueOf();
             const bDateValue = new Date(b.date).valueOf();
@@ -162,7 +211,6 @@ const history = {
             Date: format(new Date(transaction.date), 'yyyy-MM-dd'),
             From: accountNamesById[transaction.from],
             To: accountNamesById[transaction.to],
-            Expense: accountNamesById[transaction.expense],
             Description: transaction.description,
             Note: transaction.note,
             Value: Number(transaction.value),

@@ -15,15 +15,19 @@
 
 <script>
 import BulkTransactionList from '../BulkTransactionList.vue';
+import { useRootStore } from '../../store/root';
 
 export default {
   components: { BulkTransactionList },
+  setup() {
+    return { rootStore: useRootStore() };
+  },
   created() {
     this.$ipc.setTitle();
   },
   methods: {
     newBulkTransaction() {
-      this.$store.commit('setNewBulkTransaction');
+      this.rootStore.setNewBulkTransaction();
       this.$router.push({ name: 'newBulkTransaction' });
     },
   },

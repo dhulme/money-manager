@@ -8,15 +8,19 @@
 <script>
 import AboutDialog from './dialogs/AboutDialog.vue';
 import SettingsDialog from './dialogs/SettingsDialog.vue';
+import { useRootStore } from '../store/root';
 
 export default {
   components: {
     AboutDialog,
     SettingsDialog
   },
+  setup() {
+    return { rootStore: useRootStore() };
+  },
   methods: {
     close() {
-      this.$store.commit('setDialog', null);
+      this.rootStore.setDialog(null);
     }
   }
 };

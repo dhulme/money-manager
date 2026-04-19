@@ -75,12 +75,17 @@ import TransactionList from '../TransactionList.vue';
 import TransactionEdit from '../TransactionEdit.vue';
 import ImportTransactions from '../ImportTransactions.vue';
 import { importTransactionsFormats } from '../../import-transactions';
+import { useProjectStore } from '../../store/project';
+import { useRootStore } from '../../store/root';
 
 export default {
   components: {
     TransactionList,
     TransactionEdit,
     ImportTransactions,
+  },
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
   },
   data() {
     return {
@@ -93,16 +98,16 @@ export default {
   },
   computed: {
     account() {
-      return this.$store.getters['project/account'](this.accountId);
+      return this.projectStore.getAccount(this.accountId);
     },
     transactions() {
-      return this.$store.getters['project/transactions'](this.account);
+      return this.projectStore.getTransactions(this.account);
     },
     accountId() {
       return this.$route.params.accountId;
     },
     importedTransactions() {
-      return this.$store.state.importedTransactions;
+      return this.rootStore.importedTransactions;
     },
   },
   created() {
@@ -118,7 +123,7 @@ export default {
   methods: {
     deleteAccount() {
       if (new Big(this.account.balance).eq(0)) {
-        this.$store.dispatch('project/deleteAccount', this.accountId);
+        this.projectStore.deleteAccount(this.accountId);
         this.$router.push({ name: 'accounts' });
       } else {
         this.cannotDeleteAccountDialogVisible = true;
@@ -130,7 +135,7 @@ export default {
     },
     closeDialog() {
       if (
-        this.$store.state.dialog ||
+        this.rootStore.dialog ||
         this.editTransactionDialogVisible ||
         this.importTransactionsActive
       ) {
@@ -138,7 +143,7 @@ export default {
       } else if (this.importTransactionsDialogVisible) {
         this.$refs.importTransactions.confirmCancel();
       } else {
-        this.$store.commit('setSearch', '');
+        this.rootStore.setSearch('');
         this.$router.push({
           name: 'accounts',
         });

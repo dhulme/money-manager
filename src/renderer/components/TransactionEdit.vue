@@ -82,6 +82,8 @@
 <script>
 import { VDateInput } from 'vuetify/labs/VDateInput';
 import { getId, validateInputValue } from '../util';
+import { useProjectStore } from '../store/project';
+import { useRootStore } from '../store/root';
 
 export default {
   components: { VDateInput },
@@ -127,12 +129,15 @@ export default {
       date: new Date(),
     };
   },
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   computed: {
     isNewTransaction() {
       return !this.transaction.id;
     },
     accounts() {
-      return this.$store.getters['project/accountItems'].filter(
+      return this.projectStore.accountItems.filter(
         (account) => account.value !== this.account.id
       );
     },
@@ -221,7 +226,7 @@ export default {
     update() {
       const uiTransaction = this.getTransactionFromUi();
 
-      const transaction = this.$store.getters['project/transaction'](
+      const transaction = this.projectStore.getTransaction(
         uiTransaction.id
       );
       const updates = {
@@ -238,11 +243,11 @@ export default {
       };
 
       if (transaction.linkedTransaction) {
-        const linkedTransaction = this.$store.getters['project/transaction'](
+        const linkedTransaction = this.projectStore.getTransaction(
           transaction.linkedTransaction
         );
 
-        this.$store.dispatch('project/updateDualTransaction', {
+        this.projectStore.updateDualTransaction({
           primary: updatedTransaction,
           secondary: {
             ...linkedTransaction,
@@ -250,14 +255,14 @@ export default {
           },
         });
       } else {
-        this.$store.dispatch('project/updateTransaction', updatedTransaction);
+        this.projectStore.updateTransaction(updatedTransaction);
       }
 
       return transaction;
     },
     add() {
       const uiTransaction = this.newTransaction;
-      const transactionAccount = this.$store.getters['project/account'](
+      const transactionAccount = this.projectStore.getAccount(
         uiTransaction.account
       );
       const transaction = this.getTransactionFromUi();
@@ -267,20 +272,19 @@ export default {
         parseFloat(uiTransaction.valueOut) < 0
       ) {
         throw new Error(
-          this.$store.commit('setError', 'You cannot enter negative numbers')
+          this.rootStore.setError('You cannot enter negative numbers')
         );
       }
       if (uiTransaction.valueIn && uiTransaction.valueOut) {
         throw new Error(
-          this.$store.commit(
-            'setError',
+          this.rootStore.setError(
             'A transaction cannot be both in and out'
           )
         );
       }
       if (!uiTransaction.valueIn && !uiTransaction.valueOut) {
         throw new Error(
-          this.$store.commit('setError', 'A transaction must have a value')
+          this.rootStore.setError('A transaction must have a value')
         );
       }
 
@@ -292,7 +296,7 @@ export default {
           transaction.from = this.account.id;
           transaction.to = uiTransaction.account;
         }
-        this.$store.dispatch('project/addTransaction', transaction);
+        this.projectStore.addTransaction(transaction);
       } else {
         transaction.expense = uiTransaction.account;
         const secondaryTransaction = {
@@ -305,7 +309,7 @@ export default {
         if (uiTransaction.valueIn) {
           transaction.from = 'none';
           transaction.to = this.account.id;
-          this.$store.dispatch('project/addDualTransaction', {
+          this.projectStore.addDualTransaction({
             primary: transaction,
             secondary: {
               ...secondaryTransaction,
@@ -316,7 +320,7 @@ export default {
         } else {
           transaction.from = this.account.id;
           transaction.to = 'none';
-          this.$store.dispatch('project/addDualTransaction', {
+          this.projectStore.addDualTransaction({
             primary: transaction,
             secondary: {
               ...secondaryTransaction,

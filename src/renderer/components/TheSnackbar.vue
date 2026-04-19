@@ -1,6 +1,6 @@
 <template>
   <v-snackbar v-model="active" :timeout="4000" location="bottom">
-    {{ $store.state.snackbar.message }}
+    {{ rootStore.snackbar.message }}
     <template v-slot:actions>
       <v-btn variant="text" @click="active = false">Close</v-btn>
     </template>
@@ -8,14 +8,19 @@
 </template>
 
 <script>
+import { useRootStore } from '../store/root';
+
 export default {
+  setup() {
+    return { rootStore: useRootStore() };
+  },
   computed: {
     active: {
       get() {
-        return this.$store.state.snackbar.active;
+        return this.rootStore.snackbar.active;
       },
       set(value) {
-        this.$store.commit('setSnackbarActive', value);
+        this.rootStore.setSnackbarActive(value);
       }
     }
   }

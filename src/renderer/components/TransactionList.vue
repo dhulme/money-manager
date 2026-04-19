@@ -95,6 +95,7 @@
 import { isAfter, isBefore, parseISO, isSameDay, parse } from 'date-fns';
 import Big from 'big.js';
 import DateRange from './DateRange.vue';
+import { useProjectStore } from '../store/project';
 
 const defaultTransaction = {
   date: new Date(),
@@ -118,6 +119,9 @@ export default {
       type: Array,
       default: () => [],
     },
+  },
+  setup() {
+    return { projectStore: useProjectStore() };
   },
   data() {
     return {
@@ -215,14 +219,14 @@ export default {
         accountId = transaction.to;
       }
       return accountId
-        ? this.$store.getters['project/account'](accountId).name
+        ? this.projectStore.getAccount(accountId).name
         : null;
     },
     addTransaction() {
       this.$emit('add-transaction');
     },
     accountBalance(transaction) {
-      return this.$store.getters['project/accountBalance'](
+      return this.projectStore.getAccountBalance(
         this.account,
         transaction.id
       );

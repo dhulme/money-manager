@@ -38,11 +38,15 @@ import Big from 'big.js';
 import { addYears, set, format, parseISO } from 'date-fns';
 import ipc from '@/ipc';
 import { unparse } from 'papaparse';
+import { useProjectStore } from '@/store';
 
 const dateFormat = 'd MMMM yyyy';
 const today = new Date();
 
 export default {
+  setup() {
+    return { projectStore: useProjectStore() };
+  },
   data() {
     return {
       dateRange: null,
@@ -76,14 +80,13 @@ export default {
       return this.$route.params.reportId;
     },
     accounts() {
-      return this.$store.getters['project/accountsByType']('asset');
+      return this.projectStore.accountsByType('asset');
     },
     transactions() {
-      const getTransaction = this.$store.getters['project/transaction'];
       const transactions = [...new Set(
         this.accounts.flatMap((account) => account.transactionIds)
       )]
-        .map((transactionId) => getTransaction(transactionId))
+        .map((transactionId) => this.projectStore.getTransaction(transactionId))
         .filter((transaction) => {
           const date = parseISO(transaction.date);
           return (

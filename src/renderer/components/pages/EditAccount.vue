@@ -41,7 +41,12 @@
 
 <script>
 import { importAccountTransactionsFormatItems } from '../../import-transactions';
+import { useProjectStore, useRootStore } from '@/store';
+
 export default {
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   data() {
     return {
       newAccount: {
@@ -71,7 +76,7 @@ export default {
     },
     account() {
       return (
-        this.accountId && this.$store.getters['project/account'](this.accountId)
+        this.accountId && this.projectStore.getAccount(this.accountId)
       );
     },
   },
@@ -94,14 +99,14 @@ export default {
         return;
       }
       if (this.accountId) {
-        this.$store.dispatch('project/editAccount', {
+        this.projectStore.editAccount({
           id: this.newAccount.id,
           name: this.newAccount.name,
           importTransactionsFormatId: this.newAccount
             .importTransactionsFormatId,
         });
       } else {
-        this.$store.dispatch('project/addAccount', {
+        this.projectStore.addAccount({
           name: this.newAccount.name,
           balance: this.newAccount.openingBalance,
           importTransactionsFormatId: this.newAccount
@@ -124,7 +129,7 @@ export default {
       this.openingBalance = '';
     },
     goToAccount(account) {
-      if (!this.$store.state.dialog) {
+      if (!this.rootStore.dialog) {
         this.$router.push({
           name: 'account',
           params: {

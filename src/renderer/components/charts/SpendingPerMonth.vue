@@ -27,6 +27,7 @@ import {
 import Big from 'big.js';
 import { startOfMonth, endOfMonth, parseISO, isWithinInterval } from 'date-fns';
 import colors from 'vuetify/lib/util/colors.mjs';
+import { useProjectStore } from '../../store/project';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -35,6 +36,9 @@ export default {
   props: {
     date: Date,
   },
+  setup() {
+    return { projectStore: useProjectStore() };
+  },
   data() {
     return {
       excludedAccountIds: [],
@@ -42,7 +46,7 @@ export default {
   },
   computed: {
     accounts() {
-      return this.$store.getters['project/accountsByType']('budget');
+      return this.projectStore.accountsByType('budget');
     },
     filteredAccounts() {
       return this.accounts.filter(
@@ -67,7 +71,7 @@ export default {
         return Number(
           account.transactionIds.reduce((total, transactionId) => {
             const transaction =
-              this.$store.getters['project/transaction'](transactionId);
+              this.projectStore.getTransaction(transactionId);
             if (
               transaction.date &&
               transaction.from === account.id &&

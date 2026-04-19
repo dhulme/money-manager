@@ -24,9 +24,14 @@
 
 <script>
 import BalanceBudgetDialog from './dialogs/BalanceBudgetDialog.vue';
+import { useProjectStore } from '../store/project';
+import { useRootStore } from '../store/root';
 
 export default {
   components: { BalanceBudgetDialog },
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   data() {
     return {
       balanceDialogVisible: false,
@@ -34,11 +39,11 @@ export default {
   },
   computed: {
     summaryBalance() {
-      return this.$store.getters['project/summaryBalance'];
+      return this.projectStore.summaryBalance;
     },
     showBudgetWarning() {
       return (
-        !this.error && !this.$store.getters['project/summaryBalanceEqualsZero']
+        !this.error && !this.projectStore.summaryBalanceEqualsZero
       );
     },
     color() {
@@ -46,14 +51,14 @@ export default {
     },
     hasError: {
       get() {
-        return !!this.$store.state.error;
+        return !!this.rootStore.error;
       },
       set() {
-        this.$store.commit('setError', '');
+        this.rootStore.setError('');
       },
     },
     error() {
-      return this.$store.state.error;
+      return this.rootStore.error;
     },
   },
   methods: {

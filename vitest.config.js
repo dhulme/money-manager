@@ -7,6 +7,7 @@ export default defineConfig({
     environment: 'node',
     root: '.',
     include: ['test/unit/specs/**/*.spec.{js,ts}'],
+    setupFiles: ['test/unit/setup.js'],
   },
   resolve: {
     alias: {

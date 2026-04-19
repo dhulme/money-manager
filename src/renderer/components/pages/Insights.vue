@@ -43,8 +43,12 @@ import AccountSpendingOverTime from '../charts/AccountSpendingOverTime.vue';
 import SpendingPerMonth from '../charts/SpendingPerMonth.vue';
 import DateRange from '../DateRange.vue';
 import { subMonths, format } from 'date-fns';
+import { useProjectStore } from '@/store';
 
 export default {
+  setup() {
+    return { projectStore: useProjectStore() };
+  },
   components: {
     AccountValueOverTime,
     AccountSpendingOverTime,
@@ -59,7 +63,7 @@ export default {
   },
   computed: {
     account() {
-      return this.$store.getters['project/account'](this.accountId);
+      return this.projectStore.getAccount(this.accountId);
     },
     accounts() {
       return [
@@ -67,7 +71,7 @@ export default {
           title: 'All',
           value: null,
         },
-        ...this.$store.getters['project/accountItems'],
+        ...this.projectStore.accountItems,
       ];
     },
     monthDate() {

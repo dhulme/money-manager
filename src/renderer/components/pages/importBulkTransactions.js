@@ -1,10 +1,14 @@
 import { getId } from '../../util';
 import { importTransactionsFormats } from '../../import-transactions';
+import { useProjectStore, useRootStore } from '@/store';
 
 export default {
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   computed: {
     importedTransactions() {
-      return this.$store.state.importedTransactions;
+      return this.rootStore.importedTransactions;
     },
   },
   watch: {
@@ -13,10 +17,10 @@ export default {
       const replacedTransactionAccountNames = [];
       let count = 0;
       transactions.forEach((transaction) => {
-        const from = this.$store.getters['project/accountByName'](
+        const from = this.projectStore.getAccountByName(
           transaction.fromName
         )?.id;
-        const to = this.$store.getters['project/accountByName'](
+        const to = this.projectStore.getAccountByName(
           transaction.toName
         )?.id;
 
@@ -56,22 +60,20 @@ export default {
         }
       });
       if (missingAccountNames.size) {
-        this.$store.commit(
-          'setError',
+        this.rootStore.setError(
           `Accounts named ${[...missingAccountNames].join(
             ', '
           )} could not be found`
         );
       }
       if (replacedTransactionAccountNames.length) {
-        this.$store.dispatch(
-          'openSnackbar',
+        this.rootStore.openSnackbar(
           `Imported ${count} transactions (replaced: ${replacedTransactionAccountNames.join(
             ', '
           )})`
         );
       } else {
-        this.$store.dispatch('openSnackbar', `Imported ${count} transactions`);
+        this.rootStore.openSnackbar(`Imported ${count} transactions`);
       }
     },
   },

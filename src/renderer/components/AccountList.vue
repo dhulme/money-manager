@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import { useProjectStore } from '../store/project';
+
 export default {
   props: {
     accountCategory: String,
@@ -55,6 +57,9 @@ export default {
     search: String,
     hideOnEmpty: Boolean,
     showPositive: Boolean,
+  },
+  setup() {
+    return { projectStore: useProjectStore() };
   },
   data() {
     return {
@@ -66,7 +71,7 @@ export default {
   },
   computed: {
     accounts() {
-      const accounts = this.$store.getters['project/accountsByCategory'](
+      const accounts = this.projectStore.accountsByCategory(
         this.accountCategory,
       );
       return accounts.filter(
@@ -76,7 +81,7 @@ export default {
       );
     },
     total() {
-      return this.$store.getters['project/accountsTotal'](this.accountCategory);
+      return this.projectStore.accountsTotal(this.accountCategory);
     },
     visible() {
       return this.hideOnEmpty ? this.accounts.length > 0 : true;
@@ -94,7 +99,7 @@ export default {
       });
     },
     openAccount(accountId) {
-      const account = this.$store.getters['project/account'](accountId);
+      const account = this.projectStore.getAccount(accountId);
       this.$router.push({
         name: 'account',
         params: {

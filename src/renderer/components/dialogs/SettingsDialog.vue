@@ -42,8 +42,12 @@
 
 <script>
 import { format } from 'date-fns';
+import { useRootStore } from '../../store/root';
 
 export default {
+  setup() {
+    return { rootStore: useRootStore() };
+  },
   data() {
     return {
       settings: {},
@@ -60,10 +64,10 @@ export default {
   computed: {
     dialog: {
       get() {
-        return this.$store.state.dialog === 'settings';
+        return this.rootStore.dialog === 'settings';
       },
       set(value) {
-        return this.$store.commit('setDialog', value ? 'settings' : null);
+        this.rootStore.setDialog(value ? 'settings' : null);
       },
     },
     exampleDate() {

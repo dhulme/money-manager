@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import { useRootStore } from '../store/root';
+
 export default {
   props: {
     routeName: String,
@@ -12,6 +14,9 @@ export default {
       type: Array,
       default: () => [],
     },
+  },
+  setup() {
+    return { rootStore: useRootStore() };
   },
   computed: {
     active() {
@@ -24,7 +29,7 @@ export default {
   },
   methods: {
     click() {
-      this.$store.commit('setSearch', '');
+      this.rootStore.setSearch('');
       this.$router.push({
         name: this.routeName,
       });

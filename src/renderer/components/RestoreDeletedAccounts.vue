@@ -23,18 +23,24 @@
 </template>
 
 <script>
+import { useProjectStore } from '../store/project';
+import { useRootStore } from '../store/root';
+
 export default {
+  setup() {
+    return { projectStore: useProjectStore(), rootStore: useRootStore() };
+  },
   computed: {
     deletedAccounts() {
-      return this.$store.getters['project/deletedAccounts'];
+      return this.projectStore.deletedAccounts;
     }
   },
   methods: {
     restore(account) {
-      this.$store.dispatch('project/restoreDeletedAccount', account.id);
+      this.projectStore.restoreDeletedAccount(account.id);
     },
     close() {
-      if (!this.$store.state.dialog) {
+      if (!this.rootStore.dialog) {
         this.$emit('close');
       }
     }

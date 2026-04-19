@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import store from '@/store';
+import { useProjectStore } from '@/store';
 
 import {
   getInit,
@@ -22,14 +22,14 @@ vi.mock('@/util', () => ({
 }));
 
 describe('actions', () => {
-  const state = store.state.project;
+  let store;
+  let init;
 
-  const init = getInit(state);
-  beforeEach(() => init());
-
-  function dispatch(name, data) {
-    store.dispatch(`project/${name}`, data);
-  }
+  beforeEach(() => {
+    store = useProjectStore();
+    init = getInit(store);
+    init();
+  });
 
   describe('addTransaction', () => {
     it('should add a transaction', () => {
@@ -39,8 +39,8 @@ describe('actions', () => {
       init({
         accounts: [fromAccount, toAccount],
       });
-      dispatch('addTransaction', transaction);
-      expect(state.transactions[transaction.id]).toMatchObject(transaction);
+      store.addTransaction(transaction);
+      expect(store.transactions[transaction.id]).toMatchObject(transaction);
     });
   });
 
@@ -53,9 +53,9 @@ describe('actions', () => {
       init({
         accounts: [fromAccount, toAccount],
       });
-      dispatch('addDualTransaction', { primary, secondary });
-      expect(state.transactions[primary.id]).toMatchObject(primary);
-      expect(state.transactions[secondary.id]).toMatchObject(secondary);
+      store.addDualTransaction({ primary, secondary });
+      expect(store.transactions[primary.id]).toMatchObject(primary);
+      expect(store.transactions[secondary.id]).toMatchObject(secondary);
     });
   });
 
@@ -68,9 +68,9 @@ describe('actions', () => {
       init({
         accounts: [fromAccount, toAccount],
       });
-      dispatch('addDualTransactions', [{ primary, secondary }]);
-      expect(state.transactions[primary.id]).toMatchObject(primary);
-      expect(state.transactions[secondary.id]).toMatchObject(secondary);
+      store.addDualTransactions([{ primary, secondary }]);
+      expect(store.transactions[primary.id]).toMatchObject(primary);
+      expect(store.transactions[secondary.id]).toMatchObject(secondary);
     });
   });
 
@@ -89,8 +89,8 @@ describe('actions', () => {
         ...transaction,
         description: 'updated',
       };
-      dispatch('updateTransaction', updatedTransaction);
-      expect(state.transactions[transaction.id]).toMatchObject(
+      store.updateTransaction(updatedTransaction);
+      expect(store.transactions[transaction.id]).toMatchObject(
         updatedTransaction
       );
     });
@@ -117,12 +117,12 @@ describe('actions', () => {
         ...secondary,
         description: 'updated',
       };
-      dispatch('updateDualTransaction', {
+      store.updateDualTransaction({
         primary: updatedPrimary,
         secondary: updatedSecondary,
       });
-      expect(state.transactions[primary.id]).toMatchObject(updatedPrimary);
-      expect(state.transactions[secondary.id]).toMatchObject(updatedSecondary);
+      expect(store.transactions[primary.id]).toMatchObject(updatedPrimary);
+      expect(store.transactions[secondary.id]).toMatchObject(updatedSecondary);
     });
   });
 
@@ -132,8 +132,8 @@ describe('actions', () => {
       init({
         accounts: [account],
       });
-      dispatch('deleteAccount', 'test');
-      expect(state.accounts.find((_) => _.id === account.id).deleted).toEqual(
+      store.deleteAccount('test');
+      expect(store.accounts.find((_) => _.id === account.id).deleted).toEqual(
         true
       );
     });
@@ -146,8 +146,8 @@ describe('actions', () => {
       init({
         accounts: [account],
       });
-      dispatch('restoreDeletedAccount', 'test');
-      expect(state.accounts.find((_) => _.id === account.id).deleted).toEqual(
+      store.restoreDeletedAccount('test');
+      expect(store.accounts.find((_) => _.id === account.id).deleted).toEqual(
         false
       );
     });
@@ -161,14 +161,14 @@ describe('actions', () => {
       init({
         accounts: [fromAccount, toAccount],
       });
-      dispatch('runBulkTransactionTransactions', {
+      store.runBulkTransactionTransactions({
         bulkTransaction: {
           name: 'test',
         },
         transactions: [transaction],
       });
 
-      expect(state.transactions[transaction.id]).toMatchObject({
+      expect(store.transactions[transaction.id]).toMatchObject({
         ...transaction,
         description: 'Bulk Transaction (test)',
         highlighted: false,
@@ -184,18 +184,18 @@ describe('actions', () => {
       init({
         bulkTransactions: [bulkTransaction],
       });
-      dispatch('deleteBulkTransactionTransaction', {
+      store.deleteBulkTransactionTransaction({
         bulkTransaction,
         transaction,
       });
-      expect(state.bulkTransactionTransactions[transaction.id]).toBeUndefined();
+      expect(store.bulkTransactionTransactions[transaction.id]).toBeUndefined();
       expect(bulkTransaction.transactionIds).not.toContain(transaction.id);
     });
   });
 
   describe('addBulkTransaction', () => {
     it('should run without errors', () => {
-      dispatch('addBulkTransaction', {
+      store.addBulkTransaction({
         description: 'test',
         name: 'test',
         transactions: [getNewTransaction()],
@@ -210,11 +210,11 @@ describe('actions', () => {
         bulkTransactions: [bulkTransaction],
       });
       const newName = 'newName';
-      dispatch('updateBulkTransaction', {
+      store.updateBulkTransaction({
         ...bulkTransaction,
         name: newName,
       });
-      expect(state.bulkTransactions[0].name).toBe(newName);
+      expect(store.bulkTransactions[0].name).toBe(newName);
     });
 
     it('should update the bulk transaction transactions', () => {
@@ -223,14 +223,14 @@ describe('actions', () => {
         bulkTransactions: [bulkTransaction],
       });
       const transaction = getNewTransaction();
-      dispatch('updateBulkTransaction', {
+      store.updateBulkTransaction({
         ...bulkTransaction,
         transactions: [transaction],
       });
-      expect(state.bulkTransactionTransactions[transaction.id]).toEqual(
+      expect(store.bulkTransactionTransactions[transaction.id]).toEqual(
         transaction
       );
-      const updateBulkTransaction = state.bulkTransactions[0];
+      const updateBulkTransaction = store.bulkTransactions[0];
       expect(updateBulkTransaction.transactionIds).toContain(transaction.id);
     });
   });
@@ -238,9 +238,9 @@ describe('actions', () => {
   describe('addAccount', () => {
     it('should add an account', () => {
       const account = getNewAccount();
-      dispatch('addAccount', account);
+      store.addAccount(account);
       account.id += '-0';
-      expect(state.accounts).toContainEqual(account);
+      expect(store.accounts).toContainEqual(account);
     });
   });
 
@@ -254,17 +254,17 @@ describe('actions', () => {
         ...account,
         name: 'edited',
       };
-      dispatch('editAccount', editedAccount);
-      expect(state.accounts).toContainEqual(editedAccount);
+      store.editAccount(editedAccount);
+      expect(store.accounts).toContainEqual(editedAccount);
     });
   });
 
   describe('addAccountCategory', () => {
     it('should an account category', () => {
       const category = getNewAccountCategory();
-      dispatch('addAccountCategory', category);
+      store.addAccountCategory(category);
       category.id += '-0';
-      expect(state.accountCategories).toContainEqual(category);
+      expect(store.accountCategories).toContainEqual(category);
     });
   });
 });
