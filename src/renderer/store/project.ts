@@ -18,7 +18,7 @@ function sortByName<T extends { name: string }>(a: T, b: T): number {
   return 0;
 }
 
-interface ProjectState {
+export interface ProjectState {
   accountCategories: AccountCategory[];
   accounts: Account[];
   transactions: Record<string, Transaction>;

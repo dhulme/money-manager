@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import type { ImportedTransaction } from '../../types/project';
 
-interface NewBulkTransaction {
+export interface NewBulkTransaction {
   name: string;
   description: string;
   transactions: unknown[];
