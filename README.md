@@ -1,5 +1,3 @@
-# ⚠️ V2 is currently in progress, see 2.0.0 branch. This will include major dependency updates to Vue 3, TypeScript and more.
-
 # Money Manager
 
 Money Manager is a desktop application for managing your personal finances and accounts.
