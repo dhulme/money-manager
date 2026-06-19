@@ -137,7 +137,8 @@ export default {
   },
   methods: {
     addRow() {
-      this.rows.push({ accountId: null, description: '', value: '' });
+      const lastRow = this.rows[this.rows.length - 1];
+      this.rows.push({ accountId: null, description: lastRow?.description ?? '', value: '' });
     },
     removeRow(index) {
       this.rows.splice(index, 1);

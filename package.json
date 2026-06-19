@@ -1,6 +1,6 @@
 {
   "name": "money-manager",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "David Hulme <dhulme@outlook.com>",
   "description": "A desktop application for managing your personal finances and accounts",
   "license": "MIT",
@@ -28,6 +28,9 @@
     },
     "files": [
       "out/**/*"
+    ],
+    "extraResources": [
+      { "from": "logo.png", "to": "logo.png" }
     ],
     "dmg": {
       "contents": [

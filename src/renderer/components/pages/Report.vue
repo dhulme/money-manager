@@ -16,17 +16,14 @@
             <td>{{ $currency(item.value) }}</td>
           </tr>
         </template>
-        <template v-slot:bottom>
-          <tr>
-            <td />
-            <td />
-            <td />
-          </tr>
-          <tr>
-            <td />
-            <td class="font-weight-bold">Total</td>
-            <td class="font-weight-bold">{{ $currency(total) }}</td>
-          </tr>
+        <template v-slot:tfoot>
+          <tfoot>
+            <tr>
+              <td />
+              <td class="font-weight-bold">Total</td>
+              <td class="font-weight-bold">{{ $currency(total) }}</td>
+            </tr>
+          </tfoot>
         </template>
       </v-data-table>
     </v-card-text>

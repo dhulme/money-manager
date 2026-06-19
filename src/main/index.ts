@@ -5,10 +5,17 @@ import './ipc';
 
 let mainWindow: BrowserWindow | null;
 
+function getIconPath() {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, 'logo.png')
+    : path.join(__dirname, '../../logo.png');
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
+    icon: getIconPath(),
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,

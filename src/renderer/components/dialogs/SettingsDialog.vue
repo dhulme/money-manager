@@ -59,7 +59,12 @@ export default {
     };
   },
   async created() {
-    this.settings = await this.$ipc.getSettings();
+    const settings = await this.$ipc.getSettings();
+    // Convert legacy moment.js tokens to date-fns tokens
+    settings.dateFormat = settings.dateFormat
+      .replace(/YYYY/g, 'yyyy')
+      .replace(/DD/g, 'dd');
+    this.settings = settings;
   },
   computed: {
     dialog: {
@@ -84,7 +89,16 @@ export default {
     async save() {
       const { valid } = await this.$refs.form.validate();
       if (valid) {
-        this.$ipc.saveSettings(this.settings);
+        // Create a plain object to avoid IPC cloning issues with Vue reactivity
+        const settingsToSave = {
+          projectPath: this.settings.projectPath,
+          lastBackupDates: this.settings.lastBackupDates,
+          currencyPrefix: this.settings.currencyPrefix,
+          dateFormat: this.settings.dateFormat,
+          importTransactionsDescriptionsGiftAided: this.settings.importTransactionsDescriptionsGiftAided,
+        };
+        // Deeply serialize to remove Vue proxy wrappers
+        this.$ipc.saveSettings(JSON.parse(JSON.stringify(settingsToSave)));
         this.dialog = false;
       }
     },
